@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% load cms_tags %}
+{% load static%}
+{% block content %}
+<div class="container">
+    {{ category_tags|safe }}
+</div>
+{% endblock content %}

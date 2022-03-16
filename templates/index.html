@@ -1,0 +1,88 @@
+﻿{% extends 'base.html' %}
+{% load cms_tags %}
+{% load static%}
+{% block content %}
+
+    <section class="synrate" id="synrate">
+        <div class="container">
+            <div class="synrate-wrapper">
+                <div class="synrate-offer">
+                    <h1 class="synrate-title">
+                        SYNRATE.RU
+                    </h1>
+                    <p class="synrate-text">
+                        Сервис, охватывающий рынок. Система поиска по профильным ресурсам, социальным сетям по различным направлениям бизнеса.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="offers" id="offers">
+        <div class="container">
+            <div class="offers-title-block">
+                <div class="offers-title-block-img">
+                    <img src="{% static 'synrate_static/img/offers-title-img.svg' %}" alt="wrapper">
+                </div>
+                <h3 class="offers-title">
+                    Складские остатки предприятий
+                </h3>
+            </div>
+            <div class="offers-block">
+                {% for offer in offers %}
+                <div class="offers-block">
+                <div class="offer-block">
+                    <div class="offer-block-img">
+                        {% if offer.home_name == "nelikvidi" %}
+                            <img src="{% static 'img/nelikvidi.png' %}" class="offer-block__img" alt="">
+                        {% endif %}
+                        {% if offer.home_name == "tectorg" %}
+                            <img src="{% static 'img/tectorg.png' %}" class="offer-block__img" alt="">
+                        {% endif %}
+                        {% if offer.home_name == "tenderpro" %}
+                            <img src="{% static 'img/tender.png' %}" class="offer-block__img" alt="123">
+                        {% endif %}
+                        {% if offer.home_name == "isource" %}
+                            <img src="{% static 'img/isource.png' %}" class="offer-block__img" alt="123">
+                        {% endif %}
+                        {% if offer.home_name == "onlinecontract" %}
+                            <img src="{% static 'img/onlinecontract.png' %}" class="offer-block__img" alt="123">
+                        {% endif %}
+                        {% if offer.home_name == "roseltorg" %}
+                            <img src="{% static 'img/roseltorg.png' %}" class="offer-block__img" alt="123">
+                        {% endif %}
+                    </div>
+                    <a href="{% url 'synrate_main:detail_view' id=offer.id %}" class="detailhref">
+                        <div class="offer-wrapper">
+                            <p class="offer-wrapper__text">
+                                {{ offer.name }}
+                            </p>
+                            <div class="offer-number">
+                                <span class="number-offer">№ процедуры -</span>
+                                <span class="number-procedure">{{ offer.id }}</span>
+                            </div>
+                            <div class="offer-organization">
+                                <div class="offer-organization-wrapper">
+                                    <div class="offer-organization__name">
+                                        <p>{{ offer.organisation }}</p>
+                                    </div>
+                                    <div class="offer-organization__address">
+                                        <p>{{ offer.location }}</p>
+                                    </div>
+                                </div>
+                                <div class="offer-organization__time">
+                                    <span class="offer-organization__time__number"> {{ offer.offer_end_date }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+            </div>
+                {% endfor %}
+            </div>
+
+            <div class="page-numbers">
+            </div>  
+        </div>
+    </section>
+{% endblock content %}

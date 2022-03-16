@@ -1,0 +1,36 @@
+﻿{% extends 'base.html' %}
+{% load cms_tags %}
+{% load static%}
+{% block content %}
+    <section class="registration">
+        <div class="container">
+            <div class="registration-form">
+                <h2 class="registration-form__title">
+                    Регистрация
+                </h2>
+                <form method="post" class="personal-data__form regitr-form">
+                    {% csrf_token %}
+                    {% for field in form %}
+                    <div class="registration-form-item form-item password-item">
+                        <p class="form-item__name">{{ field.label_tag }}</p>
+                        {% if field.label_tag == '<label for="id_password1">Пароль:</label>' %}
+                            {{ field }}
+                             <button type="button" class="input-password__btn" id="input-password__btn"></button>
+                        {% else %}
+                            {{ field }}
+                        {% endif %}
+                        <p style="color:red;">{{ field.errors }}</p>
+
+
+                    </div>
+                    {% endfor %}
+                    <button type="submit" class="personal-data-btn-save regist-btn">Зарегистрироваться</button>
+                    <div class="come">
+                        <p>Уже есть аккаунт?</p>
+                        <a href="enter.html" class="come-btn" id="come-btn">Войти</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+{% endblock content %}

@@ -1,0 +1,18 @@
+﻿{% extends 'base.html' %}
+{% load cms_tags %}
+{% load static%}
+{% block content %}
+<section class="faq" id="faq">
+    <div class="container">
+        <div class="synrate-wrapper about-wrapper">
+            <div class="synrate-offer about-offer">
+                <h1 class="synrate-title about-title">
+                    {% placeholder "FAQ_title" or %} FAQ {% endplaceholder %}
+                </h1>
+            </div>
+        </div>
+        <div class="faq-questions">
+            {% placeholder "FAQ" %}
+        </div>
+</section>
+{% endblock content %}

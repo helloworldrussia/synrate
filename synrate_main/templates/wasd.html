@@ -1,0 +1,42 @@
+{% load cms_tags menu_tags sekizai_tags staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>List</title>
+    {% render_block "css" %}
+</head>
+<body>
+    {% cms_toolbar %}
+    {% static_placeholder footer %}
+    {% if offers %}
+        <table>
+
+            {% for offer in offers %}
+                <tr>
+                    <td>
+                        <a href="{% url 'synrate_main:detail' offer.id %}" style="color:#000; text-decoration:none;">{{ offer.name }}</a>
+                    </td>
+                    <td>
+                        {{ offer.home_name }}
+                    </td>
+                    <td>
+                        {{ offer.offer_end_date }}
+                    </td>
+                    <td>
+                        {{ offer.price }}
+                    </td>
+                    <td>
+                        {{ offer.organisation }}
+                    </td>
+                    <td>
+                        <a href="{% url 'synrate_main:detail' offer.id %}"> перейти к объявлению</a>
+                    </td>
+                </tr>
+            {% endfor %}
+
+        </table>
+    {% endif %}
+    {% render_block "js" %}
+</body>
+</html>
