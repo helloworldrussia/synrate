@@ -161,6 +161,17 @@ class ParserNelikvidy(Parser):
                                         "subcategory": breadcrumb[2].getText().strip()
                                         }
                                   )
+                # ---------------------------- TESTING
+                J = {"name": name, "location": region, "home_name": "nelikvidi",
+                                        "offer_type": offer_type, "offer_start_date": str(offer_start_date),
+                                        "owner": owner.strip(), "ownercontact": "временно недоступно",
+                                        "offer_price": price, "additional_data": "не указано",
+                                        "organisation": organisation.replace('"', ''), "url": link,
+                                        "category": breadcrumb[1].getText().strip(),
+                                        "subcategory": breadcrumb[2].getText().strip()}
+                print(z.json())
+                print(J)
+                # ------------------------------------
             self.post_links = []
 
 

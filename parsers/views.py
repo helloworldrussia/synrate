@@ -56,7 +56,6 @@ class OfferCreateView(CreateAPIView):
         return self.create(request, *args, **kwargs)
 
 
-
 class ParserListView(ListAPIView):
     model = Parser
     serializer_class = ParserSerializer

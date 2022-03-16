@@ -7,7 +7,6 @@ import random
 import datetime
 
 
-
 class RoseltorgParser(Parser):
     def __init__(self):
         super().__init__()
@@ -56,20 +55,21 @@ class RoseltorgParser(Parser):
                         finish_date = datetime.date(int("20"+z[2]), int(z[1]), int(z[0]))
                 another_table = details.find_all("tbody")[1]
                 for row in another_table.find_all("tr", {"class": "data-table__item"}):
-                    if row.find("span").getText() == "Название организации (ИНН)":
-                        organisation = row.find("p").getText()
+                    if row.find("span"):
+                        if row.find("span").getText() == "Название организации (ИНН)":
+                            organisation = row.find("p").getText()
 
-                    if row.find("span").getText() == "Почтовый адрес":
-                        post_adress = row.find("p").getText()
+                        if row.find("span").getText() == "Почтовый адрес":
+                            post_adress = row.find("p").getText()
 
-                    if row.find("span").getText() == "Телефон":
-                        phone = row.find("p").getText()
+                        if row.find("span").getText() == "Телефон":
+                            phone = row.find("p").getText()
 
-                    if row.find("span").getText() == "E-mail":
-                        email = row.find("p").getText()
+                        if row.find("span").getText() == "E-mail":
+                            email = row.find("p").getText()
 
-                    if row.find("span").getText() == "Место поставки":
-                        place = row.find("p").getText()
+                        if row.find("span").getText() == "Место поставки":
+                            place = row.find("p").getText()
                 print("roseltorg created")
                 z = requests.post("https://synrate.ru/api/offers/create",
                                   json={"name": lot_name, "location": "РФ", "home_name": "roseltorg",
@@ -77,10 +77,12 @@ class RoseltorgParser(Parser):
                                         "offer_end_date": str(finish_date),
                                         "owner": "недоступно", "ownercontact": "временно недоступно",
                                         "offer_price": lot_price,
+                                        "subcategory": "Не определена",
+                                        "category": "Не определена",
                                         "additional_data": "не указано", "organisation": organisation,
                                         "url": self.url+link})
 
-
+                print(f'{z}')
                 time.sleep(random.randint(1, 5)/10)
 
 

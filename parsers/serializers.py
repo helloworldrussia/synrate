@@ -18,7 +18,8 @@ class OfferSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Offer
-        fields = ('name',
+        fields = ('pk',
+                  'name',
                   'home_name',
                   'url',
                   'location',
@@ -55,10 +56,10 @@ class ParserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Parser
-        fields = ('name', 'text', 'unique_code', 'status', 'time_started', 'offers_parsed', 'message', 'error')
+        fields = ('pk', 'name', 'text', 'unique_code', 'status', 'time_started', 'offers_parsed', 'message', 'error')
 
 
 class EngineSerializer(serializers.ModelSerializer):
     class Meta:
         model = ENGINE
-        fields = ('name', 'text', 'unique_code', 'status', 'message', 'error')
+        fields = ('pk', 'name', 'text', 'unique_code', 'status', 'message', 'error')

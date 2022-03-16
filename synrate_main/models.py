@@ -44,7 +44,7 @@ class Offer(models.Model):
     organisation = models.CharField(max_length=250, null=True, blank=True, default=None, verbose_name="Организация")
     views = models.IntegerField(default=0, blank=True, verbose_name="Просмотры")
     category = models.ForeignKey(OfferSubcategory, on_delete=models.CASCADE, verbose_name="Подкатегория",
-                                 null=True, default=None, related_name="subcategory")
+                                 null=True, default=None, blank=True, related_name="subcategory")
 
     def __str__(self):
         return self.name

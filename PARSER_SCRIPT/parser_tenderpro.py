@@ -12,12 +12,15 @@ class ParserTender(Parser):
         self.page_links2 = []
 
     def parse(self):
+
         print("Tenderpro")
+
         self.response = requests.get(self.url.format(0), headers={'User-Agent': "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Mobile Safari/537.36"})
         self.response.encoding = 'utf-8'
         self.soup = BeautifulSoup(self.response.content, 'html.parser')
         pages = self.soup.find("div", attrs={"class": "pager"}).find_all('a')
         pages_num = pages[len(pages)-2].getText()
+
         for i in range(1, int(pages_num)):
             self.response = requests.get(self.url.format(i*25), headers={'User-Agent': "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Mobile Safari/537.36"})
             self.response.encoding = 'utf-8'
@@ -46,7 +49,7 @@ class ParserTender(Parser):
                                             "additional_data": "не указано", "organisation": company, "url": url,
                                             "category": "Не определена", "subcategory": "не определена"})
 
-
+                    print(z.json())
 if __name__ == '__main__':
     parser = ParserTender()
     parser.parse()

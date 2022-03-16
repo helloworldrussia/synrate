@@ -57,6 +57,7 @@ class CheckThread(Thread):
 
 
 def server_listener():
+    print('server listener: Hello, im fine...')
     nelikvidy_obj = ParserNelikvidy(False)
     tender_obj = ParserTender()
     roseltorg_obj = RoseltorgParser()
@@ -76,12 +77,12 @@ def server_listener():
     #check_thread_1 = CheckThread('parser_roseltorg')
     #check_thread_1.start()
 
-    parser_roseltorg.start()
-    parser_nelikvidy.start()
+    # parser_roseltorg.start() проверен
+    # parser_nelikvidy.start() проверен
     parser_tender.start()
-    parser_isource.start()
-    parser_tectorg.start()
-    parser_onlinecontract.start()
+    # parser_isource.start()
+    # parser_tectorg.start()
+    # parser_onlinecontract.start()
 
     status = True
 
