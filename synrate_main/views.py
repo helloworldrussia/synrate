@@ -22,7 +22,7 @@ def get_all_category_names():
 
 
 def index(request):
-    most_viewed = Offer.objects.all().order_by('-views')
+    most_viewed = Offer.objects.all().order_by('offer_end_date')
     return render(request, 'index.html', {"offers": most_viewed[0:10]})
 
 
