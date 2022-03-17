@@ -15,7 +15,7 @@ SITE_ID = 1
 DEBUG = True
 
 # ALLOWED_HOSTS = ['127.0.0.1', 'synrate.ru', 'www.synrate.ru']
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = ['5.63.152.3']
 
 # Application definition
 
