@@ -47,7 +47,7 @@ class Offer(models.Model):
     views = models.IntegerField(default=0, blank=True, verbose_name="Просмотры")
     category = models.ForeignKey(OfferSubcategory, on_delete=models.CASCADE, verbose_name="Подкатегория",
                                  null=True, default=None, blank=True, related_name="subcategory")
-    created_at = models.DateField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.name

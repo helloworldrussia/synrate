@@ -22,7 +22,7 @@ def get_all_category_names():
 
 
 def index(request):
-    most_viewed = Offer.objects.all().order_by('created_at')
+    most_viewed = Offer.objects.all().order_by('-created_at')
     return render(request, 'index.html', {"offers": most_viewed[0:10]})
 
 
@@ -76,7 +76,7 @@ def search(request, args: str = ''):
     else:
         args += "?key=DMT"
     s = args.split("?")
-    t = Offer.objects.all()
+    t = Offer.objects.all().order_by('-created_at')
     page_found = False
     per_page = 20
 
