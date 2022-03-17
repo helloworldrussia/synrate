@@ -76,7 +76,7 @@ def search(request, args: str = ''):
     else:
         args += "?key=DMT"
     s = args.split("?")
-    t = Offer.objects.all()
+    t = Offer.objects.all().order_by('-created_at')
     page_found = False
     per_page = 20
 

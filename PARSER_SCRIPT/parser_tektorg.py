@@ -1,3 +1,5 @@
+from fake_useragent import UserAgent
+
 from ENGINE import Parser
 import requests
 from bs4 import BeautifulSoup
@@ -90,6 +92,16 @@ class ParserTektorg(Parser):
                                     "owner": org_owner, "ownercontact": org_phone, "offer_price": 0,
                                     "additional_data": "не указано", "organisation": org_name, "url": item_url,
                                     "category": "Не определена", "subcategory": "не определена"})
+
+            # TESTING -------------
+            J = {"name": name, "location": "РФ", "home_name": "tektorg",
+                                    "offer_type": "Продажа", "offer_start_date": str(start_date),
+                                    "offer_end_date": str(fin_date),
+                                    "owner": org_owner, "ownercontact": org_phone, "offer_price": 0,
+                                    "additional_data": "не указано", "organisation": org_name, "url": item_url,
+                                    "category": "Не определена", "subcategory": "не определена"}
+            print(z, J)
+            # ---------------------
 
 
 if __name__ == '__main__':

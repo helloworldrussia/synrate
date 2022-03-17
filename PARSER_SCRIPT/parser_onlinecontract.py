@@ -2,6 +2,7 @@ from ENGINE import Parser
 import requests
 from bs4 import BeautifulSoup
 
+
 class ParserOnlineContract(Parser):
     def __init__(self):
         super.__init__
@@ -26,24 +27,40 @@ class ParserOnlineContract(Parser):
                     date = self.response_item["OwnerSklad"].split(".")[2] + "-" + self.response_item["OwnerSklad"].split(".")[1] + "-" + self.response_item["OwnerSklad"].split(".")[0]
                 except:
                     date = None
-
-                z = requests.post("https://synrate.ru/api/offers/create",
+                null = None
+                z = requests.post("http://5.63.152.3:5000/api/offers/create",#"https://synrate.ru/api/offers/create",
                                   json={"name": self.response_item["Name"],
-                                        "location": None,
+                                        "location": "",
                                         "home_name": "onlinecontract",
                                         "offer_type": "Продажа",
-                                        "offer_start_date": None,
+                                        "offer_start_date": null,
                                         "offer_end_date": date,
-                                        "owner": None,
-                                        "ownercontact": None,
+                                        "owner": "",
+                                        "ownercontact": "",
                                         "offer_price": int(float(self.response_item["Price"])),
                                         "additional_data": self.response_item["OwnerCondi"],
-                                        "organisation": None,
+                                        "organisation": "",
                                         "url": "https://api.onlc.ru/purchases/v1/public/procedures/{}/positions".format(self.procedure_id),
                                         "category": "Не определена", "subcategory": "не определена"
                                         }
                                   )
-
+                # TESTING -------------
+                J = {"name": self.response_item["Name"],
+                                        "location": "",          # создатель поставил None там, где щас ""
+                                        "home_name": "onlinecontract",       # "" - заглушка, json None не воспринимает
+                                        "offer_type": "Продажа",
+                                        "offer_start_date": null,
+                                        "offer_end_date": date,
+                                        "owner": "",
+                                        "ownercontact": "",
+                                        "offer_price": int(float(self.response_item["Price"])),
+                                        "additional_data": self.response_item["OwnerCondi"],
+                                        "organisation": "",
+                                        "url": "https://api.onlc.ru/purchases/v1/public/procedures/{}/positions".format(self.procedure_id),
+                                        "category": "Не определена", "subcategory": "не определена"
+                                        }
+                print(z.json(), J)
+                # ---------------------
 
 
 if __name__ == '__main__':
