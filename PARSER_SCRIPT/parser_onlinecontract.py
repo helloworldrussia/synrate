@@ -1,6 +1,12 @@
+import random
+import time
+from datetime import datetime
+
 from ENGINE import Parser
 import requests
 from bs4 import BeautifulSoup
+
+from synrate_main.mixins import replaceMultiple
 
 
 class ParserOnlineContract(Parser):
@@ -25,11 +31,14 @@ class ParserOnlineContract(Parser):
                 ).json()["data"][0]
                 try:
                     date = self.response_item["OwnerSklad"].split(".")[2] + "-" + self.response_item["OwnerSklad"].split(".")[1] + "-" + self.response_item["OwnerSklad"].split(".")[0]
+                    print(date)
+                    datetime.strptime(date, "%Y-%m-%d")
                 except:
                     date = None
                 null = None
-                z = requests.post("http://5.63.152.3:5000/api/offers/create",#"https://synrate.ru/api/offers/create",
-                                  json={"name": self.response_item["Name"],
+
+                z = requests.post("http://5.63.152.3/api/offers/create",#"https://synrate.ru/api/offers/create",
+                                  json={"name": self.response_item["Name"].replace('"', ''),
                                         "location": "",
                                         "home_name": "onlinecontract",
                                         "offer_type": "Продажа",
@@ -45,9 +54,9 @@ class ParserOnlineContract(Parser):
                                         }
                                   )
                 # TESTING -------------
-                J = {"name": self.response_item["Name"],
-                                        "location": "",          # создатель поставил None там, где щас ""
-                                        "home_name": "onlinecontract",       # "" - заглушка, json None не воспринимает
+                J = {"name": self.response_item["Name"].replace('"', ''),
+                                        "location": "",
+                                        "home_name": "onlinecontract",
                                         "offer_type": "Продажа",
                                         "offer_start_date": null,
                                         "offer_end_date": date,
@@ -59,7 +68,8 @@ class ParserOnlineContract(Parser):
                                         "url": "https://api.onlc.ru/purchases/v1/public/procedures/{}/positions".format(self.procedure_id),
                                         "category": "Не определена", "subcategory": "не определена"
                                         }
-                print(z.json(), J)
+                print(f'Online: {z.json()}  {J}')
+                time.sleep(random.randint(1, 5) / 10)
                 # ---------------------
 
 

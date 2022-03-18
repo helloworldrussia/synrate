@@ -1,6 +1,9 @@
 from django.shortcuts import render, redirect
 from django.core.paginator import Paginator
 from django.http import HttpResponse
+from django.views.generic import ListView
+
+from .mixins import get_counts, get_filter_qs
 from .models import Offer, OfferCategory, OfferSubcategory
 from parsers.models import Parser, ENGINE
 from .forms import ParserForm, EngineForm
@@ -22,8 +25,16 @@ def get_all_category_names():
 
 
 def index(request):
-    most_viewed = Offer.objects.all().order_by('-created_at')
-    return render(request, 'index.html', {"offers": most_viewed[0:10]})
+    queryset = Offer.objects.all().order_by('-created_at')
+    # получаем количество заявок всего, за мес., день
+    all_count, month_count, today_count = get_counts(queryset)
+
+    # показываем объявления, расчитав количество объяв за месяц, день и за все время,
+    # передаем значения в контекст
+    return render(request, 'index.html', {"offers": queryset[0:10],
+                                          "all_count": all_count,
+                                          "month_count": month_count,
+                                          "today_count": today_count})
 
 
 def parser_admin(request):
@@ -77,6 +88,10 @@ def search(request, args: str = ''):
         args += "?key=DMT"
     s = args.split("?")
     t = Offer.objects.all().order_by('-created_at')
+
+    # получаем количество заявок
+    all_count, month_count, today_count = get_counts(t)
+
     page_found = False
     per_page = 20
 
@@ -162,7 +177,9 @@ def search(request, args: str = ''):
     category_list_str = get_all_category_names()
 
     return render(request, 'filtr.html', {"offers": offers, "category_list": category_list_str,
-                                          "query": request.META["QUERY_STRING"]})
+                                          "query": request.META["QUERY_STRING"],
+                                          "all_count": all_count, "month_count": month_count,
+                                          "today_count": today_count})
 
 
 def search_all(request):
@@ -190,3 +207,49 @@ def category(request):
             fin_str += "<li>" + c.name + "</li>"
 
     return render(request, "category.html", {"category_tags": fin_str})
+
+
+class OfferFilterView(ListView):
+    paginate_by = 20
+    model = Offer
+    template_name = 'filtr.html'
+
+
+def listing(request):
+    print(request)
+    filter_dict = get_filter_qs(request.GET)
+    if filter_dict == 0:
+        queryset = Offer.objects.all()
+        print(0)
+    else:
+        queryset = Offer.objects.filter(**filter_dict)
+        print('filtering')
+    all_count, month_count, today_count = get_counts(queryset)
+    paginator = Paginator(queryset, 20)
+
+    if request.GET.get('page'):
+        page_number = request.GET.get('page')
+    else:
+        page_number = 1
+
+    page_obj = paginator.get_page(page_number)
+
+    # if request.method == 'POST':
+    #     queryset = get_filter_qs(request.POST)
+    #     paginator = Paginator(queryset, 20)
+    #     page_obj = paginator.get_page(1)
+    #     all_count, month_count, today_count = get_counts(queryset)
+    # else:
+    #     offers = Offer.objects.all().order_by('-created_at')
+    #     all_count, month_count, today_count = get_counts(offers)
+    #     paginator = Paginator(offers, 20) # Show 25 contacts per page.
+    #     if request.GET.get('page'):
+    #         page_number = request.GET.get('page')
+    #     else:
+    #         page_number = 1
+    #     print(page_number)
+    #     page_obj = paginator.get_page(page_number)
+    #
+    return render(request, 'filtr.html', {'offers': page_obj, "all_count": all_count,
+                                          "month_count": month_count, "today_count": today_count})
+    # return HttpResponse(100)

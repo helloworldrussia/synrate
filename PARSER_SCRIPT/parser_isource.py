@@ -1,3 +1,6 @@
+import random
+import time
+
 import requests
 from ENGINE import Parser
 
@@ -33,18 +36,18 @@ class ParserSource(Parser):
                     organisation = self.response_item["contragent_host_name"]
                 else:
                     organisation = ''
-                z = requests.post("http://5.63.152.3:5000/api/offers/create",#"https://synrate.ru/api/offers/create",
-                                  json={"name": self.response_item["name"],
+                z = requests.post("http://5.63.152.3:80/api/offers/create",#"https://synrate.ru/api/offers/create",
+                                  json={"name": self.response_item["name"].replace('"', ''),
                                         "location": self.response_item["region"][0]["name"],
                                         "home_name": "isource",
                                         "offer_type": "Продажа",
                                         "offer_start_date": self.response_item["date_begin"].split(" ")[0],
                                         "offer_end_date": self.response_item["date_end"].split(" ")[0],
-                                        "owner": self.response_item["author_full_name"],
+                                        "owner": self.response_item["author_full_name"].replace('"', ''),
                                         "ownercontact": self.response_item["author_phone"],
                                         "offer_price": round(float(self.response_item["current_fix_price_without_nds"])),
                                         "additional_data": "не указано",
-                                        "organisation": organisation,
+                                        "organisation": organisation.replace('"', ''),
                                         "url": "https://reserve.isource.ru/trades/item/"
                                                + self.response_item["auction_transliteration_name"],
                                         "category": category["transliteration_name"],
@@ -63,23 +66,27 @@ class ParserSource(Parser):
                     z = None
                 # TESTING -----------------
 
-                J = {"name": self.response_item["name"],
-                 "location": self.response_item["region"][0]["name"],
-                 "home_name": "isource",
-                 "offer_type": "Продажа",
-                 "offer_start_date": self.response_item["date_begin"].split(" ")[0],
-                 "offer_end_date": self.response_item["date_end"].split(" ")[0],
-                 "owner": self.response_item["author_full_name"],
-                 "ownercontact": self.response_item["author_phone"],
-                 "offer_price": round(float(self.response_item["current_fix_price_without_nds"])),
-                 "additional_data": "не указано",
-                 "organisation": organisation,
-                 "url": "https://reserve.isource.ru/trades/item/"
-                        + self.response_item["auction_transliteration_name"],
-                 "category": category["transliteration_name"],
-                 "subcategory": self.response_item["category"][0]["name"]
-                 }
-                print(z, J)
+                J = {"name": self.response_item["name"].replace('"', ''),
+                                        "location": self.response_item["region"][0]["name"],
+                                        "home_name": "isource",
+                                        "offer_type": "Продажа",
+                                        "offer_start_date": self.response_item["date_begin"].split(" ")[0],
+                                        "offer_end_date": self.response_item["date_end"].split(" ")[0],
+                                        "owner": self.response_item["author_full_name"].replace('"', ''),
+                                        "ownercontact": self.response_item["author_phone"],
+                                        "offer_price": round(float(self.response_item["current_fix_price_without_nds"])),
+                                        "additional_data": "не указано",
+                                        "organisation": organisation.replace('"', ''),
+                                        "url": "https://reserve.isource.ru/trades/item/"
+                                               + self.response_item["auction_transliteration_name"],
+                                        "category": category["transliteration_name"],
+                                        "subcategory": self.response_item["category"][0]["name"]
+                                        }
+                try:
+                    print(f'Isource: {z.json()}  {J}')
+                except:
+                    print(f'Isource !!!!: {z}  {J}')
+                time.sleep(random.randint(1, 5) / 10)
                 # --------------------
 
 

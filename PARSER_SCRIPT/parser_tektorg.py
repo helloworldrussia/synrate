@@ -1,4 +1,11 @@
+import random
+import time
+
+import undetected_chromedriver
 from fake_useragent import UserAgent
+from selenium import webdriver
+from lxml import html
+from webdriver_manager.firefox import GeckoDriverManager
 
 from ENGINE import Parser
 import requests
@@ -13,9 +20,25 @@ class ParserTektorg(Parser):
         self.item_urls = []
 
     def parse(self):
+        opts = webdriver.ChromeOptions()
+        opts.headless = True
+        # driver = webdriver.Firefox(executable_path=GeckoDriverManager().install(), options=opts)
+        # core = GeckoDriverManager().install()
+        driver = undetected_chromedriver.Chrome(#executable_path=r'C:\prod\geckodriver\geckodriver.exe',
+                                                options=opts)
+        frills(driver)
         for i in range(1, 30):
-            self.response = requests.get(self.list_url.format(i), headers={'User-Agent': "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Mobile Safari/537.36"}).text
-            self.soup = BeautifulSoup(self.response, 'html.parser')
+            # ---------
+            driver.get(self.list_url.format(i))
+            try:
+                content = driver.page_source
+            except:
+                print('Some problems... TECHTORG')
+                continue
+            tree = html.fromstring(content)
+            # ---------
+            # self.response = requests.get(f"{self.list_url.format(i)}&", headers={'User-Agent': UserAgent().chrome}, verify=False).content.decode("utf8") #"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Mobile Safari/537.36"}).text
+            self.soup = BeautifulSoup(content, 'html.parser')#self.response, 'html.parser')
             urls = (self.soup.find_all("a", attrs={"class": "section-procurement__item-title"}))
             for url in urls:
                 self.item_urls.append(url["href"])
@@ -30,8 +53,12 @@ class ParserTektorg(Parser):
             org_name = None
             org_phone = None
             org_owner = None
-            self.response = requests.get("https://www.tektorg.ru"+url, headers={'User-Agent': UserAgent().chrome}).text
-            self.soup = BeautifulSoup(self.response, 'html.parser')
+            start_date = None
+            # self.response = requests.get("https://www.tektorg.ru"+url, headers={'User-Agent': UserAgent().chrome}).text
+            driver.get(f'https://www.tektorg.ru{url}')
+            content = driver.page_source
+            self.soup = BeautifulSoup(content,#self.response,
+                                      'html.parser')
             try:
                 name = self.soup.find("span", attrs={"class": "procedure__item-name"}).getText()
             except AttributeError:
@@ -85,23 +112,34 @@ class ParserTektorg(Parser):
             except AttributeError:
                 fin_date = datetime.date.today() + datetime.timedelta(days=3)
 
-            z = requests.post("https://synrate.ru/api/offers/create",
-                              json={"name": name, "location": "РФ", "home_name": "tektorg",
+            z = requests.post("http://5.63.152.3/api/offers/create",#"https://synrate.ru/api/offers/create",
+                              json={"name": name.replace('"', ''), "location": "РФ", "home_name": "tektorg",
                                     "offer_type": "Продажа", "offer_start_date": str(start_date),
                                     "offer_end_date": str(fin_date),
-                                    "owner": org_owner, "ownercontact": org_phone, "offer_price": 0,
-                                    "additional_data": "не указано", "organisation": org_name, "url": item_url,
+                                    "owner": org_owner.replace('"', ''), "ownercontact": org_phone, "offer_price": 0,
+                                    "additional_data": "не указано", "organisation": org_name.replace('"', ''), "url": item_url,
                                     "category": "Не определена", "subcategory": "не определена"})
 
             # TESTING -------------
-            J = {"name": name, "location": "РФ", "home_name": "tektorg",
+            J = {"name": name.replace('"', ''), "location": "РФ", "home_name": "tektorg",
                                     "offer_type": "Продажа", "offer_start_date": str(start_date),
                                     "offer_end_date": str(fin_date),
-                                    "owner": org_owner, "ownercontact": org_phone, "offer_price": 0,
-                                    "additional_data": "не указано", "organisation": org_name, "url": item_url,
+                                    "owner": org_owner.replace('"', ''), "ownercontact": org_phone, "offer_price": 0,
+                                    "additional_data": "не указано", "organisation": org_name.replace('"', ''), "url": item_url,
                                     "category": "Не определена", "subcategory": "не определена"}
-            print(z, J)
+            print(f'TECH: {z.json()}  {J}')
+            time.sleep(random.randint(1, 5) / 10)
             # ---------------------
+
+
+def frills(driver):
+    print('Frilling u know')
+    driver.get('https://yandex.ru/images/')
+    time.sleep(random.randint(1, 4))
+    driver.get('https://yandex.ru')
+    time.sleep(random.randint(1, 4))
+    driver.get('https://yandex.ru/search/?lr=50&text=погода+в+москве')
+    print('Ok.. thats all.')
 
 
 if __name__ == '__main__':
