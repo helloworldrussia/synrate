@@ -1,6 +1,6 @@
 ﻿{% extends 'base.html' %}
 {% load cms_tags %}
-{% load static%}
+{% load static %}
 {% block content %}
 
     <section class="synrate" id="synrate">
@@ -26,6 +26,14 @@
                 <h3 class="offers-title">
                     Складские остатки предприятий
                 </h3>
+            </div>
+            <div class="offers-count-block">
+                <h4 class="offers-count">
+                    Всего объявлений{% if all_count != 0 %}
+                    {{ all_count }}{% else %} 0,{% endif %}
+                    в т.ч. за последний месяц {% if month_count != 0 %}{{ month_count }}{% else %}0{% endif %}
+                    {% if today_count != 0 %}, день {{ day_count }}{% endif %}
+                </h4>
             </div>
             <div class="offers-block">
                 {% for offer in offers %}

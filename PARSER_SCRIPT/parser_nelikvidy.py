@@ -1,3 +1,6 @@
+import random
+import time
+
 import requests
 from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
@@ -95,6 +98,7 @@ class ParserNelikvidy(Parser):
                 views = None
                 sostoyanie = None
                 amount = None
+                region = None
 
                 self.response = requests.get(link, headers={'User-Agent': "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Mobile Safari/537.36"}, verify=self.verify)
                 self.soup = BeautifulSoup(self.response.content, 'html.parser')
@@ -150,27 +154,26 @@ class ParserNelikvidy(Parser):
                     offer_start_date = datetime.date.today()
 
                 breadcrumb = self.soup.find("ul", attrs={"class": "breadcrumb"}).find_all("li")
-                """"""
 
-                z = requests.post("https://synrate.ru/api/offers/create",
-                                  json={"name": name, "location": region, "home_name": "nelikvidi",
+                z = requests.post("http://5.63.152.3/api/offers/create",#"https://synrate.ru/api/offers/create",
+                                  json={"name": name.replace('"', ''), "location": region, "home_name": "nelikvidi",
                                         "offer_type": offer_type, "offer_start_date": str(offer_start_date),
-                                        "owner": owner, "ownercontact":"временно недоступно", "offer_price": price,
-                                        "additional_data": "не указано", "organisation": organisation, "url": link,
+                                        "owner": owner.replace('"', ''), "ownercontact":"временно недоступно", "offer_price": price,
+                                        "additional_data": "не указано", "organisation": organisation.replace('"', ''), "url": link,
                                         "category": breadcrumb[1].getText().strip(),
                                         "subcategory": breadcrumb[2].getText().strip()
                                         }
                                   )
                 # ---------------------------- TESTING
-                J = {"name": name, "location": region, "home_name": "nelikvidi",
+                J = {"name": name.replace('"', ''), "location": region, "home_name": "nelikvidi",
                                         "offer_type": offer_type, "offer_start_date": str(offer_start_date),
-                                        "owner": owner.strip(), "ownercontact": "временно недоступно",
-                                        "offer_price": price, "additional_data": "не указано",
-                                        "organisation": organisation.replace('"', ''), "url": link,
+                                        "owner": owner.replace('"', ''), "ownercontact":"временно недоступно", "offer_price": price,
+                                        "additional_data": "не указано", "organisation": organisation.replace('"', ''), "url": link,
                                         "category": breadcrumb[1].getText().strip(),
-                                        "subcategory": breadcrumb[2].getText().strip()}
-                print(z.json())
-                print(J)
+                                        "subcategory": breadcrumb[2].getText().strip()
+                                        }
+                print(f'Ne lik: {z.json()}  {J}')
+                time.sleep(random.randint(1, 5) / 10)
                 # ------------------------------------
             self.post_links = []
 

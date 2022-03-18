@@ -1,5 +1,8 @@
+from django.conf.urls import url
 from django.urls import path, re_path
 from . import views
+from .views import OfferFilterView
+
 app_name = 'synrate_main'
 urlpatterns = [
     path('', views.index, name="index"),
@@ -10,4 +13,5 @@ urlpatterns = [
     path('ostatki', views.search_all, name="search_all"),
     path('categories', views.category, name="category_list"),
     path('detail/<int:id>', views.detail_info, name="detail_view"),
+    re_path(r'^filter/$', views.listing, name="filtration"),
 ]
