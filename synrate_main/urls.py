@@ -1,7 +1,7 @@
 from django.conf.urls import url
 from django.urls import path, re_path
 from . import views
-from .views import OfferFilterView
+
 
 app_name = 'synrate_main'
 urlpatterns = [

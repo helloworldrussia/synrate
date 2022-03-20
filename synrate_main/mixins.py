@@ -16,19 +16,29 @@ def get_counts(queryset):
 def get_filter_qs(data):
     print(data)
     today = datetime.today()
-    filter_dict = {}
+    and_dict = {}
+    or_dict = {}
     filtering = 0
     if data.get('time_filter'):
         start_date = today - timedelta(days=int(data.get('time_filter')))
         start_date = start_date.date()
-        filter_dict['created_at__gt'] = start_date
+        and_dict['created_at__gt'] = start_date
         filtering = 1
 
     if data.get('from_filter'):
-        filter_dict['home_name'] = data.get('from_filter')
+        and_dict['home_name'] = data.get('from_filter')
+        filtering = 1
+
+    if data.get('search_filter'):
+        or_dict['name__contains'] = data.get('search_filter')
+        or_dict['location__contains'] = data.get('search_filter')
+        or_dict['owner__contains'] = data.get('search_filter')
+        or_dict['ownercontact__contains'] = data.get('search_filter')
+        or_dict['additional_data__contains'] = data.get('search_filter')
+        or_dict['organisation__contains'] = data.get('search_filter')
         filtering = 1
 
     if filtering:
-        return filter_dict
+        return and_dict, or_dict
     else:
-        return 0
+        return 0, 0
