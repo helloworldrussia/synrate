@@ -42,8 +42,4 @@ def get_filter_qs(data):
         print(and_dict, or_dict)
         return and_dict, or_dict
     else:
-<<<<<<< HEAD
         return 0, 0
-=======
-        return 0, 0
->>>>>>> 72f1e7b845d85fedb40788ea5b2b1696ccccc8af
