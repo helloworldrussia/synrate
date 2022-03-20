@@ -41,4 +41,4 @@ def get_filter_qs(data):
     if filtering:
         return and_dict, or_dict
     else:
-        return 0, 0
+        return 0
