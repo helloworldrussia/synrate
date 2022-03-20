@@ -1,3 +1,7 @@
+import operator
+from functools import reduce
+
+from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.core.paginator import Paginator
 from django.http import HttpResponse
@@ -209,24 +213,22 @@ def category(request):
     return render(request, "category.html", {"category_tags": fin_str})
 
 
-class OfferFilterView(ListView):
-    paginate_by = 20
-    model = Offer
-    template_name = 'filtr.html'
-
-
 def listing(request):
     print(request)
-    filter_dict = get_filter_qs(request.GET)
+    and_dict, or_dict = get_filter_qs(request.GET)
     url, qs = request.build_absolute_uri(), 0
     if '&page' in url or 'filter' in url:
         qs = 1
     print(f"QS: {qs}")
 
-    if filter_dict == 0:
+    if and_dict == 0:
         queryset = Offer.objects.all().order_by('-created_at')
     else:
-        queryset = Offer.objects.filter(**filter_dict).order_by('-created_at')
+        if or_dict:
+            queryset = Offer.objects.filter(**and_dict).filter(reduce(operator.or_,
+                                    (Q(**d) for d in [dict([i]) for i in or_dict.items()]))).order_by('-created_at')
+        else:
+            queryset = Offer.objects.filter(**and_dict)
 
     all_count, month_count, today_count = get_counts(queryset)
     paginator = Paginator(queryset, 10)
