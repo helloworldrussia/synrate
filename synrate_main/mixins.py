@@ -29,7 +29,7 @@ def get_filter_qs(data):
         and_dict['home_name'] = data.get('from_filter')
         filtering = 1
 
-    if data.get('search_filter') != '':
+    if data.get('search_filter') is not None and data.get('search_filter') != '':
         or_dict['name__contains'] = data.get('search_filter')
         or_dict['location__contains'] = data.get('search_filter')
         or_dict['owner__contains'] = data.get('search_filter')
