@@ -36,7 +36,7 @@ class ParserSource(Parser):
                     organisation = self.response_item["contragent_host_name"]
                 else:
                     organisation = ''
-                z = requests.post("http://5.63.152.3:80/api/offers/create",#"https://synrate.ru/api/offers/create",
+                z = requests.post("https://synrate.ru/api/offers/create",
                                   json={"name": self.response_item["name"].replace('"', ''),
                                         "location": self.response_item["region"][0]["name"],
                                         "home_name": "isource",

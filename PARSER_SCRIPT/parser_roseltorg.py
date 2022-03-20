@@ -71,7 +71,7 @@ class RoseltorgParser(Parser):
                         if row.find("span").getText() == "Место поставки":
                             place = row.find("p").getText()
                 print("roseltorg created")
-                z = requests.post("http://5.63.152.3/api/offers/create",#"https://synrate.ru/api/offers/create",
+                z = requests.post("https://synrate.ru/api/offers/create",
                                   json={"name": lot_name.replace('"', ''), "location": "РФ", "home_name": "roseltorg",
                                         "offer_type": "Продажа", "offer_start_date": str(publish_date),
                                         "offer_end_date": str(finish_date),

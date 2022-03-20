@@ -6,7 +6,7 @@ from ENGINE import Parser
 import requests
 from bs4 import BeautifulSoup
 
-from synrate_main.mixins import replaceMultiple
+#from synrate_main.mixins import replaceMultiple
 
 
 class ParserOnlineContract(Parser):
@@ -37,7 +37,7 @@ class ParserOnlineContract(Parser):
                     date = None
                 null = None
 
-                z = requests.post("http://5.63.152.3/api/offers/create",#"https://synrate.ru/api/offers/create",
+                z = requests.post("https://synrate.ru/api/offers/create",
                                   json={"name": self.response_item["Name"].replace('"', ''),
                                         "location": "",
                                         "home_name": "onlinecontract",
@@ -68,7 +68,11 @@ class ParserOnlineContract(Parser):
                                         "url": "https://api.onlc.ru/purchases/v1/public/procedures/{}/positions".format(self.procedure_id),
                                         "category": "Не определена", "subcategory": "не определена"
                                         }
-                print(f'Online: {z.json()}  {J}')
+                try:
+                  print(f'Online: {z.json()}  {J}')
+                except Exception as ex:
+                  print(ex)
+                  print(f'Online: {z}  {J}')
                 time.sleep(random.randint(1, 5) / 10)
                 # ---------------------
 

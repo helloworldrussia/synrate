@@ -5,7 +5,7 @@ import undetected_chromedriver
 from fake_useragent import UserAgent
 from selenium import webdriver
 from lxml import html
-from webdriver_manager.firefox import GeckoDriverManager
+#from webdriver_manager.firefox import GeckoDriverManager
 
 from ENGINE import Parser
 import requests
@@ -112,7 +112,7 @@ class ParserTektorg(Parser):
             except AttributeError:
                 fin_date = datetime.date.today() + datetime.timedelta(days=3)
 
-            z = requests.post("http://5.63.152.3/api/offers/create",#"https://synrate.ru/api/offers/create",
+            z = requests.post("https://synrate.ru/api/offers/create",
                               json={"name": name.replace('"', ''), "location": "РФ", "home_name": "tektorg",
                                     "offer_type": "Продажа", "offer_start_date": str(start_date),
                                     "offer_end_date": str(fin_date),

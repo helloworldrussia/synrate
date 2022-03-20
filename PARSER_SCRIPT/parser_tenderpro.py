@@ -44,7 +44,7 @@ class ParserTender(Parser):
                     start_date = datetime.date(int(x[2]), int(x[1]), int(x[0]))
                     z = finishes.split(".")
                     fin_date = datetime.date(int(z[2]), int(z[1]), int(z[0]))
-                    z = requests.post("http://5.63.152.3/api/offers/create",#"https://synrate.ru/api/offers/create",
+                    z = requests.post("https://synrate.ru/api/offers/create",
                                       json={"name": name.replace('"', ''), "location": "РФ", "home_name": "tenderpro",
                                             "offer_type": "Продажа", "offer_start_date": str(start_date),
                                             "offer_end_date": str(fin_date),

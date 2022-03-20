@@ -155,7 +155,7 @@ class ParserNelikvidy(Parser):
 
                 breadcrumb = self.soup.find("ul", attrs={"class": "breadcrumb"}).find_all("li")
 
-                z = requests.post("http://5.63.152.3/api/offers/create",#"https://synrate.ru/api/offers/create",
+                z = requests.post("https://synrate.ru/api/offers/create",
                                   json={"name": name.replace('"', ''), "location": region, "home_name": "nelikvidi",
                                         "offer_type": offer_type, "offer_start_date": str(offer_start_date),
                                         "owner": owner.replace('"', ''), "ownercontact":"временно недоступно", "offer_price": price,
