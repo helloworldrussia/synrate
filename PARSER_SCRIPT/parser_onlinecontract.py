@@ -37,7 +37,7 @@ class ParserOnlineContract(Parser):
                     date = None
                 null = None
 
-                z = requests.post("http://5.63.152.3/api/offers/create",#"https://synrate.ru/api/offers/create",
+                z = requests.post("https://synrate.ru/api/offers/create",
                                   json={"name": self.response_item["Name"].replace('"', ''),
                                         "location": "",
                                         "home_name": "onlinecontract",
