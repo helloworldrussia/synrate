@@ -24,6 +24,10 @@ def get_filter_qs(data):
         filter_dict['created_at__gt'] = start_date
         filtering = 1
 
+    if data.get('from_filter'):
+        filter_dict['home_name'] = data.get('from_filter')
+        filtering = 1
+
     if filtering:
         return filter_dict
     else:
