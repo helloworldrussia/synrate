@@ -42,7 +42,11 @@ def get_filter_qs(data):
         return and_dict, or_dict
     else:
 <<<<<<< HEAD
+<<<<<<< HEAD
         return 0
 =======
         return 0, 0
 >>>>>>> 39c3105fd66a088e2037b3905a48376cba8a2824
+=======
+        return 0
+>>>>>>> 51ff5ceeb466e68631534edb3f0a09c7d4d4f290
