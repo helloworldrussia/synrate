@@ -224,11 +224,11 @@ def listing(request):
     if and_dict == 0:
         queryset = Offer.objects.all().order_by('-created_at')
     else:
-        if or_dict:
+        if len(or_dict):
             queryset = Offer.objects.filter(**and_dict).filter(reduce(operator.or_,
                                     (Q(**d) for d in [dict([i]) for i in or_dict.items()]))).order_by('-created_at')
         else:
-            queryset = Offer.objects.filter(**and_dict)
+            queryset = Offer.objects.filter(**and_dict).order_by('-created_at')
 
     all_count, month_count, today_count = get_counts(queryset)
     paginator = Paginator(queryset, 10)
