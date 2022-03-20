@@ -218,38 +218,31 @@ class OfferFilterView(ListView):
 def listing(request):
     print(request)
     filter_dict = get_filter_qs(request.GET)
+    url, qs = request.build_absolute_uri(), 0
+    if '&page' in url or 'filter' in url:
+        qs = 1
+    print(f"QS: {qs}")
+
     if filter_dict == 0:
-        queryset = Offer.objects.all()
-        print(0)
+        queryset = Offer.objects.all().order_by('-created_at')
     else:
-        queryset = Offer.objects.filter(**filter_dict)
-        print('filtering')
+        queryset = Offer.objects.filter(**filter_dict).order_by('-created_at')
+
     all_count, month_count, today_count = get_counts(queryset)
-    paginator = Paginator(queryset, 20)
+    paginator = Paginator(queryset, 10)
 
     if request.GET.get('page'):
         page_number = request.GET.get('page')
     else:
         page_number = 1
 
-    page_obj = paginator.get_page(page_number)
+    page_obj = paginator.page(page_number)
 
-    # if request.method == 'POST':
-    #     queryset = get_filter_qs(request.POST)
-    #     paginator = Paginator(queryset, 20)
-    #     page_obj = paginator.get_page(1)
-    #     all_count, month_count, today_count = get_counts(queryset)
-    # else:
-    #     offers = Offer.objects.all().order_by('-created_at')
-    #     all_count, month_count, today_count = get_counts(offers)
-    #     paginator = Paginator(offers, 20) # Show 25 contacts per page.
-    #     if request.GET.get('page'):
-    #         page_number = request.GET.get('page')
-    #     else:
-    #         page_number = 1
-    #     print(page_number)
-    #     page_obj = paginator.get_page(page_number)
-    #
     return render(request, 'filtr.html', {'offers': page_obj, "all_count": all_count,
-                                          "month_count": month_count, "today_count": today_count})
-    # return HttpResponse(100)
+                                          "month_count": month_count, "today_count": today_count,
+                                          "qs": qs})
+
+
+# class OffersView(ListView):
+#     paginate_by = 10
+#

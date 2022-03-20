@@ -250,7 +250,7 @@
                     </ul>
                 </div>
             </form>
-            <div class="ad-unit"></div>
+            <!--<div class="ad-unit"></div>-->
         </div>
     </section>
 
@@ -365,15 +365,35 @@
             <br>
             <hr>
             <br>
-            <!--<div class="page-numbers" style="position:absolute; left:0; width:100%;">
+            <!--<div class="pagination">
+                <span class="step-links">
+                    {% if offers.has_previous %}
+                        <a href="' + window.location.search + '?page=1' + '">&laquo; first</a>
+                        <a href="' + window.location.search + '?page={{ offers.previous_page_number }}' + '">previous</a>
+                    {% endif %}
 
+                    <span class="current">
+                        Page {{ offers.number }} of {{ offers.paginator.num_pages }}.
+                    </span>
 
+                    {% if offers.has_next %}
+                        <a href="' + window.location.search + '?page={{ offers.next_page_number }}' + '">next</a>
+                        <a href="' + window.location.search + '?page={{ offers.paginator.num_pages }}' + '">last &raquo;</a>
+                    {% endif %}
+                </span>
+            </div>-->
+            <div class="page-numbers" style="position:absolute; left:0; width:100%;">
+
+                {% if qs %}
                 <div class="page-numbers__btns">
-
-
                     {% if offers.number|add:'-5' > 1 %}
                         <script>
-                           document.write('<a href="'+ window.location.search + '?page=1' +'" class="page_square_btn">1</a>')
+                            var qs_func = function(){
+                                let url = new URL(location.href);
+                                url.searchParams.delete('page');
+                                return url;
+                            };
+                            document.write('<a href="'+ qs_func() + '&page=1' +'" class="page_square_btn">1</a>')
                         </script>
                     {% endif %}
 
@@ -382,24 +402,70 @@
                             <span class="page_square_btn page_square_btn__current">{{ offers.number }}</span>
                         {% elif i > offers.number|add:'-4' and i < offers.number|add:'4' %}
                             <script>
-                                document.write('<a href="'+ window.location.search + '?page={{ i }}' +'" class="page_square_btn">{{ i }}</a>')
+                                var qs_func = function(){
+                                    let url = new URL(location.href);
+                                    url.searchParams.delete('page');
+                                    return url;
+                                };
+                                document.write('<a href="'+ qs_func() + '&page={{ i }}' +'" class="page_square_btn">{{ i }}</a>')
                             </script>
-
                         {% endif %}
                     {% endfor %}
                     {% if offers.number|add:'5' < offers.paginator.num_pages %}
-                       <script>
-                                document.write('<a href="'+ window.location.search + '?page={{ offers.paginator.num_pages }}' +'" class="page_square_btn">{{ offers.paginator.num_pages }}</a>')
-                          </script>
+                            <script>
+                                var qs_func = function(){
+                                    let url = new URL(location.href);
+                                    url.searchParams.delete('page');
+                                    return url;
+                                };
+                                document.write('<a href="'+ qs_func() + '&page={{ offers.paginator.num_pages }}' +'" class="page_square_btn">{{ offers.paginator.num_pages }}</a>')
+                            </script>
+                    {% endif %}
+                </div>
+                {% else %}
+                <div class="page-numbers__btns">
+                    {% if offers.number|add:'-5' > 1 %}
+                        <script>
+                            var qs_func = function(){
+                                let url = new URL(location.href);
+                                url.searchParams.delete('page');
+                                return url;
+                            };
+                            document.write('<a href="'+ qs_func() + '?page=1' +'" class="page_square_btn">1</a>')
+                        </script>
                     {% endif %}
 
-
+                    {% for i in offers.paginator.page_range %}
+                        {% if offers.number == i %}
+                            <span class="page_square_btn page_square_btn__current">{{ offers.number }}</span>
+                        {% elif i > offers.number|add:'-4' and i < offers.number|add:'4' %}
+                            <script>
+                                var qs_func = function(){
+                                    let url = new URL(location.href);
+                                    url.searchParams.delete('page');
+                                    return url;
+                                };
+                                document.write('<a href="'+ qs_func() + '?page={{ i }}' +'" class="page_square_btn">{{ i }}</a>')
+                            </script>
+                        {% endif %}
+                    {% endfor %}
+                    {% if offers.number|add:'5' < offers.paginator.num_pages %}
+                            <script>
+                                var qs_func = function(){
+                                    let url = new URL(location.href);
+                                    url.searchParams.delete('page');
+                                    return url;
+                                };
+                                document.write('<a href="'+ qs_func() + '?page={{ offers.paginator.num_pages }}' +'" class="page_square_btn">{{ offers.paginator.num_pages }}</a>')
+                            </script>
+                    {% endif %}
                 </div>
-            </div>-->
+                {% endif %}
+            </div>
             <br>
             <hr style="margin-top: 35px;">
         </div>
-        <div class="ad-unit ad-unit_top"></div>
+        <!--<div class="ad-unit ad-unit_top"></div>-->
     </section>
 <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
 <script>
@@ -455,5 +521,10 @@
 
 
     //alert(decodeURIComponent(window.location));
+    function qs_func() {
+      let url = new URL(location.href);
+      url.searchParams.delete('page');
+      return url;
+    }
 </script>
 {% endblock content %}
