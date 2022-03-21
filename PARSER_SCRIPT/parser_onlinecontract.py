@@ -6,7 +6,11 @@ from ENGINE import Parser
 import requests
 from bs4 import BeautifulSoup
 
+<<<<<<< HEAD
 #from synrate_main.mixins import replaceMultiple
+=======
+# from synrate_main.mixins import replaceMultiple
+>>>>>>> 82fddd44c518cad7e9e11f080a991b32501ece8d
 
 
 class ParserOnlineContract(Parser):

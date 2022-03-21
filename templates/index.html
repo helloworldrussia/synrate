@@ -65,8 +65,8 @@
                                 {{ offer.name }}
                             </p>
                             <div class="offer-number">
-                                <span class="number-offer">№ процедуры -</span>
-                                <span class="number-procedure">{{ offer.id }}</span>
+                                <span class="number-offer">№ процедуры - {{ offer.id }}</span>
+                                <span class="number-procedure"><!--{{ offer.id }}---></span>
                             </div>
                             <div class="offer-organization">
                                 <div class="offer-organization-wrapper">
@@ -77,9 +77,11 @@
                                         <p>{{ offer.location }}</p>
                                     </div>
                                 </div>
+                                {% if offer.offer_end_date != None %}
                                 <div class="offer-organization__time">
                                     <span class="offer-organization__time__number"> {{ offer.offer_end_date }}</span>
                                 </div>
+                                {% endif %}
                             </div>
                         </div>
                     </a>
