@@ -35,7 +35,7 @@ def index(request):
 
     # показываем объявления, расчитав количество объяв за месяц, день и за все время,
     # передаем значения в контекст
-    return render(request, 'index.html', {"offers": queryset[0:10],
+    return render(request, 'index.html', {"offers": queryset[0:30],
                                           "all_count": all_count,
                                           "month_count": month_count,
                                           "today_count": today_count})
@@ -97,7 +97,7 @@ def search(request, args: str = ''):
     all_count, month_count, today_count = get_counts(t)
 
     page_found = False
-    per_page = 20
+    per_page = 30
 
     for a in s:
         try:
@@ -231,7 +231,7 @@ def listing(request):
             queryset = Offer.objects.filter(**and_dict).order_by('-created_at')
 
     all_count, month_count, today_count = get_counts(queryset)
-    paginator = Paginator(queryset, 10)
+    paginator = Paginator(queryset, 30)
 
     if request.GET.get('page'):
         page_number = request.GET.get('page')
