@@ -44,9 +44,6 @@ def get_filter_qs(data):
         return and_dict, or_dict
     else:
         return 0, 0
-<<<<<<< HEAD
-=======
-
 
 def get_filters(data):
     from_filter, search_filter, time_filter = 0, 0, 0
@@ -68,4 +65,3 @@ def get_filters(data):
         return from_filter, search_filter, time_filter
     else:
         return 0
->>>>>>> b25b5637e835ae6022ed1c90b5775720bdd810e4
