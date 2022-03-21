@@ -202,7 +202,6 @@
         <div class="container">
             {% csrf_token %}
             <form action="{% url 'synrate_main:filtration' %}">
-
                 <div class="filtrs-btns">
                     <ul class="filtr-list">
                         <li>
@@ -213,16 +212,16 @@
 
                                 <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
 
-                                      <input type="radio" class="btn-check" value="all" name="zaglushka" id="btnradio1" autocomplete="off">
+                                      <input type="radio" class="btn-check" {% if time_filter == 'all' %}checked{% endif%} value="all" name="time_filter" id="btnradio1" autocomplete="off">
                                       <label class="btn btn-outline-secondary" for="btnradio1">Все время</label>
 
-                                      <input type="radio" class="btn-check" value="1" name="time_filter" id="btnradio2" autocomplete="off">
+                                      <input type="radio" class="btn-check" {% if time_filter == '1' %}checked{% endif%} value="1" name="time_filter" id="btnradio2" autocomplete="off">
                                       <label class="btn btn-outline-secondary" for="btnradio2">Сутки</label>
 
-                                      <input type="radio" class="btn-check" value="7" name="time_filter" id="btnradio3" autocomplete="off">
+                                      <input type="radio" class="btn-check" {% if time_filter == '7' %}checked{% endif%} value="7" name="time_filter" id="btnradio3" autocomplete="off">
                                       <label class="btn btn-outline-secondary" for="btnradio3">Неделя</label>
 
-                                      <input type="radio" class="btn-check" value="31" name="time_filter" id="btnradio5" autocomplete="off">
+                                      <input type="radio" class="btn-check" {% if time_filter == '31' %}checked{% endif%} value="31" name="time_filter" id="btnradio5" autocomplete="off">
                                       <label class="btn btn-outline-secondary" for="btnradio5">Месяц</label>
                                 </div>
                             </div>
@@ -233,12 +232,12 @@
                         <li>
                             <select name="from_filter" aria-label="Источник" class="filtrs-btn filter-btn filter-btn_arrow">
                               <option value="" disabled selected>Источник</option>
-                              <option value="nelikvidi">nelikvidi.com</option>
-                              <option value="onlinecontract">onlinecontract.ru</option>
-                              <option value="tektorg">tektorg.ru</option>
-                              <option value="tenderpro">tender.pro</option>
-                              <option value="roseltorg">roseltorg.ru</option>
-                              <option value="isource">reserve.isource.ru</option>
+                              <option {% if from_filter == 'nelikvidi' %}selected{% endif%} value="nelikvidi">nelikvidi.com</option>
+                              <option {% if from_filter == 'onlinecontract' %}selected{% endif%} value="onlinecontract">onlinecontract.ru</option>
+                              <option {% if from_filter == 'tektorg' %}selected{% endif%} value="tektorg">tektorg.ru</option>
+                              <option {% if from_filter == 'tenderpro' %}selected{% endif%} value="tenderpro">tender.pro</option>
+                              <option {% if from_filter == 'roseltorg' %}selected{% endif%} value="roseltorg">roseltorg.ru</option>
+                              <option {% if from_filter == 'isource' %}selected{% endif%} value="isource">reserve.isource.ru</option>
                             </select>
                        </li>
                         <li>
@@ -259,10 +258,11 @@
 
                     </ul>
                     <div class="input-group mb-3">
-                      <input type="text" name="search_filter" class="form-control" placeholder="Поиск.." aria-label="Recipient's username" aria-describedby="button-addon2">
+                      <input type="text" name="search_filter" class="form-control" {% if search_filter %}value="{{ search_filter }}"{% else %} placeholder="Поиск.."{% endif %} aria-label="Recipient's username" aria-describedby="button-addon2">
                     </div>
                 </div>
             </form>
+
             <!--<div class="ad-unit"></div>-->
         </div>
     </section>
@@ -468,6 +468,7 @@
         </div>
         <!--<div class="ad-unit ad-unit_top"></div>-->
     </section>
+
 <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
 <script>
     $( "#tags" ).autocomplete({

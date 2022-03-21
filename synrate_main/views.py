@@ -7,7 +7,7 @@ from django.core.paginator import Paginator
 from django.http import HttpResponse
 from django.views.generic import ListView
 
-from .mixins import get_counts, get_filter_qs
+from .mixins import get_counts, get_filter_qs, get_filters
 from .models import Offer, OfferCategory, OfferSubcategory
 from parsers.models import Parser, ENGINE
 from .forms import ParserForm, EngineForm
@@ -216,10 +216,16 @@ def category(request):
 def listing(request):
     print(request)
     and_dict, or_dict = get_filter_qs(request.GET)
+    filtering = 0
+    try:
+        from_filter, search_filter, time_filter = get_filters(request.GET)
+        filtering = 1
+    except:
+        pass
+
     url, qs = request.build_absolute_uri(), 0
     if '&page' in url or 'filter' in url:
         qs = 1
-    print(f"QS: {qs}")
 
     if and_dict == 0:
         queryset = Offer.objects.all().order_by('-created_at')
@@ -240,10 +246,16 @@ def listing(request):
 
     page_obj = paginator.page(page_number)
 
+    if filtering:
+        return render(request, 'filtr.html', {'offers': page_obj, "all_count": all_count,
+                                          "month_count": month_count, "today_count": today_count,
+                                          "qs": qs, "filtering": filtering,
+                                          "from_filter": from_filter, "search_filter": search_filter,
+                                          "time_filter": time_filter})
+
     return render(request, 'filtr.html', {'offers': page_obj, "all_count": all_count,
                                           "month_count": month_count, "today_count": today_count,
-                                          "qs": qs})
-
+                                          "qs": qs, "filtering": filtering})
 
 # class OffersView(ListView):
 #     paginate_by = 10
