@@ -1,7 +1,7 @@
 import random
 import time
 
-import undetected_chromedriver
+import undetected_chromedriver as uc
 from fake_useragent import UserAgent
 from selenium import webdriver
 from lxml import html
@@ -20,15 +20,19 @@ class ParserTektorg(Parser):
         self.item_urls = []
 
     def parse(self):
-        opts = webdriver.ChromeOptions()
-        opts.headless = True
+#        opts = undetected_chromedriver.ChromeOptions()
+#        opts.headless = True
         # driver = webdriver.Firefox(executable_path=GeckoDriverManager().install(), options=opts)
         # core = GeckoDriverManager().install()
-        driver = undetected_chromedriver.Chrome(#executable_path=r'C:\prod\geckodriver\geckodriver.exe',
-                                                options=opts)
+        options = webdriver.ChromeOptions()
+        options.headless=True
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-setuid-sandbox")
+        driver = uc.Chrome(options=options)
         frills(driver)
-        for i in range(1, 30):
+        for i in range(1, 3):
             # ---------
+            print(f'new itarion {i}/30')
             driver.get(self.list_url.format(i))
             try:
                 content = driver.page_source

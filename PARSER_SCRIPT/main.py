@@ -71,17 +71,17 @@ def server_listener():
     parser_isource = ParserThread("parser_isource", isource_obj)
     parser_tectorg = ParserThread("parser_tectorg", tectorg_obj)
     parser_onlinecontract = ParserThread("parser_onlinecontract", onlinecontract_obj)
-
+    #shared_data = multiprocessing.Manager().dict()
 
     #DEBUG OPTIONS
     #check_thread_1 = CheckThread('parser_roseltorg')
     #check_thread_1.start()
 
-    parser_roseltorg.start()
+#    parser_roseltorg.start()
 #    parser_nelikvidy.start()
 #    parser_tender.start()
 #    parser_isource.start()
-#    parser_tectorg.start()
+    parser_tectorg.start()
 #    parser_onlinecontract.start()
 
     status = True
