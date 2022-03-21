@@ -202,13 +202,17 @@
         <div class="container">
             {% csrf_token %}
             <form action="{% url 'synrate_main:filtration' %}">
-                <div class="filtrs-btns">
+                <div class="input-group mb-3">
+                      <input type="text" name="search_filter" class="form-control" {% if search_filter %}value="{{ search_filter }}"{% else %} placeholder="Поиск.."{% endif %} aria-label="Recipient's username" aria-describedby="button-addon2">
+                      <button type="submit" class="filtrs-btn filter-btn submit-button">Поиск</button>
+                </div>
+                <div class="row-group mb-3">
                     <ul class="filtr-list">
                         <li>
                             <div class="filtrs-btns-wrapper">
-                                <div class="filtrs-btns__title">
+                                <!--<div class="filtrs-btns__title">
                                     <span>Фильтры:</span>
-                                </div>
+                                </div>-->
 
                                 <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
 
@@ -246,20 +250,17 @@
                         <li>
                             <button type="button" class="filtrs-btn filter-btn filter-btn_arrow">Дополнительно</button>
                        </li>
-                        <li>
+                        <!--<li>
                              <button type="button" class="filtrs-btn filter-btn filter-btn_plus">Ключевые слова</button>
                         </li>
                         <li>
                             <button type="button" class="filtrs-btn filter-btn filter-btn_cross">полный</button>
-                       </li>
-                        <li>
+                       </li>-->
+                        <!--<li>
                             <button type="submit" class="filtrs-btn filter-btn submit-button">Поиск</button>
-                       </li>
+                       </li>-->
 
                     </ul>
-                    <div class="input-group mb-3">
-                      <input type="text" name="search_filter" class="form-control" {% if search_filter %}value="{{ search_filter }}"{% else %} placeholder="Поиск.."{% endif %} aria-label="Recipient's username" aria-describedby="button-addon2">
-                    </div>
                 </div>
             </form>
 
