@@ -169,45 +169,19 @@
 
     }
 </style>
-    {% comment %}
-    <section class="filters">
-        <h3>Фильтры</h3>
-        <input id="keywords" type="text" class="finput" placeholder="Введите поисковый запрос">
-        <div class="ui-widget">
-          <label for="tags" class="search_hdr">Категории: </label><br>
-          <input id="tags" class="finput">
-        </div>
-        <label><input type="radio" name="time" id="alltime" style="display:none;"><span>всё время</span></label>
-        <label><input type="radio" name="time" id="daytime" style="display:none;"><span>сутки</span></label>
-        <label><input type="radio" name="time" id="weektime" style="display:none;"><span>неделя</span></label>
-        <label><input type="radio" name="time" id="monthtime" style="display:none;"><span>месяц</span></label>
-        <br>
-        <span class="search_hdr">Источник:</span><br>
-        <select class="finput" name="select_source" id="source">
-            <option value="all" selected>Все источники</option>
-            <option value="nalikvidi">Nelikvidi</option>
-            <option value="tektorg" >Tektorg</option>
-            <option value="onlinecontract">OnlineContract</option>
-            <option value="roseltorg">Roseltorg</option>
-            <option value="tenderpro">TenderPro</option>
-            <option value="isource">iSource</option>
-        </select>
 
-        <input type="text" class="finput" id="region" placeholder="Регион">
-        <br>
-        <input type="button" onclick="search_cstm();" value="Найти">
-    </section>
-    {% endcomment %}
     <section class="filtrs" id="filtrs">
         <div class="container">
             {% csrf_token %}
             <form action="{% url 'synrate_main:filtration' %}">
+
                 <div class="input-group mb-3">
+                    <div id="search_filter" class="input-group mb-3">
                       <input type="text" name="search_filter" class="form-control" {% if search_filter %}value="{{ search_filter }}"{% else %} placeholder="Поиск.."{% endif %} aria-label="Recipient's username" aria-describedby="button-addon2">
-                      <button type="submit" class="filtrs-btn filter-btn submit-button">Поиск</button>
-                </div>
-                <div class="row-group mb-3">
-                    <ul class="filtr-list">
+                      <button type="submit" id="search_filter_button" class="btn btn-light">Поиск</button>
+                        <!--<button  class="filtrs-btn filter-btn submit-button">Поиск</button>-->
+                    </div>
+                    <ul id="other_filters" class="filtr-list">
                         <li>
                             <div class="filtrs-btns-wrapper">
                                 <!--<div class="filtrs-btns__title">
@@ -234,7 +208,7 @@
                              <button type="button" class="filtrs-btn filter-btn">Выбрать даты</button>
                         </li>
                         <li>
-                            <select name="from_filter" aria-label="Источник" class="filtrs-btn filter-btn filter-btn_arrow">
+                            <select name="from_filter" id="from_filter_select" aria-label="Источник" class="filtrs-btn filter-btn filter-btn_arrow">
                               <option value="" disabled selected>Источник</option>
                               <option {% if from_filter == 'nelikvidi' %}selected{% endif%} value="nelikvidi">nelikvidi.com</option>
                               <option {% if from_filter == 'onlinecontract' %}selected{% endif%} value="onlinecontract">onlinecontract.ru</option>
@@ -377,8 +351,8 @@
                         font-size:12px;
                         margin-left: 3px;
                         margin-right: 3px;
-
                     }
+
                 }
             </style>
             <br>
@@ -469,6 +443,7 @@
         </div>
         <!--<div class="ad-unit ad-unit_top"></div>-->
     </section>
+
 
 <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
 <script>
