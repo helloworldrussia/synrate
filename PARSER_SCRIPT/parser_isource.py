@@ -32,8 +32,9 @@ class ParserSource(Parser):
                 self.response_item = requests.post(self.api_get_info_url, headers={'User-Agent': "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Mobile Safari/537.36"},
                                                    data={"auction_transliteration_name": z
                                                    ["auction_transliteration_name"]}).json()["data"]
-                if self.response_item["contragent_host_name"] != None:
-                    organisation = self.response_item["contragent_host_name"]
+
+                if self.response_item["supplier_name"] != None:
+                    organisation = self.response_item["supplier_name"]
                 else:
                     organisation = ''
                 z = requests.post("https://synrate.ru/api/offers/create",

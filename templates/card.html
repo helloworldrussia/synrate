@@ -15,24 +15,31 @@
                         {{ offer.name }}
                     </p>
                     <span class="number-offer">№ процедуры - {{ offer.id }}</span>
+
                     <div class="product-offer__organization">
+                        {% if offer.organisation != None and offer.organisation != '' %}
                         <div class="product-organization">
                             <p class="product-organization-name"><span>Организация:</span> {{ offer.organisation }}</p>
                         </div>
+                        {% elif offer.location != None and offer.location != '' %}
                         <div class="product-organization-region">
                             <p class="product-organization-region-name">
                                 <span>Регион:</span> {{ offer.location }}
                             </p>
                         </div>
                         <div class="product-organization-deal product_flex">
+                            {% elif offer.type != None %}
                             <div class="product-organization-deal__type">
                                 <p class="product-organization-sale">
                                     <span>Тип сделки:</span> {{ offer.type }}
                                 </p>
                             </div>
+                            {% endif %}
                             <div class="product-organization-deal-price">
                                 <p class="product-organization-price">
+                                    {% if offer.offer_price != None and offer.offer_price != 0 %}
                                   <span>Цена (руб):</span> {{ offer.offer_price }}
+                                    {% endif %}
                                 </p>
                             </div>
                         </div>
@@ -40,19 +47,26 @@
                     <div class="product-offer__time product_flex">
                         <div class="product-date">
                             <p class="product-date-time">
+                                {% if offer.offer_start_date != None %}
                                 <span>Размещено:</span> {{ offer.offer_start_date }} <br>
+                                {% elif offer.offer_end_date != None %}
                                 <span>Актуально до:</span> {{ offer.offer_end_date }} <br>
+                                {% endif %}
                             </p>
                         </div>
                         <div class="product-views">
                             <p class="views">
-                                <span>Просмотров:</span> {{ offer.views }}
+                                <br>
+                                <br>
+                                <br>
+                                <br>
+                                <span>Просмотров: {{ offer.views }}</span>
                             </p>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="ad-unit"></div>
+            <!--<div class="ad-unit"></div>-->
         </div>
     </section>
     <section class="ads" id="ads">

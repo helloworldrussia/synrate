@@ -321,16 +321,21 @@
                             </div>
                             <div class="offer-organization">
                                 <div class="offer-organization-wrapper">
+                                    {% if offer.organisation != None and offer.organisation != '' %}
                                     <div class="offer-organization__name">
                                         <p>{{ offer.organisation }}</p>
                                     </div>
+                                    {% elif offer.location != None and offer.location != '' %}
                                     <div class="offer-organization__address">
                                         <p>{{ offer.location }}</p>
                                     </div>
+                                    {% endif %}
                                 </div>
+                                {% if offer.offer_end_date != None %}
                                 <div class="offer-organization__time">
                                     <span class="offer-organization__time__number"> {{ offer.offer_end_date }}</span>
                                 </div>
+                                {% endif %}
                             </div>
                         </div>
                     </a>
@@ -378,23 +383,6 @@
             <br>
             <hr>
             <br>
-            <!--<div class="pagination">
-                <span class="step-links">
-                    {% if offers.has_previous %}
-                        <a href="' + window.location.search + '?page=1' + '">&laquo; first</a>
-                        <a href="' + window.location.search + '?page={{ offers.previous_page_number }}' + '">previous</a>
-                    {% endif %}
-
-                    <span class="current">
-                        Page {{ offers.number }} of {{ offers.paginator.num_pages }}.
-                    </span>
-
-                    {% if offers.has_next %}
-                        <a href="' + window.location.search + '?page={{ offers.next_page_number }}' + '">next</a>
-                        <a href="' + window.location.search + '?page={{ offers.paginator.num_pages }}' + '">last &raquo;</a>
-                    {% endif %}
-                </span>
-            </div>-->
             <div class="page-numbers" style="position:absolute; left:0; width:100%;">
 
                 {% if qs %}

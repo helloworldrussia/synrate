@@ -6,7 +6,7 @@ from ENGINE import Parser
 import requests
 from bs4 import BeautifulSoup
 
-from synrate_main.mixins import replaceMultiple
+# from synrate_main.mixins import replaceMultiple
 
 
 class ParserOnlineContract(Parser):
