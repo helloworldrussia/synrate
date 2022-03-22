@@ -29,7 +29,7 @@ class OfferSubcategory(models.Model):
 
 
 class Offer(models.Model):
-    name = models.CharField(max_length=300, null=True, blank=True, default=None, unique=True, verbose_name="Название")
+    name = models.CharField(max_length=300, null=True, blank=True, default=None, verbose_name="Название")
     home_name = models.CharField(max_length=200, null=True, blank=True, default=None, verbose_name="Источник")
     url = models.CharField(max_length=250, unique=True, null=True, blank=True, default=None,
                            verbose_name="Ссылка на источник")
