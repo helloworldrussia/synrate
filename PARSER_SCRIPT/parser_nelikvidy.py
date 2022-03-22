@@ -53,8 +53,9 @@ class ParserNelikvidy(Parser):
 
         for kategory in kategories:
 
-            self.response = requests.get(self.url+kategory[0], headers={'User-Agent': UserAgent().chrome},
+            self.response = requests.get(self.url+kategory[0]+'/sell', headers={'User-Agent': UserAgent().chrome},
                                          verify=self.verify)
+            print(self.response, self.url+kategory[0])
             self.response.encoding = 'utf-8'
             self.soup = BeautifulSoup(self.response.content, 'html.parser')
             # Определение колличества страниц
@@ -69,7 +70,7 @@ class ParserNelikvidy(Parser):
             if pages > 20:
                 pages = 20
             for i in range(1, pages):
-                self.response = requests.get(self.url+kategory[0]+"/page-{}".format(self.current_page),
+                self.response = requests.get(self.url+kategory[0]+"/sell/page-{}".format(self.current_page),
                                              headers={'User-Agent': "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Mobile Safari/537.36"}, verify=self.verify)
                 self.soup = BeautifulSoup(self.response.content, 'html.parser')
                 for link in self.soup.find_all("a", attrs={"class":"card-image"}):
@@ -78,12 +79,12 @@ class ParserNelikvidy(Parser):
 
             self.post_links = list(dict.fromkeys(self.post_links))
 
-            data_on_serv = requests.get("https://synrate.ru/api/offers/list")
-            for url in data_on_serv.json():
-                try:
-                    self.post_links.remove(url["url"])
-                except ValueError:
-                    zxc = 0
+            # data_on_serv = requests.get("https://synrate.ru/api/offers/list")
+            # for url in data_on_serv.json():
+            #     try:
+            #         self.post_links.remove(url["url"])
+            #     except ValueError:
+            #         zxc = 0
 
             for link in self.post_links:
                 url = None

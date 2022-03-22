@@ -6,9 +6,26 @@
             <div class="product-card__wrapper">
                 <div class="product-card__img">
                     <div class="card-img">
-                        <img src="img/icon product.svg" alt="">
+                        {% if offer.home_name == "nelikvidi" %}
+                        <a href="{{ offer.url }}" target="_blank"><img src="{% static 'img/nelikvidi.png' %}" alt=""></a>
+                        {% endif %}
+                        {% if offer.home_name == "tektorg" %}
+                            <a href="{{ offer.url }}" target="_blank"><img src="{% static 'img/tectorg.png' %}" alt=""></a>
+                        {% endif %}
+                        {% if offer.home_name == "tenderpro" %}
+                            <a href="{{ offer.url }}" target="_blank"><img src="{% static 'img/tender.png' %}" alt=""></a>
+                        {% endif %}
+                        {% if offer.home_name == "isource" %}
+                            <a href="{{ offer.url }}" target="_blank"><img src="{% static 'img/isource.png' %}" alt=""></a>
+                        {% endif %}
+                        {% if offer.home_name == "onlinecontract" %}
+                            <a href="{{ offer.url }}" target="_blank"><img src="{% static 'img/onlinecontract.png' %}" alt=""></a>
+                        {% endif %}
+                        {% if offer.home_name == "roseltorg" %}
+                            <a href="{{ offer.url }}" target="_blank"><img src="{% static 'img/roseltorg.png' %}" alt=""></a>
+                        {% endif %}
                     </div>
-                    <a href="{{ offer.url }}">Перейти на источник</a>
+                    <a href="{{ offer.url }}" target="_blank">Перейти на источник</a>
                 </div>
                 <div class="product-offer">
                     <p class="product-offer__text">

@@ -29,7 +29,7 @@ class ParserOnlineContract(Parser):
                 ).json()["data"][0]
                 try:
                     date = self.response_item["OwnerSklad"].split(".")[2] + "-" + self.response_item["OwnerSklad"].split(".")[1] + "-" + self.response_item["OwnerSklad"].split(".")[0]
-                    print(date)
+
                     datetime.strptime(date, "%Y-%m-%d")
                 except:
                     date = None

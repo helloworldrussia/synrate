@@ -25,9 +25,9 @@ class ParserTektorg(Parser):
         # driver = webdriver.Firefox(executable_path=GeckoDriverManager().install(), options=opts)
         # core = GeckoDriverManager().install()
         options = webdriver.ChromeOptions()
-        options.headless=True
-        options.add_argument("--no-sandbox")
-        options.add_argument("--disable-setuid-sandbox")
+        options.headless = True
+        #options.add_argument("--no-sandbox")
+        #options.add_argument("--disable-setuid-sandbox")
         driver = uc.Chrome(options=options)
         frills(driver)
         for i in range(1, 30):
@@ -83,6 +83,7 @@ class ParserTektorg(Parser):
                     if row.find_all("td")[0].getText().strip() == "Дата публикации процедуры:":
                         try:
                             start_date = row.find_all("td")[1].getText().split(" ")[0].replace(u".", "-")
+                            print(row.find_all("td")[1].getText().split(" ")[0])
                         except (IndexError, AttributeError):
                             start_date = None
                     if row.find_all("td")[0].getText().strip() == "Дата окончания приема заявок:":
@@ -117,21 +118,27 @@ class ParserTektorg(Parser):
                 fin_date = datetime.date.today() + datetime.timedelta(days=3)
             if org_owner is None:
                 org_owner = ""
-            z = requests.post("https://synrate.ru/api/offers/create",
-                              json={"name": name.replace('"', ''), "location": "РФ", "home_name": "tektorg",
-                                    "offer_type": "Продажа", "offer_start_date": str(start_date),
-                                    "offer_end_date": str(fin_date),
-                                    "owner": org_owner.replace('"', ''), "ownercontact": org_phone, "offer_price": 0,
-                                    "additional_data": "не указано", "organisation": org_name.replace('"', ''), "url": item_url,
-                                    "category": "Не определена", "subcategory": "не определена"})
-
-            # TESTING -------------
-            J = {"name": name.replace('"', ''), "location": "РФ", "home_name": "tektorg",
-                                    "offer_type": "Продажа", "offer_start_date": str(start_date),
-                                    "offer_end_date": str(fin_date),
+            if name is None:
+                continue
+            print(start_date, fin_date)
+            j_dict = {"name": name.replace('"', ''), "location": "РФ", "home_name": "tektorg",
+                                    "offer_type": "Продажа",
+                                    #"offer_start_date": str(start_date),
+                                    #"offer_end_date": str(fin_date),
                                     "owner": org_owner.replace('"', ''), "ownercontact": org_phone, "offer_price": 0,
                                     "additional_data": "не указано", "organisation": org_name.replace('"', ''), "url": item_url,
                                     "category": "Не определена", "subcategory": "не определена"}
+
+            if start_date is not None:
+                j_dict["offer_start_date"] = str(start_date)
+            if fin_date is not None:
+                j_dict["offer_end_date"] = str(fin_date)
+
+            z = requests.post("https://synrate.ru/api/offers/create",
+                              json=j_dict)
+
+            # TESTING -------------
+            J = j_dict
             print(f'TECH: {z.json()}  {J}')
             time.sleep(random.randint(1, 5) / 10)
             # ---------------------
