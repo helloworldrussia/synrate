@@ -30,7 +30,7 @@ class ParserTektorg(Parser):
         options.add_argument("--disable-setuid-sandbox")
         driver = uc.Chrome(options=options)
         frills(driver)
-        for i in range(1, 3):
+        for i in range(1, 30):
             # ---------
             print(f'new itarion {i}/30')
             driver.get(self.list_url.format(i))
@@ -89,12 +89,12 @@ class ParserTektorg(Parser):
                         try:
                             fin_date = row.find_all("td")[1].getText().split(" ")[0].replace(u".", "-")
                         except (IndexError, AttributeError):
-                            fin_date = None
+                            fin_date = ""
                     if row.find_all("td")[0].getText().strip() == "Наименование организатора:":
                         try:
                             org_name = row.find_all("td")[1].getText().strip()
                         except (IndexError, AttributeError):
-                            org_name = None
+                            org_name = ""
                     if row.find_all("td")[0].getText().strip() == "Контактный телефон:":
                         try:
                             org_phone = row.find_all("td")[1].getText().strip()
@@ -104,7 +104,7 @@ class ParserTektorg(Parser):
                         try:
                             org_owner = row.find_all("td")[1].getText().strip()
                         except (IndexError, AttributeError):
-                            org_owner = None
+                            org_owner = ""
 
 
             try:
@@ -115,7 +115,8 @@ class ParserTektorg(Parser):
                 fin_date = fin_date.split("-")[2] + "-" + fin_date.split("-")[1] + "-" + fin_date.split("-")[0]
             except AttributeError:
                 fin_date = datetime.date.today() + datetime.timedelta(days=3)
-
+            if org_owner is None:
+                org_owner = ""
             z = requests.post("https://synrate.ru/api/offers/create",
                               json={"name": name.replace('"', ''), "location": "РФ", "home_name": "tektorg",
                                     "offer_type": "Продажа", "offer_start_date": str(start_date),
@@ -137,13 +138,13 @@ class ParserTektorg(Parser):
 
 
 def frills(driver):
-    print('Frilling u know')
+    print('Подготовка..')
     driver.get('https://yandex.ru/images/')
     time.sleep(random.randint(1, 4))
     driver.get('https://yandex.ru')
     time.sleep(random.randint(1, 4))
     driver.get('https://yandex.ru/search/?lr=50&text=погода+в+москве')
-    print('Ok.. thats all.')
+    print('Начинаю парсинг')
 
 
 if __name__ == '__main__':

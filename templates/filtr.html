@@ -188,7 +188,7 @@
                                     <span>Фильтры:</span>
                                 </div>-->
 
-                                <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                                <div class="btn-group" role="group" id="time_buttons" aria-label="Basic radio toggle button group">
 
                                       <input type="radio" class="btn-check" {% if time_filter == 'all' %}checked{% endif%} value="all" name="time_filter" id="btnradio1" autocomplete="off">
                                       <label class="btn btn-outline-secondary" for="btnradio1">Все время</label>
@@ -267,7 +267,7 @@
                         {% if offer.home_name == "nelikvidi" %}
                             <img src="{% static 'img/nelikvidi.png' %}" class="offer-block__img" alt="">
                         {% endif %}
-                        {% if offer.home_name == "tectorg" %}
+                        {% if offer.home_name == "tektorg" %}
                             <img src="{% static 'img/tectorg.png' %}" class="offer-block__img" alt="">
                         {% endif %}
                         {% if offer.home_name == "tenderpro" %}
