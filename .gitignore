@@ -5,3 +5,8 @@ __pycache__
 my_test.py
 PARSER_SCRIPT/*
 PARSER_SCRIPT
+synrate/settings.py
+templates/filtr.html
+templates/base.html
+templates/index.html
+.gitignore

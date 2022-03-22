@@ -1,3 +1,4 @@
+/*
 .page {
     text-align: center;
     margin: auto;
@@ -8,12 +9,39 @@
     margin-right: 55px;
     border-color: #f37e09;
 }
+
 #other_filters {
     margin-left: 25px;
 }
+*/
+#search_div {
+    text-align: center; background: hsl(0, 100%, 97%);
+}
+#other_filter_div {}
 
 #search_filter_button {
     margin-left: 0.2px;
     border-color: #f37e09;
     color: #f37e09;
+
+}
+
+.container{
+     padding: 30px;
+}
+
+.input-group mb-3{
+     margin: 0 auto;
+     width: 100px;
+}
+
+#time_filter_element, #other_filter_element, #date_filter_element, #location_filter_element, #from_filter_element {
+    text-align: center;
+    margin: auto;
+}
+
+#sticky {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
 }

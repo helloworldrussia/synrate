@@ -174,68 +174,131 @@
         <div class="container">
             {% csrf_token %}
             <form action="{% url 'synrate_main:filtration' %}">
-
-                <div class="input-group mb-3">
-                    <div id="search_filter" class="input-group mb-3">
-                      <input type="text" name="search_filter" class="form-control" {% if search_filter %}value="{{ search_filter }}"{% else %} placeholder="Поиск.."{% endif %} aria-label="Recipient's username" aria-describedby="button-addon2">
-                      <button type="submit" id="search_filter_button" class="btn btn-light">Поиск</button>
-                        <!--<button  class="filtrs-btn filter-btn submit-button">Поиск</button>-->
+                 <div class="input-group mb-3 text-center">
+                    <div id="search_div" class="input-group mb-3">
+                          <input type="text" name="search_filter" class="form-control" {% if search_filter %}value="{{ search_filter }}"{% else %} placeholder="Поиск.."{% endif %} aria-label="Recipient's username" aria-describedby="button-addon2">
+                          <button type="submit" id="search_filter_button" class="btn btn-light">Поиск</button>
                     </div>
-                    <ul id="other_filters" class="filtr-list">
-                        <li>
-                            <div class="filtrs-btns-wrapper">
-                                <!--<div class="filtrs-btns__title">
-                                    <span>Фильтры:</span>
-                                </div>-->
+                 </div>
+                 <div class="input-group text-center">
+                    <div class="mb-3 text-center">
+                         <div class="btn-group" id="time_filter_element" role="group">
 
-                                <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                              <input type="radio" class="btn-check" {% if time_filter == 'all' %}checked{% endif%} value="all" name="time_filter" id="btnradio1" autocomplete="off">
+                              <label class="btn btn-outline-secondary" for="btnradio1">Все время</label>
 
-                                      <input type="radio" class="btn-check" {% if time_filter == 'all' %}checked{% endif%} value="all" name="time_filter" id="btnradio1" autocomplete="off">
-                                      <label class="btn btn-outline-secondary" for="btnradio1">Все время</label>
+                              <input type="radio" class="btn-check" {% if time_filter == '1' %}checked{% endif%} value="1" name="time_filter" id="btnradio2" autocomplete="off">
+                              <label class="btn btn-outline-secondary" for="btnradio2">Сутки</label>
 
-                                      <input type="radio" class="btn-check" {% if time_filter == '1' %}checked{% endif%} value="1" name="time_filter" id="btnradio2" autocomplete="off">
-                                      <label class="btn btn-outline-secondary" for="btnradio2">Сутки</label>
+                              <input type="radio" class="btn-check" {% if time_filter == '7' %}checked{% endif%} value="7" name="time_filter" id="btnradio3" autocomplete="off">
+                              <label class="btn btn-outline-secondary" for="btnradio3">Неделя</label>
 
-                                      <input type="radio" class="btn-check" {% if time_filter == '7' %}checked{% endif%} value="7" name="time_filter" id="btnradio3" autocomplete="off">
-                                      <label class="btn btn-outline-secondary" for="btnradio3">Неделя</label>
+                              <input type="radio" class="btn-check" {% if time_filter == '31' %}checked{% endif%} value="31" name="time_filter" id="btnradio5" autocomplete="off">
+                              <label class="btn btn-outline-secondary" for="btnradio5">Месяц</label>
 
-                                      <input type="radio" class="btn-check" {% if time_filter == '31' %}checked{% endif%} value="31" name="time_filter" id="btnradio5" autocomplete="off">
-                                      <label class="btn btn-outline-secondary" for="btnradio5">Месяц</label>
-                                </div>
+                        </div>
+
+                    </div>
+                     <div class="mb-3 center">
+                        <select name="from_filter" id="from_filter_element" aria-label="Источник" class="filtrs-btn filter-btn filter-btn_arrow">
+                          <option value="" disabled selected>Источник</option>
+                          <option {% if from_filter == 'nelikvidi' %}selected{% endif%} value="nelikvidi">nelikvidi.com</option>
+                          <option {% if from_filter == 'onlinecontract' %}selected{% endif%} value="onlinecontract">onlinecontract.ru</option>
+                          <option {% if from_filter == 'tektorg' %}selected{% endif%} value="tektorg">tektorg.ru</option>
+                          <option {% if from_filter == 'tenderpro' %}selected{% endif%} value="tenderpro">tender.pro</option>
+                          <option {% if from_filter == 'roseltorg' %}selected{% endif%} value="roseltorg">roseltorg.ru</option>
+                          <option {% if from_filter == 'isource' %}selected{% endif%} value="isource">reserve.isource.ru</option>
+                        </select>
+                     </div>
+                     <div class="mb-3 text-center">
+                        <button type="button" id="location_filter_element" class="filtrs-btn filter-btn filter-btn_arrow">Локации</button>
+                     </div>
+                     <div class="mb-3 text-center">
+                        <button type="button" id="date_filter_element" class="filtrs-btn filter-btn">Выбрать даты</button>
+                     </div>
+                     <div class="mb-3 text-center">
+                        <button type="button" id="other_filer_element" class="filtrs-btn filter-btn filter-btn_arrow">Дополнительно</button>
+                     </div>
+                 </div>
+                 <!--<ul class="filtr">
+                     <li>
+                        <div class="input-group mb-3">
+                          <input type="text" name="search_filter" class="form-control" {% if search_filter %}value="{{ search_filter }}"{% else %} placeholder="Поиск.."{% endif %} aria-label="Recipient's username" aria-describedby="button-addon2">
+                          <button type="submit" id="search_filter_button" class="btn btn-light">Поиск</button>
+                            <button  class="filtrs-btn filter-btn submit-button">Поиск</button>
+                        </div>
+                     </li>
+                     <li>
+                         <div class="input-group mb-3">
+                             <div class="btn-group" role="group">
+
+                                  <input type="radio" class="btn-check" {% if time_filter == 'all' %}checked{% endif%} value="all" name="time_filter" id="btnradio1" autocomplete="off">
+                                  <label class="btn btn-outline-secondary" for="btnradio1">Все время</label>
+
+                                  <input type="radio" class="btn-check" {% if time_filter == '1' %}checked{% endif%} value="1" name="time_filter" id="btnradio2" autocomplete="off">
+                                  <label class="btn btn-outline-secondary" for="btnradio2">Сутки</label>
+
+                                  <input type="radio" class="btn-check" {% if time_filter == '7' %}checked{% endif%} value="7" name="time_filter" id="btnradio3" autocomplete="off">
+                                  <label class="btn btn-outline-secondary" for="btnradio3">Неделя</label>
+
+                                  <input type="radio" class="btn-check" {% if time_filter == '31' %}checked{% endif%} value="31" name="time_filter" id="btnradio5" autocomplete="off">
+                                  <label class="btn btn-outline-secondary" for="btnradio5">Месяц</label>
                             </div>
-                        </li>
-                        <li>
-                             <button type="button" class="filtrs-btn filter-btn">Выбрать даты</button>
-                        </li>
-                        <li>
-                            <select name="from_filter" id="from_filter_select" aria-label="Источник" class="filtrs-btn filter-btn filter-btn_arrow">
-                              <option value="" disabled selected>Источник</option>
-                              <option {% if from_filter == 'nelikvidi' %}selected{% endif%} value="nelikvidi">nelikvidi.com</option>
-                              <option {% if from_filter == 'onlinecontract' %}selected{% endif%} value="onlinecontract">onlinecontract.ru</option>
-                              <option {% if from_filter == 'tektorg' %}selected{% endif%} value="tektorg">tektorg.ru</option>
-                              <option {% if from_filter == 'tenderpro' %}selected{% endif%} value="tenderpro">tender.pro</option>
-                              <option {% if from_filter == 'roseltorg' %}selected{% endif%} value="roseltorg">roseltorg.ru</option>
-                              <option {% if from_filter == 'isource' %}selected{% endif%} value="isource">reserve.isource.ru</option>
-                            </select>
-                       </li>
-                        <li>
-                             <button type="button" class="filtrs-btn filter-btn filter-btn_arrow">Локации</button>
-                        </li>
-                        <li>
-                            <button type="button" class="filtrs-btn filter-btn filter-btn_arrow">Дополнительно</button>
-                       </li>
-                        <!--<li>
-                             <button type="button" class="filtrs-btn filter-btn filter-btn_plus">Ключевые слова</button>
-                        </li>
-                        <li>
-                            <button type="button" class="filtrs-btn filter-btn filter-btn_cross">полный</button>
-                       </li>-->
-                        <!--<li>
-                            <button type="submit" class="filtrs-btn filter-btn submit-button">Поиск</button>
-                       </li>-->
+                             <div class="row mb-3">
+                                <button type="button" class="filtrs-btn filter-btn">Выбрать даты</button>
+                                <select name="from_filter" id="from_filter_select" aria-label="Источник" class="filtrs-btn filter-btn filter-btn_arrow">
+                                  <option value="" disabled selected>Источник</option>
+                                  <option {% if from_filter == 'nelikvidi' %}selected{% endif%} value="nelikvidi">nelikvidi.com</option>
+                                  <option {% if from_filter == 'onlinecontract' %}selected{% endif%} value="onlinecontract">onlinecontract.ru</option>
+                                  <option {% if from_filter == 'tektorg' %}selected{% endif%} value="tektorg">tektorg.ru</option>
+                                  <option {% if from_filter == 'tenderpro' %}selected{% endif%} value="tenderpro">tender.pro</option>
+                                  <option {% if from_filter == 'roseltorg' %}selected{% endif%} value="roseltorg">roseltorg.ru</option>
+                                  <option {% if from_filter == 'isource' %}selected{% endif%} value="isource">reserve.isource.ru</option>
+                                </select>
 
-                    </ul>
-                </div>
+                             </div>
+                         </div>
+                     </li>
+
+                 </ul>-->
+                <!--<ul id="other_filters" class="filtr-list">
+                    <li>
+                    <div class="filtrs-btns__title">
+                        <span>Фильтры:</span>
+                    </div>
+                    </li>
+                    <li>
+                         <button type="button" class="filtrs-btn filter-btn">Выбрать даты</button>
+                    </li>
+                    <li>
+                        <select name="from_filter" id="from_filter_select" aria-label="Источник" class="filtrs-btn filter-btn filter-btn_arrow">
+                          <option value="" disabled selected>Источник</option>
+                          <option {% if from_filter == 'nelikvidi' %}selected{% endif%} value="nelikvidi">nelikvidi.com</option>
+                          <option {% if from_filter == 'onlinecontract' %}selected{% endif%} value="onlinecontract">onlinecontract.ru</option>
+                          <option {% if from_filter == 'tektorg' %}selected{% endif%} value="tektorg">tektorg.ru</option>
+                          <option {% if from_filter == 'tenderpro' %}selected{% endif%} value="tenderpro">tender.pro</option>
+                          <option {% if from_filter == 'roseltorg' %}selected{% endif%} value="roseltorg">roseltorg.ru</option>
+                          <option {% if from_filter == 'isource' %}selected{% endif%} value="isource">reserve.isource.ru</option>
+                        </select>
+                   </li>
+                    <li>
+                         <button type="button" class="filtrs-btn filter-btn filter-btn_arrow">Локации</button>
+                    </li>
+                    <li>
+                        <button type="button" class="filtrs-btn filter-btn filter-btn_arrow">Дополнительно</button>
+                   </li>
+                    <li>
+                         <button type="button" class="filtrs-btn filter-btn filter-btn_plus">Ключевые слова</button>
+                    </li>
+                    <li>
+                        <button type="button" class="filtrs-btn filter-btn filter-btn_cross">полный</button>
+                   </li>-->
+                    <!--<li>
+                        <button type="submit" class="filtrs-btn filter-btn submit-button">Поиск</button>
+                   </li>
+
+                </ul>-->
+
             </form>
 
             <!--<div class="ad-unit"></div>-->
