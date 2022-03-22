@@ -1,0 +1,508 @@
+﻿{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<style>
+    .search__line{
+        opacity: 0;
+    }
+    @media (max-width: 1700px){
+        .filters{
+            background-color: #fff;
+            width: 80%;
+            margin-left: 10%;
+            margin-right:10%;
+            margin-top: 20px;
+            border: 1px solid rgba(0,0,0,0.2);
+            padding: 15px;
+            box-shadow: 0px 2px 5px rgb(0 0 0 / 25%);
+        }
+        .filters input, .filters label, .filters section{
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        .finput{
+            border: 1px solid #F37E09!important;
+            border-radius: 15px;
+
+            width: 80%;
+            padding-left:10px;
+            padding-right:10px;
+            margin-left: 10%;
+            height:24px;
+        }
+        .filters input[type=text]{
+            height:24px;
+            background-color: #fff;
+            width: 80%;
+            padding-left:10px;
+            padding-right:10px;
+            margin-left: 10%;
+            border-radius: 15px;
+            border: 1px solid #F37E09;
+        }
+        .filters h3{
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        .filters label{
+            margin-left: 3px;
+            margin-right: 3px;
+            font-size: 13px;
+        }
+        .filters label span{
+            transition: .2s;
+            font-weight:600;
+        }
+        .filters input[type=radio]:checked ~ span{
+            color:#F37E09;
+            text-decoration: underline;
+        }
+        .ui-autocomplete{
+
+            max-height: 200px;
+            overflow-y: scroll;
+            overflow-x: none;
+            border: 1px solid #F37E09;
+            background-color: #fff;
+            font-weight: 600;
+            font-size: 16px;
+            width: 80vw;
+            left: 10vw!important;
+        }
+        .ui-menu-item::focus, .ui-menu-item:hover{
+            background-color: #F37E09;
+        }
+        .search_hdr{
+            font-size: 14px;
+            font-weight:600;
+        }
+        .filters input[type=button]{
+            background-color: #fff;
+            border 1px solid #F37E09;
+            border-radius: 15px;
+            width: 33%;
+            padding-left:10px;
+            padding-right:10px;
+            margin-left: 33%;
+            height: 40px;
+        }
+    }
+    @media (min-width:1700px){
+        .filters{
+            background-color: #fff;
+            position:absolute;
+            width: 17%;
+            left: 30px;
+            top: 220px;
+            border: 1px solid rgba(0,0,0,0.2);
+            padding: 15px;
+            box-shadow: 0px 2px 5px rgb(0 0 0 / 25%);
+        }
+        .filters input, .filters label, .filters section{
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        .finput{
+            border: 1px solid #F37E09!important;
+            border-radius: 15px;
+
+            width: 80%;
+            padding-left:10px;
+            padding-right:10px;
+            margin-left: 10%;
+            height:24px;
+        }
+        .filters input[type=text]{
+            height:24px;
+            background-color: #fff;
+            width: 80%;
+            padding-left:10px;
+            padding-right:10px;
+            margin-left: 10%;
+            border-radius: 15px;
+            border: 1px solid #F37E09;
+        }
+        .filters h3{
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        .filters label{
+            margin-left: 3px;
+            margin-right: 3px;
+            font-size: 13px;
+        }
+        .filters label span{
+            transition: .2s;
+            font-weight:600;
+        }
+        .filters input[type=radio]:checked ~ span{
+            color:#F37E09;
+            text-decoration: underline;
+        }
+        .ui-autocomplete{
+            max-height: 100px;
+            overflow-y: scroll;
+            overflow-x: none;
+            border: 1px solid #F37E09;
+            background-color: #fff;
+            font-weight: 600;
+            font-size: 16px;
+            width: 600px;
+        }
+        .ui-menu-item::focus, .ui-menu-item:hover{
+            background-color: #F37E09;
+        }
+        .search_hdr{
+            font-size: 14px;
+            font-weight:600;
+        }
+        .filters input[type=button]{
+            background-color: #fff;
+            border 1px solid #F37E09;
+            border-radius: 15px;
+            width: 33%;
+            padding-left:10px;
+            padding-right:10px;
+            margin-left: 33%;
+            height: 40px;
+        }
+
+    }
+</style>
+
+    <section class="filtrs" id="filtrs">
+        <div class="container">
+            {% csrf_token %}
+            <form action="{% url 'synrate_main:filtration' %}">
+
+                <div class="input-group mb-3">
+                    <div id="search_filter" class="input-group mb-3">
+                      <input type="text" name="search_filter" class="form-control" {% if search_filter %}value="{{ search_filter }}"{% else %} placeholder="Поиск.."{% endif %} aria-label="Recipient's username" aria-describedby="button-addon2">
+                      <button type="submit" id="search_filter_button" class="btn btn-light">Поиск</button>
+                        <!--<button  class="filtrs-btn filter-btn submit-button">Поиск</button>-->
+                    </div>
+                    <ul id="other_filters" class="filtr-list">
+                        <li>
+                            <div class="filtrs-btns-wrapper">
+                                <!--<div class="filtrs-btns__title">
+                                    <span>Фильтры:</span>
+                                </div>-->
+
+                                <div class="btn-group" role="group" id="time_buttons" aria-label="Basic radio toggle button group">
+
+                                      <input type="radio" class="btn-check" {% if time_filter == 'all' %}checked{% endif%} value="all" name="time_filter" id="btnradio1" autocomplete="off">
+                                      <label class="btn btn-outline-secondary" for="btnradio1">Все время</label>
+
+                                      <input type="radio" class="btn-check" {% if time_filter == '1' %}checked{% endif%} value="1" name="time_filter" id="btnradio2" autocomplete="off">
+                                      <label class="btn btn-outline-secondary" for="btnradio2">Сутки</label>
+
+                                      <input type="radio" class="btn-check" {% if time_filter == '7' %}checked{% endif%} value="7" name="time_filter" id="btnradio3" autocomplete="off">
+                                      <label class="btn btn-outline-secondary" for="btnradio3">Неделя</label>
+
+                                      <input type="radio" class="btn-check" {% if time_filter == '31' %}checked{% endif%} value="31" name="time_filter" id="btnradio5" autocomplete="off">
+                                      <label class="btn btn-outline-secondary" for="btnradio5">Месяц</label>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                             <button type="button" class="filtrs-btn filter-btn">Выбрать даты</button>
+                        </li>
+                        <li>
+                            <select name="from_filter" id="from_filter_select" aria-label="Источник" class="filtrs-btn filter-btn filter-btn_arrow">
+                              <option value="" disabled selected>Источник</option>
+                              <option {% if from_filter == 'nelikvidi' %}selected{% endif%} value="nelikvidi">nelikvidi.com</option>
+                              <option {% if from_filter == 'onlinecontract' %}selected{% endif%} value="onlinecontract">onlinecontract.ru</option>
+                              <option {% if from_filter == 'tektorg' %}selected{% endif%} value="tektorg">tektorg.ru</option>
+                              <option {% if from_filter == 'tenderpro' %}selected{% endif%} value="tenderpro">tender.pro</option>
+                              <option {% if from_filter == 'roseltorg' %}selected{% endif%} value="roseltorg">roseltorg.ru</option>
+                              <option {% if from_filter == 'isource' %}selected{% endif%} value="isource">reserve.isource.ru</option>
+                            </select>
+                       </li>
+                        <li>
+                             <button type="button" class="filtrs-btn filter-btn filter-btn_arrow">Локации</button>
+                        </li>
+                        <li>
+                            <button type="button" class="filtrs-btn filter-btn filter-btn_arrow">Дополнительно</button>
+                       </li>
+                        <!--<li>
+                             <button type="button" class="filtrs-btn filter-btn filter-btn_plus">Ключевые слова</button>
+                        </li>
+                        <li>
+                            <button type="button" class="filtrs-btn filter-btn filter-btn_cross">полный</button>
+                       </li>-->
+                        <!--<li>
+                            <button type="submit" class="filtrs-btn filter-btn submit-button">Поиск</button>
+                       </li>-->
+
+                    </ul>
+                </div>
+            </form>
+
+            <!--<div class="ad-unit"></div>-->
+        </div>
+    </section>
+
+    <section class="offers" id="offers">
+        <div class="container">
+            <div class="offers-title-block">
+                <div class="offers-title-block-img">
+                    <img src="{% static 'synrate_static/img/offers-title-img.svg' %}" alt="wrapper">
+                </div>
+                <h3 class="offers-title">
+                    Складские остатки предприятий
+                </h3>
+            </div>
+            <div class="offers-count-block">
+                <h4 class="offers-count">
+                    Всего объявлений{% if all_count != 0 %}
+                    {{ all_count }}{% else %} 0,{% endif %}
+                    в т.ч. за последний месяц {% if month_count != 0 %}{{ month_count }}{% else %}0{% endif %}
+                    {% if today_count != 0 %}, день {{ today_count }}{% endif %}
+                </h4>
+            </div>
+            {% for offer in offers %}
+            <div class="offers-block">
+                <div class="offer-block">
+                    <div class="offer-block-img">
+                        {% if offer.home_name == "nelikvidi" %}
+                            <img src="{% static 'img/nelikvidi.png' %}" class="offer-block__img" alt="">
+                        {% endif %}
+                        {% if offer.home_name == "tektorg" %}
+                            <img src="{% static 'img/tectorg.png' %}" class="offer-block__img" alt="">
+                        {% endif %}
+                        {% if offer.home_name == "tenderpro" %}
+                            <img src="{% static 'img/tender.png' %}" class="offer-block__img" alt="123">
+                        {% endif %}
+                        {% if offer.home_name == "isource" %}
+                            <img src="{% static 'img/isource.png' %}" class="offer-block__img" alt="123">
+                        {% endif %}
+                        {% if offer.home_name == "onlinecontract" %}
+                            <img src="{% static 'img/onlinecontract.png' %}" class="offer-block__img" alt="123">
+                        {% endif %}
+                        {% if offer.home_name == "roseltorg" %}
+                            <img src="{% static 'img/roseltorg.png' %}" class="offer-block__img" alt="123">
+                        {% endif %}
+                    </div>
+                    <a href="{% url 'synrate_main:detail_view' id=offer.id %}" class="detailhref">
+                        <div class="offer-wrapper">
+                            <p class="offer-wrapper__text">
+                                {{ offer.name }}
+                            </p>
+                            <div class="offer-number">
+                                <span class="number-offer">№ процедуры - {{ offer.id }}</span>
+                                {% if offer.price != 0 %}
+                                    <span class="number-procedure">{{ offer.price }}</span>
+                                {% endif %}
+                            </div>
+                            <div class="offer-organization">
+                                <div class="offer-organization-wrapper">
+                                    {% if offer.organisation != None and offer.organisation != '' %}
+                                    <div class="offer-organization__name">
+                                        <p>{{ offer.organisation }}</p>
+                                    </div>
+                                    {% elif offer.location != None and offer.location != '' %}
+                                    <div class="offer-organization__address">
+                                        <p>{{ offer.location }}</p>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                {% if offer.offer_end_date != None %}
+                                <div class="offer-organization__time">
+                                    <span class="offer-organization__time__number"> {{ offer.offer_end_date }}</span>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+            </div>
+            {% endfor %}
+            <style>
+                .page_square_btn{
+                    display:inline-block;
+                    min-width: 50px;
+                    padding-left: 9px;
+                    padding-right: 9px;
+                    text-align:center;
+                    padding-top: 5px;
+                    height: 34px;
+                    font-weight:800;
+                    font-size:18px;
+                    border: 1px solid rgba(0,0,0,0.6);
+                    border-radius: 3px;
+                    color: #F37E09;
+                    margin-left: 10px;
+                    margin-right: 10px;
+                }
+                .page_square_btn__current{
+                    background-color: #F37E09;
+                    color: #fff;
+                }
+                @media(max-width:920px){
+                    .page_square_btn{
+                        min-width: 30px;
+                        padding-left: 3px;
+                        padding-right: 3px;
+                        margin-top: 5px;
+                        padding-top: 5px;
+                        height: 26px;
+                        font-weight:800;
+                        font-size:12px;
+                        margin-left: 3px;
+                        margin-right: 3px;
+                    }
+
+                }
+            </style>
+            <br>
+            <hr>
+            <br>
+            <div class="page-numbers" style="position:absolute; left:0; width:100%;">
+
+                {% if qs %}
+                <div class="page-numbers__btns">
+                    {% if offers.number|add:'-5' > 1 %}
+                        <script>
+                            var qs_func = function(){
+                                let url = new URL(location.href);
+                                url.searchParams.delete('page');
+                                return url;
+                            };
+                            document.write('<a href="'+ qs_func() + '&page=1' +'" class="page_square_btn">1</a>')
+                        </script>
+                    {% endif %}
+
+                    {% for i in offers.paginator.page_range %}
+                        {% if offers.number == i %}
+                            <span class="page_square_btn page_square_btn__current">{{ offers.number }}</span>
+                        {% elif i > offers.number|add:'-4' and i < offers.number|add:'4' %}
+                            <script>
+                                var qs_func = function(){
+                                    let url = new URL(location.href);
+                                    url.searchParams.delete('page');
+                                    return url;
+                                };
+                                document.write('<a href="'+ qs_func() + '&page={{ i }}' +'" class="page_square_btn">{{ i }}</a>')
+                            </script>
+                        {% endif %}
+                    {% endfor %}
+                    {% if offers.number|add:'5' < offers.paginator.num_pages %}
+                            <script>
+                                var qs_func = function(){
+                                    let url = new URL(location.href);
+                                    url.searchParams.delete('page');
+                                    return url;
+                                };
+                                document.write('<a href="'+ qs_func() + '&page={{ offers.paginator.num_pages }}' +'" class="page_square_btn">{{ offers.paginator.num_pages }}</a>')
+                            </script>
+                    {% endif %}
+                </div>
+                {% else %}
+                <div class="page-numbers__btns">
+                    {% if offers.number|add:'-5' > 1 %}
+                        <script>
+                            var qs_func = function(){
+                                let url = new URL(location.href);
+                                url.searchParams.delete('page');
+                                return url;
+                            };
+                            document.write('<a href="'+ qs_func() + '?page=1' +'" class="page_square_btn">1</a>')
+                        </script>
+                    {% endif %}
+
+                    {% for i in offers.paginator.page_range %}
+                        {% if offers.number == i %}
+                            <span class="page_square_btn page_square_btn__current">{{ offers.number }}</span>
+                        {% elif i > offers.number|add:'-4' and i < offers.number|add:'4' %}
+                            <script>
+                                var qs_func = function(){
+                                    let url = new URL(location.href);
+                                    url.searchParams.delete('page');
+                                    return url;
+                                };
+                                document.write('<a href="'+ qs_func() + '?page={{ i }}' +'" class="page_square_btn">{{ i }}</a>')
+                            </script>
+                        {% endif %}
+                    {% endfor %}
+                    {% if offers.number|add:'5' < offers.paginator.num_pages %}
+                            <script>
+                                var qs_func = function(){
+                                    let url = new URL(location.href);
+                                    url.searchParams.delete('page');
+                                    return url;
+                                };
+                                document.write('<a href="'+ qs_func() + '?page={{ offers.paginator.num_pages }}' +'" class="page_square_btn">{{ offers.paginator.num_pages }}</a>')
+                            </script>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+            <br>
+            <hr style="margin-top: 35px;">
+        </div>
+        <!--<div class="ad-unit ad-unit_top"></div>-->
+    </section>
+
+
+<script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
+<script>
+    $( "#tags" ).autocomplete({
+      source: [{{ category_list|safe }}]
+    });
+</script>
+<script>
+    function search_cstm(){
+        let el_at = document.getElementById("alltime");
+        let el_yt = document.getElementById("daytime");
+        let el_wt = document.getElementById("weektime");
+        let el_mt = document.getElementById("monthtime");
+        let source = document.getElementById("source").value;
+        let keywords = document.getElementById("keywords").value;
+        let region = document.getElementById("region").value;
+        let category = document.getElementById("tags").value;
+        let search_url = "https://synrate.ru/ostatki/";
+        let attrs = "page=1";
+
+        if (el_at.checked){
+            at = 1;
+        }
+
+        if (el_yt.checked){
+            yt = 1;
+            attrs = attrs + "?time_mt=day";
+        }
+        if (el_wt.checked){
+            attrs = attrs + "?time_mt=week";
+        }
+
+        if (el_mt.checked){
+            attrs = attrs + "?time_mt=month";
+        }
+
+        if (keywords != ""){
+            attrs = attrs + "?keywords=" + keywords;
+        }
+        if (source != "all"){
+            attrs = attrs + "?source="+source;
+        }
+        if (region != ""){
+            attrs = attrs + "?region=" + region;
+        }
+        if (category != ""){
+            attrs = attrs + "?category=" + category.rep;
+        }
+
+
+        window.location = search_url + attrs;
+    }
+
+
+    //alert(decodeURIComponent(window.location));
+    function qs_func() {
+      let url = new URL(location.href);
+      url.searchParams.delete('page');
+      return url;
+    }
+</script>
+{% endblock content %}

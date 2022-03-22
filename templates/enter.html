@@ -1,0 +1,58 @@
+﻿{% extends 'base.html' %}
+{% load cms_tags %}
+{% load static%}
+{% block content %}
+    <section class="enter">
+        <div class="container">
+            <div class="enter-form">
+                <h2 class="form-title registration-form__title">
+                    Вход
+                </h2>
+                <form method="post" class="personal-data__form regitr-form ">
+                    {% csrf_token %}
+                    <div class="form-item ">
+                        <p class="form-item__name">E-mail</p>
+                        {{ form.username }}
+                    </div>
+                    <div class="form-item form-enter-item password-item">
+                        <p class="form-item__name">Пароль</p>
+                        {{ form.password }}
+                        <button type="button" class="input-password__btn" id="input-password__btn"></button>
+                    </div>
+                    <a href="restory.html" class="restore-password">Забыли пароль?</a>
+                    <button type="submit" class="personal-data-btn-save regist-btn">Войти</button>
+
+                    <div class="come">
+                        <p>Нет аккаунта?</p>
+                        <a href="registr.html" class="come-btn" id="come-btn">Зарегистрируйтесь</a>
+                    </div>
+                    <div class="registration-methods">
+                        <p>Либо зарегистрируйтесь  с помощью: </p>
+                        <div class="registration-methods__messenger">
+                            <!-- noindex -->
+                            <a href="#" class="registration-methods__link" rel="nofollow noopener noreferrer" target="_blank">
+                                <img src="img/icon vk.svg" alt="vk">
+                            </a>
+                            <!-- /noindex -->
+                            <!-- noindex -->
+                            <a href="#" class="registration-methods__link" rel="nofollow noopener noreferrer" target="_blank">
+                                <img src="img/icon ok.svg" alt="ok">
+                            </a>
+                            <!-- /noindex -->
+                            <!-- noindex -->
+                            <a href="#" class="registration-methods__link" rel="nofollow noopener noreferrer" target="_blank">
+                                <img src="img/icon tv.svg" alt="tvit">
+                            </a>
+                            <!-- /noindex -->
+                            <!-- noindex -->
+                            <a href="#" class="registration-methods__link" rel="nofollow noopener noreferrer" target="_blank">
+                                <img src="img/icon fb.svg" alt="facebook">
+                            </a>
+                            <!-- /noindex -->
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+{% endblock content %}

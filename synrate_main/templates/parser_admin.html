@@ -1,0 +1,520 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@1,300&display=swap" rel="stylesheet">
+    <title>Администрирование парсерами</title>
+</head>
+<body onload="clockTimer(); HTTP();">
+    
+    <header id="header_desctop">
+        <div class="container">
+            <div class="row">
+                <div class="col-10"><img src="{% static 'img/logo_s_min.png' %}" alt="synrate_logo" id="header_desktop_logo"><span class="cooltext">Администрирование парсерами</span></div>
+                <div class="col-2" id="third_header_col"><span class="DMTlink">by <a class="" href="https://vk.com/ne.nescafe">DMT</a></span></div>
+            </div>
+        </div>
+    </header>
+    <header id="header_mobile">
+        <div class="container">
+            <div class="col-10"><img src="{% static 'img/logo_s_min.png' %}" alt="synrate_logo" id="header_mobile_logo"><span class="cooltext">Администрирование парсерами</span></div>
+        </div>
+    </header>
+    <hr>
+    <article class="container">
+        {% for engine in engines %}
+            <div class="enginecontainer">
+                <h1 class="nav__item active {% if engine.status %} green {% else %} red {% endif %}">{{ engine.name }}</h1>
+                <h3 class="message_head">Сообщение:</h3>
+                <p class="message">{{ engine.message }}</p>
+                <h3 class="message_head">Код ошибки:</h3>
+                <p class="message">{{ engine.current_error }}<br><span onclick="showlog();">(смотреть в логе)</span></p>
+
+
+                <a href="" class="closeengine"><img src="https://img.icons8.com/emoji/50/000000/cross-mark-emoji.png"/>Выключить движок<img src="https://img.icons8.com/emoji/50/000000/cross-mark-emoji.png"/></a>
+            </div>
+        {% endfor %}
+        {% for parser in parsers %}
+            <div class="parsercontainer">
+
+
+                <h1 class="nav__item active {% if parser.status %} green {% else %} red {% endif %}">Парсер Roseltorg {{ parser.id }} </h1> <input type="button" class="parser_head_button" value="Показать" onclick="parser_open(this)">
+
+
+                <div class="parser_full_data">
+                    <h3 class="message_head">Источник</h3>
+                    <p class="message">{{ parser.source }}</p>
+                    <h3 class="message_head">Спаршено объявлений</h3>
+                    <p class="message">{{ parser.parsed }}</p>
+                    <h3 class="message_head">Время запуска</h3>
+                    <p class="message">{{ parser.time_started }}</p>
+                    <h5 class="message_head">Сообщение:</h3>
+                    <p class="message">{{ parser.message }}</p>
+                    <h5 class="message_head">Код ошибки:</h3>
+                    <p class="message">{{ parser.error }}<a href="">(смотреть в логе)</a></p>
+                    <form method="POST">
+                        {% csrf_token %}
+                        {{ parserform }}
+
+                        <button class="parser_button">
+                            Обновить
+                        </button>
+                    </form>
+
+                </div>
+            </div>
+        {% endfor %}
+            
+        
+        
+
+        
+    </article>
+    <aside>
+        <h3>Статистика</h3>
+        <span class="leftspan">
+            Движок активен <br>
+            Активные парсеры: 3 <br>
+            Неактивные парсеры: 1<br>
+            Парсеры в очереди: 0 <br><br>
+            Всего спаршено: 350 <br>
+            За последний час: 350 <br>            
+            
+        </span>
+        <h3>Сервер</h3>
+        <span class="leftspan">
+            Нагрузка: unavaiable
+        </span>
+        <h3>Ошибки</h3>
+        <span class="leftspan">
+            Нет
+        </span>
+        
+    </aside>
+    <div class="clockpage">
+    
+        <span id="clock"></span>
+        <span id="dayOfWeek"></span>
+        
+    </div>
+    <div class="log closedlog" id="Log">
+        <h3 style="text-align: center;">Log</h3>
+        <img src="https://img.icons8.com/emoji/50/000000/cross-mark-emoji.png" id="close_log" onclick="hidelog()"/>
+        <hr>
+    </div>
+    <script>
+        function parser_open(Element){
+    if (Element.value == "Показать"){
+        Element.nextSibling.nextSibling.classList.add("open")
+        Element.value = "Скрыть"
+    } else {
+        Element.nextSibling.nextSibling.classList.remove("open")
+        Element.value = "Показать"
+    }
+    console.log(Element.value)
+    console.log()
+}
+function clockTimer()
+{
+  var date = new Date();
+  
+  var time = [date.getHours(),date.getMinutes(),date.getSeconds()]; // |[0] = Hours| |[1] = Minutes| |[2] = Seconds|
+  var dayOfWeek = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
+  var days = date.getDay();
+  
+  if(time[0] < 10){time[0] = "0"+ time[0];}
+  if(time[1] < 10){time[1] = "0"+ time[1];}
+  if(time[2] < 10){time[2] = "0"+ time[2];}
+  
+  var current_time = [time[0],time[1],time[2]].join(':');
+  var clock = document.getElementById("clock");
+  var day = document.getElementById("dayOfWeek");
+  
+  clock.innerHTML = current_time;
+  day.innerHTML = dayOfWeek[days];
+  
+  
+  
+  setTimeout("clockTimer()", 1000);
+}
+
+
+
+function showlog(){
+    document.getElementById("Log").classList.remove("closedlog")
+}
+function hidelog(){
+    document.getElementById("Log").classList.add("closedlog")
+}
+    </script>
+
+
+    <style>
+        html{
+
+font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+
+}
+body::-webkit-scrollbar {
+    width: 8px;               /* ширина scrollbar */
+  }
+  body::-webkit-scrollbar-track {
+    background: transparent;        /* цвет дорожки */
+  }
+  body::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.3);    /* цвет плашки */
+    border-radius: 40px;
+  }
+body{
+    padding-bottom: 30px;
+}
+header{
+height: 40px;
+}
+#header_desktop_logo{
+width: 35px;
+height: 35px;
+}
+#header_mobile_logo{
+width: 40px;
+height: 40px;
+}
+
+.cooltext{
+display: inline-block;
+margin-top: 10px;
+font-size: 20px;
+font-weight: 600;
+margin-left: 5px;
+}
+
+a{
+text-decoration: none!important;
+color: #039be4!important;
+transition: .1s;
+}
+a:hover{
+text-decoration: underline!important;
+color: #fd760a!important;
+}
+#third_header_col{
+padding-top: 15px;
+}
+
+.parsercontainer{
+    margin-left: 15%;
+    width: 70%;
+    margin-top: 40px;
+padding-top: 15px;
+padding-bottom: 10px;
+border-radius: 10px;
+box-shadow: 0 0 10px rgba(0,0,0,0.5);
+background-color: rgba(221, 219, 219, 0.2);
+}
+
+.closeengine{
+background-color: rgb(199, 198, 198);
+width: 33%;
+text-align: center;
+margin-left: 33%;
+padding: 4px;
+border-radius: 10px;
+padding-bottom: 6px;
+font-size: 25px;
+transition: .2s;
+}
+.closeengine:hover{
+background-color: #ffcccb;
+}
+.closeengine img{
+margin-left: 10px;
+margin-right: 10px;
+height: 30px;
+opacity: 0;
+}
+.closeengine:hover > img{
+opacity: 1;
+}
+.dot{
+height: 1px;
+width: 1px;
+border-radius: 40px;
+}
+.green::before{
+
+background-color: green;
+}
+.red::before{
+
+background-color: red;
+}
+.dot .statuspan{
+display: inline;
+}
+
+.nav__item {
+display: inline-block;
+position: relative;
+margin-left: 5%;
+font-family: sans-serif;
+}
+
+.nav__item.active::before {
+content: '';
+position: absolute;
+right: -15px;
+top: 5px;
+width: 10px;
+height: 10px;
+border-radius: 50%;
+
+}
+
+
+aside{
+position: fixed;
+border-right: 1px solid rgba(0, 0, 0, 0.3);
+width: 13%;
+left: 2%;
+top: 10%;
+height: 80vh;
+overflow: hidden;
+
+}
+.message{
+    margin-bottom: 15px;
+width: 80%;
+margin-left: 10%;
+border-left: 2px dashed rgba(0, 0, 0, 0.5);
+border-right: 2px dashed rgba(0, 0, 0, 0.5);
+padding-right: 5px;
+padding-left: 5px;
+margin-top: 10px;
+margin-bottom: 10px;
+}
+.message_head{
+    margin-top: 30px;
+margin-left: 8%;
+}
+
+
+.parser_button{
+margin-top: 10px;
+margin-left: 60%;
+width: 30%;
+font-size: 20px;
+color: #039be4;
+border-radius: 5px;
+padding-right: 8px;
+padding-left: 8px;
+background-color: rgb(221, 219, 219);
+border: 1px solid #039be4;
+transition: .2s;
+}
+.parser_button:hover{
+color: #fd760a;
+border: 1px solid #fd760a;
+box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+.parser_head_button{
+    border-radius: 5px;
+    margin-top: 15px;
+    font-size: 15px;
+    background: transparent;
+    margin-right: 5%;
+    color: #039be4;
+    float: right;
+    border: 1px solid #039be4;
+    transition: .2s;
+}
+.parser_head_button:hover{
+    color: #fd760a;
+    border: 1px solid #fd760a;
+    box-shadow: 0 0 10px rgba(117, 91, 91, 0.2);
+}
+.parser_full_data{
+display: none;
+}
+
+.open{
+display: block;
+}
+
+.enginecontainer{
+    margin-top: 30px;
+    padding-top: 15px;
+    padding-bottom: 10px;
+    width: 70%;
+    margin-left: 15%;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    background-color: rgba(221, 219, 219, 0.2);
+}
+.leftspan{
+    margin-left: 5px;
+    font-size: 18px;
+    font-weight: 400;
+}
+aside h1{
+    margin-top: 30px;
+}
+aside h3{
+    margin-top: 40%;
+}
+#header_mobile{
+    display: none;
+}
+.log{
+    position: fixed;
+    width: 300px;
+    height: 600px;
+    padding-top: 10px;
+    
+    background-color: rgba(221, 219, 219, 0.2);
+    right: 5%;
+    top:200px;
+    border: 3px dashed #039be4;
+}
+#close_log{
+    display: none;
+}
+@media (max-width: 1700px){
+    aside{
+        display: none;
+    }
+    header{
+        height: 20px
+    }
+    #header_desctop{
+        display: none;
+    }
+    #header_desktop_logo{
+        margin-top: 0;
+        width: 20px;
+        height: 20px;
+    }
+    #header_mobile{
+        display: block;
+    }
+        
+    .cooltext{
+        display: inline-block;
+        margin-top: 10px;
+        font-size: 14px;
+        font-weight: 600;
+        margin-left: 5px;
+    }
+    .parsercontainer{
+        width: 90%;
+        margin-left:5%;
+    }
+    .nav__item{
+        font-size: 18px;
+    }
+    .parser_head_button{
+        margin-left: 10px;
+        margin-top: 0;
+    }
+    .nav__item.active::before {
+        content: '';
+        position: absolute;
+        right: -10px;
+        top: -3px;
+        width: 7px;
+        height: 7px;
+        
+    }
+    .parser_button{
+        margin-top: 10px;
+        margin-left: 20%;
+        width: 60%;
+        font-size: 20px;
+        color: #039be4;
+        border-radius: 5px;
+        padding-right: 8px;
+        padding-left: 8px;
+        background-color: rgb(221, 219, 219);
+        border: 1px solid #039be4;
+        transition: .2s;
+    }
+    .closeengine{
+        background-color: rgba(199, 198, 198);
+        width: 70%;
+        margin-left: 15%;
+        padding: 2px;
+        border-radius: 10px;
+        padding-bottom: 3px;
+        font-size: 15px;
+        transition: .2s;
+        }
+    .closeengine:hover{
+        background-color: #ffcccb;
+    }
+    .closeengine img{
+        margin-left: 3px;
+        margin-right: 3px;
+        height: 15px;
+        opacity: 0;
+    }
+    .clockpage{
+        display: none;
+    }
+    .log{
+        position: fixed;
+        width: 100vw;
+        height: 100vh;
+        padding-top: 10px;
+        border: none;
+        background-color: rgb(221, 219, 219);
+        right: 0;
+        top:0;
+        z-index: 5;
+    }
+    .closedlog{
+        display: none;
+    }
+    #close_log{
+        display: block;
+        width: 40px;
+        height: 40px;
+        position: absolute;
+        right: 5px;
+        top: 5px;
+        z-index: 6;
+    }
+}
+.clockpage
+{
+    position: fixed;
+    right: 5%;
+    top: 100px;
+    height: 100px;
+    max-width: 500px;
+    min-width: 300px;
+    background: white;
+    text-align: center;
+    font-family: 'Titillium Web', sans-serif;
+    font-size: 32px;
+    padding: 10px;
+    font-weight: bold;
+    border-top: 10px solid #039be4;
+    
+}
+#dayOfWeek
+{
+    display: block;
+    font-weight: normal;
+    font-size: 18px;
+}
+
+    </style>
+</body>
+</html>

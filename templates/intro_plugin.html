@@ -1,0 +1,18 @@
+{% load static %}
+<div class="container introcontainer">
+    <div class="intro-title">
+        <h1>{{ instance.header_text }}</h1>
+    </div>
+    <div class="intro-main">
+        <h3 class="left_intro_title">{{ instance.first_title }}</h3>
+        <p class="introtext">{{ instance.first_text }}</p>
+        <hr>
+        <h3 class="right_intro_title">{{ instance.second_title }}</h3>
+        <p class="introtext">{{ instance.second_text }}</p>
+    </div>
+    <div class="intro-go">
+        <img src="{% static 'img/logo_s_min.png' %}" alt="logo_min" class="logo-go">
+        <a href="{% url 'synrate_main:search_all' %}" class="link-go">{{ instance.goto_text }}</a>
+    </div>
+
+</div>

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Detail</title>
+</head>
+<body>
+    <h1>{{ offer.name }}</h1>
+    <a href="{{ offer.url }}">Открыть оригинал</a>
+    <table style="border: 1px solid black">
+        <tr><td>Источник:</td><td>{{ offer.home_name }}</td></tr>
+        <tr><td>Регион:</td><td>{{ offer.location }}</td></tr>
+        <tr><td>Цена:</td><td>{{ offer.offer_price }}</td></tr>
+        <tr><td>Дата начала торгов:</td><td>{{ offer.offer_end_date }}</td></tr>
+        <tr><td>Торги идут до:</td><td>{{ offer.offer_start_date }}</td></tr>
+        <tr><td>Орагнизация</td><td>{{ offer.organisation }}</td></tr>
+        <tr><td>Владелец</td><td>{{ offer.owner }}</td></tr>
+        <tr><td>Контакт владельца</td><td>{{ offer.ownercontact }}</td></tr>
+        {{ data|safe }}
+    </table>
+    <h3>(test)</h3>
+    <h1>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Commodi debitis, tempore. Aperiam culpa deserunt dicta, distinctio dolorem eos esse excepturi ipsa itaque, iure maxime molestiae, nemo placeat quam sint voluptatibus.</h1>
+</body>
+</html>
