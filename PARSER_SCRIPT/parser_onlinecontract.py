@@ -6,8 +6,6 @@ from ENGINE import Parser
 import requests
 from bs4 import BeautifulSoup
 
-# from synrate_main.mixins import replaceMultiple
-
 
 class ParserOnlineContract(Parser):
     def __init__(self):
@@ -68,7 +66,11 @@ class ParserOnlineContract(Parser):
                                         "url": "https://api.onlc.ru/purchases/v1/public/procedures/{}/positions".format(self.procedure_id),
                                         "category": "Не определена", "subcategory": "не определена"
                                         }
-                print(f'Online: {z.json()}  {J}')
+                try:
+                  print(f'Online: {z.json()}  {J}')
+                except Exception as ex:
+                  print(ex)
+                  print(f'Online: {z}  {J}')
                 time.sleep(random.randint(1, 5) / 10)
                 # ---------------------
 

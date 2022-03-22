@@ -14,8 +14,7 @@ SITE_ID = 1
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-# ALLOWED_HOSTS = ['127.0.0.1', 'synrate.ru', 'www.synrate.ru']
-ALLOWED_HOSTS = ['127.0.0.1']
+ALLOWED_HOSTS = ['5.63.152.3', 'synrate.ru', 'www.synrate.ru']
 
 # Application definition
 
@@ -171,7 +170,7 @@ USE_L10N = True
 USE_TZ = False
 
 STATIC_URL = '/static/'
-
+STATIC_ROOT = '/var/www/static'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
     # '/var/www/static/',

@@ -184,8 +184,12 @@
                     <div class="mb-3 text-center">
                          <div class="btn-group" id="time_filter_element" role="group">
 
+<<<<<<< HEAD
                               <input type="radio" class="btn-check" {% if time_filter == 'all' %}checked{% endif%} value="all" name="time_filter" id="btnradio1" autocomplete="off">
                               <label class="btn btn-outline-secondary" for="btnradio1">Все время</label>
+=======
+                                <div class="btn-group" role="group" id="time_buttons" aria-label="Basic radio toggle button group">
+>>>>>>> 9d3205a09ca459fd08b483a7e15cab1a323279cc
 
                               <input type="radio" class="btn-check" {% if time_filter == '1' %}checked{% endif%} value="1" name="time_filter" id="btnradio2" autocomplete="off">
                               <label class="btn btn-outline-secondary" for="btnradio2">Сутки</label>
@@ -330,7 +334,7 @@
                         {% if offer.home_name == "nelikvidi" %}
                             <img src="{% static 'img/nelikvidi.png' %}" class="offer-block__img" alt="">
                         {% endif %}
-                        {% if offer.home_name == "tectorg" %}
+                        {% if offer.home_name == "tektorg" %}
                             <img src="{% static 'img/tectorg.png' %}" class="offer-block__img" alt="">
                         {% endif %}
                         {% if offer.home_name == "tenderpro" %}
