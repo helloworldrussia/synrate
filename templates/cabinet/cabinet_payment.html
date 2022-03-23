@@ -1,0 +1,30 @@
+{% extends 'cabinet/cabinet_base.html' %}
+{% load static%}
+{% block content %}
+<section class="pocket" id="money_section">
+    <div class="container" id="money_container" style="text-align: center; margin-top: 15px;">
+        <span>Реквизиты:</span> <br>
+        <span>MasterCard 81823981829418</span>
+        <h3>Баланс:</h3>
+    </div>
+    <div class="payment-settings" style="text-align: center; margin: 100px; margin-left: 400px; margin-right: 400px;">
+        <div style="margin-bottom: 15px;">
+            <p>Пополнение баланса с банковской карты</p>
+        </div>
+        <div class="input-group mb-3">
+            <button class="btn btn-outline-warning dropdown-toggle" style="background-color: #f37e09; color: black;" type="button" data-bs-toggle="dropdown" aria-expanded="false">Тип карты</button>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#">Мастеркард</a></li>
+                <li><a class="dropdown-item" href="#">Виза</a></li>
+                <li><a class="dropdown-item" href="#">МИР</a></li>
+                <li><a class="dropdown-item" href="#">Юнион-Пей</a></li>
+              </ul>
+            <input type="text" class="form-control" placeholder="Номер карты" aria-label="Text input with dropdown button">
+        </div>
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="Введите сумму" aria-describedby="button-addon2">
+        </div>
+        <input class="btn btn-warning" type="submit" placeholder="Пополнить" style="background-color: #f37e09; color: black;">
+    </div>
+</section>
+{% endblock content %}

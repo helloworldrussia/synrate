@@ -32,8 +32,7 @@
 </head>
 <body>
     {% cms_toolbar %}
-
-    <header class="header" id="header">
+    <header class="header" id="header" style="text-align: right;">
         <div class="container container_relative">
             <nav>
                 <div class="logo">
@@ -48,102 +47,29 @@
                 <div class="nav">
                     <ul class="nav__list">
                         <li class="nav__item ">
-                            <a href="#" class="nav__link nav__link_list" id="nav__link_list">Категории</a>
+                            <a href="{% url 'Users:cabinet_lk' %}" class="nav__link">Настройки</a>
                         </li>
                         <li class="nav__item">
-                            <a href="https://synrate.ru/info/tarify" class="nav__link">Тарифы</a>
+                            <a href="{% url 'Users:cabinet_payment' %}" class="nav__link">Финансы</a>
                         </li>
                         <li class="nav__item">
-                            <a href="https://synrate.ru/info/kontakty/" class="nav__link">Контакты</a>
+                            <a href="{% url 'Users:cabinet_fav' %}" class="nav__link">Избранное</a>
                         </li>
                         <li class="nav__item">
                             <a href="https://synrate.ru/info" class="nav__link">FAQ</a>
                         </li>
-                        {% if request.user.is_authenticated %}
-                        <li class="nav__item">
-                            <a href="{% url 'Users:cabinet_lk' %}" class="nav__link">Аккаунт</a>
-                        </li>
-                        {% endif %}
                     </ul>
                 </div>
                 <div class="mobile-menu">
                     <button type="button" class="mobile-menu__btn"><img src="{% static 'synrate_static/img/burger.svg' %}" alt=""></button>
-
                 </div>
                 {% if request.user.is_authenticated %}
                 <div class="user-block">
-                    <button type="button" class="user-block__btn user-block__btn_active" id="user-block__btn">
-                        <div class="user-img">
-                            <img src="{% static 'synrate_static/img/Icon-User.svg' %}" alt="user">
-                        </div>
-                        <div class="user-name">
-                            <p class="user-name__text">
-                                {{ request.user }}
-                            </p>
-                        </div>
-                    </button>
-                </div>
-                <div class="user-block-list" id="user-block-list">
-                    <button type="button" class="user-block-list-button" id="user-block-list-button">
-                        <div class="user-img user-img_click">
-                            <img src="{% static 'synrate_static/img/icon user gr.svg' %}" alt="user">
-                        </div>
-                        <div class="user-name user-name_click">
-                            <p class="user-name__text">
-                                {{ request.user }}
-                            </p>
-                        </div>
-                    </button>
-                    <ul>
-                        <li>
-                            <a href="{% url 'Users:cabinet' %}">Настройки</a>
-                        </li>
-                        <li>
-                            <a href="#">Финансы</a>
-                        </li>
-                        <li>
-                            <a href="#">Категории</a>
-                        </li>
-                        <li>
-                            <a href="">Избранное</a>
-                        </li>
-                        <li>
-                            <a href="#">Тех.поддержка</a>
-                        </li>
-                        <li>
-                            <a href="{% url 'Users:logout' %}" class="btn-exit btn-exit_blue">Выход</a>
-                        </li>
-                    </ul>
-                </div>
-                {% else %}
-                <div class="btns">
-                    <a href="{% url 'Users:register' %}" class="btn-registration"><img src="{% static 'synrate_static/img/registr.svg' %}" alt="regist"></a>
-                    <a href="{% url 'Users:login' %}" class="btn-enter">Вход</a>
+                    <p class="user-name__text" style="margin-top: 5px;">
+                            {{ request.user }}
+                    </p>
                 </div>
                 {% endif %}
-                <div class="mobile-menu-block">
-                    <ul class="nav__list">
-                        <li class="nav__item ">
-                            <a href="#" class="nav__link nav__link_mobile" id="nav__link_list">Категории</a>
-                        </li>
-                        <li class="nav__item">
-                            <a href="https://synrate.ru/info/tarify" class="nav__link">Тарифы</a>
-                        </li>
-                        <li class="nav__item">
-                            <a href="https://synrate.ru/info/kontakty/" class="nav__link">Контакты</a>
-                        </li>
-                        <li class="nav__item">
-                            <a href="https://synrate.ru/info" class="nav__link">FAQ</a>
-                        </li>
-                    </ul>
-                    <div class="categories-block_mobile categories-block" id="categories-block">
-                        <ul class="categories-list">
-                            <li class="categories-item">
-                                <a href="{% url 'synrate_main:search_all' %}" class="categories-link categories-link_one">Складские остатки  предприятий</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
             </nav>
             <div class="categories-block" id="categories-block">
                 <ul class="categories-list">

@@ -1881,6 +1881,12 @@ nav{
     .favorites{
         padding-top: 80px;
     }
+    #money_container{
+        margin: 50px;
+    }
+    .pocket{
+        margin: 50px;
+    }
     .regitr-form{
         width: 260px;
     }

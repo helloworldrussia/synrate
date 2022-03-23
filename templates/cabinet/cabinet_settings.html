@@ -1,0 +1,30 @@
+{% extends 'cabinet/cabinet_base.html' %}
+{% load static%}
+{% block content %}
+<section class="cabinet" id="cab_section">
+    <div class="container">
+        <div class="personal-data">
+            <form action="#" class="personal-data__form" method="get">
+                <div class="form-item">
+                    <p class="form-item__name">Имя</p>
+                    <input tabindex="1" type="text" placeholder="Value" name="username">
+                </div>
+                <div class="form-item">
+                    <p class="form-item__name">E-mail</p>
+                    <input tabindex="2" type="text" placeholder="Value" name="useremail">
+                </div>
+                <div class="form-item">
+                    <p class="form-item__name">Телефон</p>
+                    <input tabindex="3" type="tel" placeholder="" name="usertel">
+                </div>
+                <div class="form-item">
+                    <p class="form-item__name">Пароль</p>
+                    <input tabindex="4" type="password" placeholder="" name="userpass">
+                </div>
+                <button type="submit" class="personal-data-btn">Изменить данные</button>
+                <button type="button" class="personal-data-btn-save">Сохранить</button>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock content %}

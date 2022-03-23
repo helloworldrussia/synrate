@@ -81,8 +81,8 @@ def server_listener():
 #    parser_nelikvidy.start()
 #    parser_tender.start()
 #    parser_isource.start()
-#    parser_tectorg.start()
-    parser_onlinecontract.start()
+    parser_tectorg.start()
+#    parser_onlinecontract.start()
 
     status = True
 

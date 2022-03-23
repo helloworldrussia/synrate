@@ -3,10 +3,11 @@ from django.shortcuts import render
 # Create your views here.
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
-from django.views.generic import CreateView
+from django.views.generic import CreateView, TemplateView
 from .forms import UserForm, LogInForm
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse
+
 
 # Sign Up View
 class SignUpView(CreateView):
@@ -18,6 +19,7 @@ class SignUpView(CreateView):
     form_class = UserForm
     success_url = reverse_lazy('Users:login')
     template_name = 'registr.html'
+
 
 def user_login(request):
     if request.method == 'POST':
@@ -56,6 +58,19 @@ def user_cabinet(request):
             return redirect('Users:login', permanent=True)
         else:
             return render(request, "user_base.html")
+
+
+class CabinetView(TemplateView):
+    template_name = 'cabinet/cabinet_settings.html'
+
+
+class CabinetPaymentView(TemplateView):
+    template_name = 'cabinet/cabinet_payment.html'
+
+
+class CabinetFavView(TemplateView):
+    template_name = 'cabinet/cabinet_fav.html'
+
 
 
 

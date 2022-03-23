@@ -13,7 +13,7 @@ urlpatterns = [
     path('ostatki', views.search_all, name="search_all"),
     path('categories', views.category, name="category_list"),
     path('detail/<int:id>', views.detail_info, name="detail_view"),
-    re_path(r'^filter/$', views.listing, name="filtration"),
+    # re_path(r'^filter/$', views.listing, name="filtration"),
 
     re_path(r'^offers/$', views.listing, name="filtration"),
 ]
