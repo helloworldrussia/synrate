@@ -141,14 +141,13 @@ class ParserNelikvidy(Parser):
                                 sostoyanie = data.getText().replace(u"Состояние:", "").strip()
                             if data_type.getText().find('объявление размещено'):
                                 try:
-                                    #(added = data.getText())#.replace(u"Размещено:", "").replace(".", "").replace(",", "")
-
-                                    added = data.getText().replace(f"{name}- объявление размещено:", "").replace(".", "").replace(",", "")
-                                    for key in self.monthlist.keys():
-                                        added = added.replace(key, str(self.monthlist[key]))
-                                    day = int(added[1:3].replace(" ", ""))
-                                    month = int(added[4:5].replace(" ", ""))
-                                    date = datetime.date(datetime.date.today().year, month, day)
+                                    line = data.getText().replace(f"{name}- объявление размещено:", '')
+                                    line = line.split(' ')
+                                    month = line[-2].replace('.', '').replace(',', '')
+                                    day = line[-3]
+                                    month = self.monthlist[f'{month}']
+                                    print(day, month)
+                                    date = datetime.date(datetime.date.today().year, int(month), int(day))
                                     print(date, '+')
                                 except Exception as ex:
                                     print(ex)
@@ -161,15 +160,15 @@ class ParserNelikvidy(Parser):
 
                     breadcrumb = self.soup.find("ul", attrs={"class": "breadcrumb"}).find_all("li")
 
-                    z = requests.post("https://synrate.ru/api/offers/create",
-                                      json={"name": name.replace('"', ''), "location": region, "home_name": "nelikvidi",
-                                            "offer_type": offer_type, "offer_start_date": str(date),
-                                            "owner": owner.replace('"', ''), "ownercontact": "временно недоступно", "offer_price": price,
-                                            "additional_data": "не указано", "organisation": organisation.replace('"', ''), "url": link,
-                                            "category": breadcrumb[1].getText().strip(),
-                                            "subcategory": breadcrumb[2].getText().strip()
-                                            }
-                                      )
+                    # z = requests.post("https://synrate.ru/api/offers/create",
+                    #                   json={"name": name.replace('"', ''), "location": region, "home_name": "nelikvidi",
+                    #                         "offer_type": offer_type, "offer_start_date": str(date),
+                    #                         "owner": owner.replace('"', ''), "ownercontact": "временно недоступно", "offer_price": price,
+                    #                         "additional_data": "не указано", "organisation": organisation.replace('"', ''), "url": link,
+                    #                         "category": breadcrumb[1].getText().strip(),
+                    #                         "subcategory": breadcrumb[2].getText().strip()
+                    #                         }
+                    #                   )
                     # ---------------------------- TESTING
                     print(str(date), link)
                     time.sleep(random.randint(1, 5) / 10)
