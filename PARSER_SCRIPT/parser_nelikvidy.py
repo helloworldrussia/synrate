@@ -101,6 +101,7 @@ class ParserNelikvidy(Parser):
                     sostoyanie = None
                     amount = None
                     region = None
+                    date = None
 
                     self.response = requests.get(link, headers={'User-Agent': "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Mobile Safari/537.36"}, verify=self.verify)
                     self.soup = BeautifulSoup(self.response.content, 'html.parser')
@@ -138,28 +139,31 @@ class ParserNelikvidy(Parser):
                                 offer_type = data.getText().replace(u"Тип объявления:", "").strip()
                             if data_type.getText() == "Состояние:":
                                 sostoyanie = data.getText().replace(u"Состояние:", "").strip()
-                            if data_type.getText() == "Размещено:":
+                            if data_type.getText().find('объявление размещено'):
                                 try:
-                                    added = data.getText().replace(u"Размещено:", "").replace(".", "").replace(",", "")
+                                    #(added = data.getText())#.replace(u"Размещено:", "").replace(".", "").replace(",", "")
+
+                                    added = data.getText().replace(f"{name}- объявление размещено:", "").replace(".", "").replace(",", "")
                                     for key in self.monthlist.keys():
                                         added = added.replace(key, str(self.monthlist[key]))
                                     day = int(added[1:3].replace(" ", ""))
                                     month = int(added[4:5].replace(" ", ""))
                                     date = datetime.date(datetime.date.today().year, month, day)
-                                except ValueError:
-                                    print("no date :(")
+                                    print(date, '+')
+                                except Exception as ex:
+                                    print(ex)
                             if data_type.getText() == "Просмотров:":
                                 views = data.getText().replace(u"Просмотров:", "").strip()
                     if offer_type is None:
                         offer_type = "продажа"
-                    if offer_start_date is None:
-                        offer_start_date = datetime.date.today()
+                    if date is None:
+                        date = datetime.date.today()
 
                     breadcrumb = self.soup.find("ul", attrs={"class": "breadcrumb"}).find_all("li")
 
                     z = requests.post("https://synrate.ru/api/offers/create",
                                       json={"name": name.replace('"', ''), "location": region, "home_name": "nelikvidi",
-                                            "offer_type": offer_type, "offer_start_date": str(offer_start_date),
+                                            "offer_type": offer_type, "offer_start_date": str(date),
                                             "owner": owner.replace('"', ''), "ownercontact": "временно недоступно", "offer_price": price,
                                             "additional_data": "не указано", "organisation": organisation.replace('"', ''), "url": link,
                                             "category": breadcrumb[1].getText().strip(),
@@ -167,14 +171,7 @@ class ParserNelikvidy(Parser):
                                             }
                                       )
                     # ---------------------------- TESTING
-                    J = {"name": name.replace('"', ''), "location": region, "home_name": "nelikvidi",
-                                            "offer_type": offer_type, "offer_start_date": str(offer_start_date),
-                                            "owner": owner.replace('"', ''), "ownercontact":"временно недоступно", "offer_price": price,
-                                            "additional_data": "не указано", "organisation": organisation.replace('"', ''), "url": link,
-                                            "category": breadcrumb[1].getText().strip(),
-                                            "subcategory": breadcrumb[2].getText().strip()
-                                            }
-                    print(f'Ne lik: {z.json()}  {J}')
+                    print(str(date), link)
                     time.sleep(random.randint(1, 5) / 10)
                     # ------------------------------------
                 self.post_links = []

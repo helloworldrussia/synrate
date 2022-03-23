@@ -72,5 +72,9 @@ class CabinetFavView(TemplateView):
     template_name = 'cabinet/cabinet_fav.html'
 
 
+class CabinetTariffView(TemplateView):
+    template_name = 'cabinet/cabinet_tariff.html'
+
+
 
 
