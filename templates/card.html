@@ -66,7 +66,8 @@
                             <p class="product-date-time">
                                 {% if offer.offer_start_date != None %}
                                 <span>Размещено:</span> {{ offer.offer_start_date }} <br>
-                                {% elif offer.offer_end_date != None %}
+                                {% endif %}
+                                {% if offer.offer_end_date != None %}
                                 <span>Актуально до:</span> {{ offer.offer_end_date }} <br>
                                 {% endif %}
                             </p>
