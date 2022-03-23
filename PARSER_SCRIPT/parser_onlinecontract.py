@@ -48,7 +48,7 @@ class ParserOnlineContract(Parser):
                                             "offer_price": int(float(self.response_item["Price"])),
                                             "additional_data": self.response_item["OwnerCondi"],
                                             "organisation": "",
-                                            "url": f"https://onlinecontract.ru/tenders/{self.response_item['OwnerCondi']}",
+                                            "url": f"https://onlinecontract.ru/tenders/{self.response_item['IDA']}",
                                             "category": "Не определена", "subcategory": "не определена"
                                             }
                                       )
@@ -64,7 +64,7 @@ class ParserOnlineContract(Parser):
                                             "offer_price": int(float(self.response_item["Price"])),
                                             "additional_data": self.response_item["OwnerCondi"],
                                             "organisation": "",
-                                            "url": f"https://onlinecontract.ru/tenders/{self.response_item['OwnerCondi']}",
+                                            "url": f"https://onlinecontract.ru/tenders/{self.response_item['IDA']}",
                                             "category": "Не определена", "subcategory": "не определена"
                                             }
                     try:
