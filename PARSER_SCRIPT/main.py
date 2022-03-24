@@ -1,4 +1,6 @@
 import requests
+
+from parser_etpgpb import ParserEtpgpb
 from parser_nelikvidy import ParserNelikvidy
 from parser_tenderpro import ParserTender
 from parser_roseltorg import RoseltorgParser
@@ -64,6 +66,7 @@ def server_listener():
     isource_obj = ParserSource()
     tectorg_obj = ParserTektorg()
     onlinecontract_obj = ParserOnlineContract()
+    etpgpb_obj = ParserEtpgpb()
 
     parser_roseltorg = ParserThread("parser_roseltorg", roseltorg_obj)
     parser_tender = ParserThread("parser_tender", tender_obj)
@@ -71,7 +74,8 @@ def server_listener():
     parser_isource = ParserThread("parser_isource", isource_obj)
     parser_tectorg = ParserThread("parser_tectorg", tectorg_obj)
     parser_onlinecontract = ParserThread("parser_onlinecontract", onlinecontract_obj)
-    #shared_data = multiprocessing.Manager().dict()
+    parser_etpgpb = ParserThread("parser_etpgpb", etpgpb_obj)
+
 
     #DEBUG OPTIONS
     #check_thread_1 = CheckThread('parser_roseltorg')
@@ -81,8 +85,9 @@ def server_listener():
 #    parser_nelikvidy.start()
 #    parser_tender.start()
 #    parser_isource.start()
-    parser_tectorg.start()
+#    parser_tectorg.start()
 #    parser_onlinecontract.start()
+    parser_etpgpb.start()
 
     status = True
 
