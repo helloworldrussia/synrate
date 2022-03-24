@@ -59,11 +59,6 @@
                         <li class="nav__item">
                             <a href="https://synrate.ru/info" class="nav__link">FAQ</a>
                         </li>
-                        {% if request.user.is_authenticated %}
-                        <li class="nav__item">
-                            <a href="{% url 'Users:cabinet_lk' %}" class="nav__link">Аккаунт</a>
-                        </li>
-                        {% endif %}
                     </ul>
                 </div>
                 <div class="mobile-menu">
