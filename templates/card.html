@@ -1,5 +1,6 @@
 ﻿{% extends 'base.html' %}
 {% load static %}
+{% block title %}{{ offer.name|truncatechars:120 }}{% endblock title %}
 {% block content %}
     <section class="product-card">
         <div class="container">
@@ -38,7 +39,13 @@
                 <div class="product-offer">
 
                     <span class="number-offer">№ процедуры - {{ offer.id }}</span>
-
+                    {% if offer.additional_data != None %}
+                    {% if offer.additional_data != 'не указано' %}
+                    <div class="product-offer">
+                        <p class="product-additional_data">{{ offer.additional_data }}</p>
+                    </div>
+                    {% endif %}
+                    {% endif %}
                     <div class="product-offer__organization">
                         {% if offer.organisation != None and offer.organisation != '' %}
                         <div class="product-organization">
