@@ -14,11 +14,3 @@ from bs4 import BeautifulSoup
 import datetime
 
 
-options = uc.ChromeOptions()
-options.headless=True
-options.add_argument("--no-sandbox")
-options.add_argument("--disable-setuid-sandbox")
-driver = uc.Chrome(executable_path='/usr/local/bin/chromedriver', options=options)
-print(1)
-driver.get('https://google.com')
-print(2)

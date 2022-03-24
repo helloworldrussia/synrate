@@ -96,16 +96,16 @@
                     </button>
                     <ul>
                         <li>
-                            <a href="{% url 'Users:cabinet' %}">Настройки</a>
+                            <a href="{% url 'Users:cabinet_lk' %}">Настройки</a>
                         </li>
                         <li>
-                            <a href="#">Финансы</a>
+                            <a href="{% url 'Users:cabinet_payment' %}">Финансы</a>
                         </li>
                         <li>
                             <a href="#">Категории</a>
                         </li>
                         <li>
-                            <a href="">Избранное</a>
+                            <a href="{% url 'Users:cabinet_fav' %}">Избранное</a>
                         </li>
                         <li>
                             <a href="#">Тех.поддержка</a>

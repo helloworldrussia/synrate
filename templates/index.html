@@ -77,6 +77,11 @@
                                         <p>{{ offer.location }}</p>
                                     </div>
                                 </div>
+                                {% if offer.offer_start_date != None %}
+                                <div class="offer-organization__time">
+                                    <span class="offer-organization__time__number"> {{ offer.offer_start_date }}</span>
+                                </div>
+                                {% endif %}
                                 {% if offer.offer_end_date != None %}
                                 <div class="offer-organization__time">
                                     <span class="offer-organization__time__number"> {{ offer.offer_end_date }}</span>
