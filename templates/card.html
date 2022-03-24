@@ -3,6 +3,11 @@
 {% block content %}
     <section class="product-card">
         <div class="container">
+            <div style="text-align: center;">
+                <p class="product-offer__text">
+                    <h1>{{ offer.name|truncatechars:120 }}</h1>
+                </p>
+            </div>
             <div class="product-card__wrapper">
                 <div class="product-card__img">
                     <div class="card-img">
@@ -31,9 +36,7 @@
                     <a href="{{ offer.url }}" target="_blank">Перейти на источник</a>
                 </div>
                 <div class="product-offer">
-                    <p class="product-offer__text">
-                        {{ offer.name }}
-                    </p>
+
                     <span class="number-offer">№ процедуры - {{ offer.id }}</span>
 
                     <div class="product-offer__organization">
@@ -73,9 +76,10 @@
                                 {% if offer.offer_end_date != None %}
                                 <span>Актуально до:</span> {{ offer.offer_end_date }} <br>
                                 {% endif %}
+                                <span>Просмотров: {{ offer.views }}</span>
                             </p>
                         </div>
-                        <div class="product-views">
+                        <!--<div class="product-views">
                             <p class="views">
                                 <br>
                                 <br>
@@ -83,7 +87,7 @@
                                 <br>
                                 <span>Просмотров: {{ offer.views }}</span>
                             </p>
-                        </div>
+                        </div>-->
                     </div>
                 </div>
             </div>

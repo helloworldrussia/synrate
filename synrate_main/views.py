@@ -214,7 +214,6 @@ def category(request):
 
 
 def listing(request):
-    print(request)
     and_dict, or_dict = get_filter_qs(request.GET)
     filtering = 0
     try:
