@@ -268,22 +268,22 @@
                             <img src="{% static 'img/nelikvidi.png' %}" class="offer-block__img" alt="">
                         {% endif %}
                         {% if offer.home_name == "tektorg" %}
-                            <img src="{% static 'img/tectorg.png' %}" class="offer-block__img" alt="">
+                        <a href="{{ offer.url }}" target="_blank"><img src="{% static 'img/tectorg.png' %}" class="offer-block__img" alt=""></a>
                         {% endif %}
                         {% if offer.home_name == "tenderpro" %}
-                            <img src="{% static 'img/tender.png' %}" class="offer-block__img" alt="123">
+                        <a href="{{ offer.url }}" target="_blank"><img src="{% static 'img/tender.png' %}" class="offer-block__img" alt=""></a>
                         {% endif %}
                         {% if offer.home_name == "isource" %}
-                            <img src="{% static 'img/isource.png' %}" class="offer-block__img" alt="123">
+                        <a href="{{ offer.url }}" target="_blank"><img src="{% static 'img/isource.png' %}" class="offer-block__img" alt=""></a>
                         {% endif %}
                         {% if offer.home_name == "onlinecontract" %}
-                            <img src="{% static 'img/onlinecontract.png' %}" class="offer-block__img" alt="123">
+                        <a href="{{ offer.url }}" target="_blank"><img src="{% static 'img/onlinecontract.png' %}" class="offer-block__img" alt=""></a>
                         {% endif %}
                         {% if offer.home_name == "roseltorg" %}
-                            <img src="{% static 'img/roseltorg.png' %}" class="offer-block__img" alt="123">
+                            <a href="{{ offer.url }}" target="_blank"><img src="{% static 'img/roseltorg.png' %}" class="offer-block__img" alt=""></a>
                         {% endif %}
                         {% if offer.home_name == "etpgpb" %}
-                            <img src="{% static 'img/etpgpb.png' %}" class="offer-block__img" alt="123">
+                        <a href="{{ offer.url }}" target="_blank"><img src="{% static 'img/etpgpb.png' %}" class="offer-block__img" alt=""></a>
                         {% endif %}
                     </div>
                     <a href="{% url 'synrate_main:detail_view' id=offer.id %}" class="detailhref">
