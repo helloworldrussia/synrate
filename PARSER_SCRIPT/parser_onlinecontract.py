@@ -10,7 +10,7 @@ from bs4 import BeautifulSoup
 class ParserOnlineContract(Parser):
     def __init__(self):
         super.__init__
-        self.url = "https://onlinecontract.ru/tenders?limit=100&page={}"
+        self.url = "https://onlinecontract.ru/sale?limit=100&page={}"
         self.procedure_id = None
         self.response_item = None
 

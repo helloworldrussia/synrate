@@ -68,7 +68,7 @@ class ParserNelikvidy(Parser):
 
             self.response = requests.get(self.url+kategory[0]+'/sell', headers={'User-Agent': UserAgent().chrome},
                                          verify=self.verify)
-            print(self.response, self.url+kategory[0])
+            print(self.response, self.url+kategory[0]+'/sell')
             self.response.encoding = 'utf-8'
             self.soup = BeautifulSoup(self.response.content, 'html.parser')
             # Определение колличества страниц
