@@ -16,6 +16,7 @@ class ParserFabrikant(Parser):
         self.procedure_id = None
         self.response_item = None
         self.core = 'https://fabrikant.ru'
+        self.core_www = 'https://www.fabrikant.ru'
         self.monthlist = {
             "янв": 1,
             "фев": 2,
@@ -59,7 +60,7 @@ class ParserFabrikant(Parser):
             for offer in offers:
                 z = requests.post("https://synrate.ru/api/offers/create",
                                   json=offer)
-                print(f'SEND {z}\n{offer}')
+                print(f'SEND {z}')
             time.sleep(random.randint(1, 7))
             print('Пауза')
 
@@ -72,7 +73,6 @@ class ParserFabrikant(Parser):
 
     def get_page_items(self, soup):
         items_divs = soup.find("section", attrs={"class":"marketplace-list"}).find_all("div", attrs={"class": "innerGrid"})
-        print(f'Найдено: {len(items_divs)} заявок')
         offers = []
         for div in items_divs:
             # получаем данные из элементов
@@ -88,7 +88,7 @@ class ParserFabrikant(Parser):
             text = answer['text']
             name = answer['name']
 
-            link = self.core + link.replace(self.core, '')
+            link = self.core + link.replace(self.core, '').replace(self.core_www, '')
             price = self.make_price_good(price)
             start_date, end_date = self.get_date(date_divs)
 
@@ -154,11 +154,7 @@ class ParserFabrikant(Parser):
         new_name = self.make_string(new_name.splitlines())
 
         answer['name'] = new_name
-
-        if len(new_name) > 120:
-            answer['text'] = new_name
-        else:
-            answer['text'] = ""
+        answer['text'] = new_name
 
         return answer
 
