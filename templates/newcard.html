@@ -127,156 +127,76 @@
                     Подобные объявления:
                 </h2>
                 <div class="ads-block">
-                    <div class="offer-block">
-                        <div class="offer-block-img">
-                            <img src="img/offer-img.png" class="offer-block__img" alt="">
+                    {% for offer in offers %}
+            <div class="offers-block">
+                <div class="offer-block">
+                    <div class="offer-block-img">
+                            {% if offer.home_name == "nelikvidi" %}
+                        <a href="{{ offer.url }}" target="_blank"><img src="{% static 'img/nelikvidi.png' %}" class="offer-block__img" alt=""></a>
+                            {% endif %}
+                            {% if offer.home_name == "tektorg" %}
+                            <a href="{{ offer.url }}" target="_blank"><img src="{% static 'img/tectorg.png' %}" class="offer-block__img" alt=""></a>
+                            {% endif %}
+                            {% if offer.home_name == "tenderpro" %}
+                            <a href="{{ offer.url }}" target="_blank"><img src="{% static 'img/tender.png' %}" class="offer-block__img" alt=""></a>
+                            {% endif %}
+                            {% if offer.home_name == "isource" %}
+                            <a href="{{ offer.url }}" target="_blank"><img src="{% static 'img/isource.png' %}" class="offer-block__img" alt=""></a>
+                            {% endif %}
+                            {% if offer.home_name == "onlinecontract" %}
+                            <a href="{{ offer.url }}" target="_blank"><img src="{% static 'img/onlinecontract.png' %}" class="offer-block__img" alt=""></a>
+                            {% endif %}
+                            {% if offer.home_name == "roseltorg" %}
+                                <a href="{{ offer.url }}" target="_blank"><img src="{% static 'img/roseltorg.png' %}" class="offer-block__img" alt=""></a>
+                            {% endif %}
+                            {% if offer.home_name == "etpgpb" %}
+                            <a href="{{ offer.url }}" target="_blank"><img src="{% static 'img/etp_hd.png' %}" class="offer-block__img" alt=""></a>
+                            {% endif %}
+                            {% if offer.home_name == "fabrikant" %}
+                            <a href="{{ offer.url }}" target="_blank"><img src="{% static 'img/fabrikant.png' %}" class="offer-block__img" alt=""></a>
+                            {% endif %}
                         </div>
-                        <a href="#">
+                        <a href="{% url 'synrate_main:detail_view' id=offer.id %}" class="detailhref">
                             <div class="offer-wrapper">
                                 <p class="offer-wrapper__text">
-                                    Реализуем трубу стальную диаметром 530мм. Труба чистая и очищенная. Размеры труб 530х7 530х8 530х12 мм. Осуществляем резку трубы в нужный вам размер, пескоструйную обработку. Труба применяется под металлоконструкции, в трубопроводах промышленного.
+                                    {{ offer.name }}
                                 </p>
                                 <div class="offer-number">
-                                    <span class="number-offer">№ процедуры - йцукенгл 12345678</span>
-                                    <span class="number-procedure">12121212.00</span>
+                                    <span class="number-offer">№ процедуры - {{ offer.id }}</span>
+                                    {% if offer.price != 0 %}
+                                        <span class="number-procedure">{{ offer.price }}</span>
+                                    {% endif %}
                                 </div>
                                 <div class="offer-organization">
                                     <div class="offer-organization-wrapper">
+                                        {% if offer.organisation != None and offer.organisation != '' %}
                                         <div class="offer-organization__name">
-                                            <p>ООО "Тестовая организация 555"</p>
+                                            <p>{{ offer.organisation }}</p>
                                         </div>
+                                        {% endif %}
+                                        {% if offer.location != None and offer.location != '' %}
                                         <div class="offer-organization__address">
-                                            <p>Московская обл.</p>
+                                            <p>{{ offer.location }}</p>
                                         </div>
+                                        {% endif %}
                                     </div>
+                                    {% if offer.offer_start_date != None %}
                                     <div class="offer-organization__time">
-                                        <span class="offer-organization__time__number">19 окт.,</span>
-                                        <span class="offer-organization__time__time"> 16:43</span>
+                                        <span class="offer-organization__time__number"> {{ offer.offer_start_date }}</span>
                                     </div>
+                                    {% endif %}
+                                    {% if offer.offer_end_date != None %}
+                                    <div class="offer-organization__time">
+                                        <span class="offer-organization__time__number"> {{ offer.offer_end_date }}</span>
+                                    </div>
+                                    {% endif %}
                                 </div>
                             </div>
                         </a>
                     </div>
-                    <div class="offer-block">
-                        <div class="offer-block-img">
-                            <img src="img/offer-img.png" class="offer-block__img" alt="">
-                        </div>
-                        <a href="#">
-                            <div class="offer-wrapper">
-                                <p class="offer-wrapper__text">
-                                    Реализуем трубу стальную диаметром 530мм. Труба чистая и очищенная. Размеры труб 530х7 530х8 530х12 мм. Осуществляем резку трубы в нужный вам размер, пескоструйную обработку. Труба применяется под металлоконструкции, в трубопроводах промышленного.
-                                </p>
-                                <div class="offer-number">
-                                    <span class="number-offer">№ процедуры - йцукенгл 12345678</span>
-                                    <span class="number-procedure">12121212.00</span>
-                                </div>
-                                <div class="offer-organization">
-                                    <div class="offer-organization-wrapper">
-                                        <div class="offer-organization__name">
-                                            <p>ООО "Тестовая организация 555"</p>
-                                        </div>
-                                        <div class="offer-organization__address">
-                                            <p>Московская обл.</p>
-                                        </div>
-                                    </div>
-                                    <div class="offer-organization__time">
-                                        <span class="offer-organization__time__number">19 окт.,</span>
-                                        <span class="offer-organization__time__time"> 16:43</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="offer-block">
-                        <div class="offer-block-img">
-                            <img src="img/offer-img.png" class="offer-block__img" alt="">
-                        </div>
-                        <a href="#">
-                            <div class="offer-wrapper">
-                                <p class="offer-wrapper__text">
-                                    Реализуем трубу стальную диаметром 530мм. Труба чистая и очищенная. Размеры труб 530х7 530х8 530х12 мм. Осуществляем резку трубы в нужный вам размер, пескоструйную обработку. Труба применяется под металлоконструкции, в трубопроводах промышленного.
-                                </p>
-                                <div class="offer-number">
-                                    <span class="number-offer">№ процедуры - йцукенгл 12345678</span>
-                                    <span class="number-procedure">12121212.00</span>
-                                </div>
-                                <div class="offer-organization">
-                                    <div class="offer-organization-wrapper">
-                                        <div class="offer-organization__name">
-                                            <p>ООО "Тестовая организация 555"</p>
-                                        </div>
-                                        <div class="offer-organization__address">
-                                            <p>Московская обл.</p>
-                                        </div>
-                                    </div>
-                                    <div class="offer-organization__time">
-                                        <span class="offer-organization__time__number">19 окт.,</span>
-                                        <span class="offer-organization__time__time"> 16:43</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="offer-block">
-                        <div class="offer-block-img">
-                            <img src="img/offer-img.png" class="offer-block__img" alt="">
-                        </div>
-                        <a href="#">
-                            <div class="offer-wrapper">
-                                <p class="offer-wrapper__text">
-                                    Реализуем трубу стальную диаметром 530мм. Труба чистая и очищенная. Размеры труб 530х7 530х8 530х12 мм. Осуществляем резку трубы в нужный вам размер, пескоструйную обработку. Труба применяется под металлоконструкции, в трубопроводах промышленного.
-                                </p>
-                                <div class="offer-number">
-                                    <span class="number-offer">№ процедуры - йцукенгл 12345678</span>
-                                    <span class="number-procedure">12121212.00</span>
-                                </div>
-                                <div class="offer-organization">
-                                    <div class="offer-organization-wrapper">
-                                        <div class="offer-organization__name">
-                                            <p>ООО "Тестовая организация 555"</p>
-                                        </div>
-                                        <div class="offer-organization__address">
-                                            <p>Московская обл.</p>
-                                        </div>
-                                    </div>
-                                    <div class="offer-organization__time">
-                                        <span class="offer-organization__time__number">19 окт.,</span>
-                                        <span class="offer-organization__time__time"> 16:43</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="offer-block">
-                        <div class="offer-block-img">
-                            <img src="img/offer-img.png" class="offer-block__img" alt="">
-                        </div>
-                        <a href="#">
-                            <div class="offer-wrapper">
-                                <p class="offer-wrapper__text">
-                                    Реализуем трубу стальную диаметром 530мм. Труба чистая и очищенная. Размеры труб 530х7 530х8 530х12 мм. Осуществляем резку трубы в нужный вам размер, пескоструйную обработку. Труба применяется под металлоконструкции, в трубопроводах промышленного.
-                                </p>
-                                <div class="offer-number">
-                                    <span class="number-offer">№ процедуры - йцукенгл 12345678</span>
-                                    <span class="number-procedure">12121212.00</span>
-                                </div>
-                                <div class="offer-organization">
-                                    <div class="offer-organization-wrapper">
-                                        <div class="offer-organization__name">
-                                            <p>ООО "Тестовая организация 555"</p>
-                                        </div>
-                                        <div class="offer-organization__address">
-                                            <p>Московская обл.</p>
-                                        </div>
-                                    </div>
-                                    <div class="offer-organization__time">
-                                        <span class="offer-organization__time__number">19 окт.,</span>
-                                        <span class="offer-organization__time__time"> 16:43</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                    </div> 
+
+                </div>
+                {% endfor %}
                 </div>
             </div>
         </div>
