@@ -20,7 +20,6 @@ class ParserOnlineContract(Parser):
             print(i)
             self.response = requests.get(self.url.format(i), headers={'User-Agent': "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Mobile Safari/537.36"}, verify=False).content. \
                 decode("utf8")
-            print(self.response)
             self.soup = BeautifulSoup(self.response, 'html.parser')
             self.post_links = self.soup.find_all("a", attrs={"class": "g-color-black"})
             self.post_links = list(set(self.post_links))
@@ -58,7 +57,6 @@ class ParserOnlineContract(Parser):
                 try:
                   print(f'Online: {z.json()}  {J}')
                 except Exception as ex:
-                  print(ex)
                   print(f'Online: {z}  {J}')
                 time.sleep(random.randint(1, 5) / 10)
                 # ---------------------
