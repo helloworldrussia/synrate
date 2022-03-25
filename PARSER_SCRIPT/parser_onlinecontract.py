@@ -38,9 +38,7 @@ class ParserOnlineContract(Parser):
                 except:
                     date = None
                 null = None
-
-                z = requests.post("https://synrate.ru/api/offers/create",
-                                  json={"name": self.response_item["Name"].replace('"', ''),
+                J = {"name": self.response_item["Name"].replace('"', ''),
                                         "location": "",
                                         "home_name": "onlinecontract",
                                         "offer_type": "Продажа",
@@ -54,22 +52,9 @@ class ParserOnlineContract(Parser):
                                         "url": f"https://onlinecontract.ru/tenders/{self.response_item['IDA']}"
                                         #"category": "Не определена", "subcategory": "не определена"
                                         }
-                                  )
+                z = requests.post("https://synrate.ru/api/offers/create",
+                                  json=J)
                 # TESTING -------------
-                J = {"name": self.response_item["Name"].replace('"', ''),
-                                        "location": "",
-                                        "home_name": "onlinecontract",
-                                        "offer_type": "Продажа",
-                                        "offer_start_date": null,
-                                        "offer_end_date": date,
-                                        "owner": "",
-                                        "ownercontact": "",
-                                        "offer_price": int(float(self.response_item["Price"])),
-                                        "additional_data": self.response_item["OwnerCondi"],
-                                        "organisation": "",
-                                        "url": f"https://onlinecontract.ru/tenders/{self.response_item['IDA']}",
-                                        "category": "Не определена", "subcategory": "не определена"
-                                        }
                 try:
                   print(f'Online: {z.json()}  {J}')
                 except Exception as ex:

@@ -122,7 +122,7 @@ class ParserTektorg(Parser):
             if name is None:
                 continue
             print(start_date, fin_date)
-            j_dict = {"name": name.replace('"', ''), "location": "РФ", "home_name": "tektorg",
+            J = {"name": name.replace('"', ''), "location": "РФ", "home_name": "tektorg",
                                     "offer_type": "Продажа",
                                     #"offer_start_date": str(start_date),
                                     #"offer_end_date": str(fin_date),
@@ -133,15 +133,14 @@ class ParserTektorg(Parser):
                       }
 
             if start_date is not None:
-                j_dict["offer_start_date"] = str(start_date)
+                J["offer_start_date"] = str(start_date)
             if fin_date is not None:
-                j_dict["offer_end_date"] = str(fin_date)
+                J["offer_end_date"] = str(fin_date)
 
             z = requests.post("https://synrate.ru/api/offers/create",
-                              json=j_dict)
+                              json=J)
 
             # TESTING -------------
-            J = j_dict
             print(f'TECH: {z.json()}  {J}')
             time.sleep(random.randint(1, 5) / 10)
             # ---------------------

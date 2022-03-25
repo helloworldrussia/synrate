@@ -44,24 +44,19 @@ class ParserTender(Parser):
                     start_date = datetime.date(int(x[2]), int(x[1]), int(x[0]))
                     z = finishes.split(".")
                     fin_date = datetime.date(int(z[2]), int(z[1]), int(z[0]))
-                    z = requests.post("https://synrate.ru/api/offers/create",
-                                      json={"name": name.replace('"', ''), "location": "РФ", "home_name": "tenderpro",
+                    J = {"name": name.replace('"', ''), "location": "РФ", "home_name": "tenderpro",
                                             "offer_type": "Продажа", "offer_start_date": str(start_date),
                                             "offer_end_date": str(fin_date),
                                             "owner": company.replace('"', ''), "ownercontact": "временно недоступно", "offer_price": 0,
                                             "additional_data": "не указано", "organisation": company.replace('"', ''),
                                             "url": url
                                             #"category": "Не определена", "subcategory": "не определена"
-                                            })
+                                            }
+                    z = requests.post("https://synrate.ru/api/offers/create",
+                                      json=J)
 
                     # TESTING -------------
-                    J = {"name": name.replace('"', ''), "location": "РФ", "home_name": "tenderpro",
-                                            "offer_type": "Продажа", "offer_start_date": str(start_date),
-                                            "offer_end_date": str(fin_date),
-                                            "owner": company.replace('"', ''), "ownercontact": "временно недоступно", "offer_price": 0,
-                                            "additional_data": "не указано", "organisation": company.replace('"', ''), "url": url,
-                         #                   "category": "Не определена", "subcategory": "не определена"
-                         }
+
                     print(f'Tender-pro: {z.json()}  {J}')
                     time.sleep(random.randint(1, 5) / 10)
                     # ---------------------

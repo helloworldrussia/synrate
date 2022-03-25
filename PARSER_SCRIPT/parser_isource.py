@@ -38,8 +38,7 @@ class ParserSource(Parser):
                     organisation = self.response_item["supplier_name"]
                 else:
                     organisation = ''
-                z = requests.post("https://synrate.ru/api/offers/create",
-                                  json={"name": self.response_item["name"].replace('"', ''),
+                J = {"name": self.response_item["name"].replace('"', ''),
                                         "location": self.response_item["region"][0]["name"],
                                         "home_name": "isource",
                                         "offer_type": "Продажа",
@@ -55,7 +54,8 @@ class ParserSource(Parser):
                                         "category": category["transliteration_name"],
                                         "subcategory": self.response_item["category"][0]["name"]
                                         }
-                                  )
+                z = requests.post("https://synrate.ru/api/offers/create",
+                                  json=J)
 
                 # try:
                 #     if z.json()["name"][0].find("already exists") != -1:
@@ -67,23 +67,6 @@ class ParserSource(Parser):
                 #     counter = 0
                 #     z = None
                 # TESTING -----------------
-
-                J = {"name": self.response_item["name"].replace('"', ''),
-                                        "location": self.response_item["region"][0]["name"],
-                                        "home_name": "isource",
-                                        "offer_type": "Продажа",
-                                        "offer_start_date": self.response_item["date_begin"].split(" ")[0],
-                                        "offer_end_date": self.response_item["date_end"].split(" ")[0],
-                                        "owner": self.response_item["author_full_name"].replace('"', ''),
-                                        "ownercontact": self.response_item["author_phone"],
-                                        "offer_price": round(float(self.response_item["current_fix_price_without_nds"])),
-                                        "additional_data": "не указано",
-                                        "organisation": organisation.replace('"', ''),
-                                        "url": "https://reserve.isource.ru/trades/item/"
-                                               + self.response_item["auction_transliteration_name"]
-                                        #"category": category["transliteration_name"],
-                                        #"subcategory": self.response_item["category"][0]["name"]
-                                        }
                 try:
                     print(f'Isource: {z.json()}  {J}')
                 except:

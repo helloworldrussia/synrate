@@ -83,18 +83,6 @@ class RoseltorgParser(Parser):
 
                         if row.find("span").getText() == "Место поставки":
                             place = row.find("p").getText()
-
-                z = requests.post("https://synrate.ru/api/offers/create",
-                                  json={"name": lot_name.replace('"', ''), "location": "РФ", "home_name": "roseltorg",
-                                        "offer_type": "Продажа", "offer_start_date": str(publish_date),
-                                        "offer_end_date": str(finish_date),
-                                        "owner": "недоступно", "ownercontact": "временно недоступно",
-                                        "offer_price": lot_price,
-                                        #"subcategory": "Не определена",
-                                        #"category": "Не определена",
-                                        "additional_data": "не указано", "organisation": organisation.replace('"', ''),
-                                        "url": self.url+link})
-
                 J = {"name": lot_name.replace('"', ''), "location": "РФ", "home_name": "roseltorg",
                                         "offer_type": "Продажа", "offer_start_date": str(publish_date),
                                         "offer_end_date": str(finish_date),
@@ -104,6 +92,8 @@ class RoseltorgParser(Parser):
                                         #"category": "Не определена",
                                         "additional_data": "не указано", "organisation": organisation.replace('"', ''),
                                         "url": self.url+link}
+
+                z = requests.post("https://synrate.ru/api/offers/create", json=J)
 
                 print(f'ROSeltorg: {z.json()}  {J}')
                 time.sleep(random.randint(1, 5)/10)
