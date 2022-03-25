@@ -15,12 +15,13 @@ class RoseltorgParser(Parser):
     def parse(self):
 
         for i in range(1, 50):
-            page_url = self.url+"https://www.roseltorg.ru/search/sale?status%5B%5D=0&category%5B%5D=273&category%5B%5D=274&category%5B%5D=275&category%5B%5D=276&category%5B%5D=277&category%5B%5D=278&category%5B%5D=279&category%5B%5D=280&category%5B%5D=281&category%5B%5D=282&category%5B%5D=283&category%5B%5D=284&category%5B%5D=285&category%5B%5D=286&category%5B%5D=287&category%5B%5D=288&category%5B%5D=289&category%5B%5D=290&category%5B%5D=291&category%5B%5D=292&category%5B%5D=293&category%5B%5D=294&category%5B%5D=295&category%5B%5D=296&category%5B%5D=297&category%5B%5D=298&category%5B%5D=299&category%5B%5D=300&category%5B%5D=301&category%5B%5D=302&category%5B%5D=303&category%5B%5D=304&category%5B%5D=305&category%5B%5D=306&category%5B%5D=307&category%5B%5D=308&category%5B%5D=309&category%5B%5D=310&category%5B%5D=311&category%5B%5D=312&category%5B%5D=313&category%5B%5D=314&category%5B%5D=315&category%5B%5D=316&category%5B%5D=317&category%5B%5D=318&category%5B%5D=319&category%5B%5D=320&category%5B%5D=321&category%5B%5D=322&category%5B%5D=323&category%5B%5D=324&category%5B%5D=325&category%5B%5D=326&category%5B%5D=327&category%5B%5D=329&category%5B%5D=330&currency=all&page={}&from={}".format(i, i*10)
+            page_url = self.url+"/search/sale?status%5B%5D=0&category%5B%5D=273&category%5B%5D=274&category%5B%5D=275&category%5B%5D=276&category%5B%5D=277&category%5B%5D=278&category%5B%5D=279&category%5B%5D=280&category%5B%5D=281&category%5B%5D=282&category%5B%5D=283&category%5B%5D=284&category%5B%5D=285&category%5B%5D=286&category%5B%5D=287&category%5B%5D=288&category%5B%5D=289&category%5B%5D=290&category%5B%5D=291&category%5B%5D=292&category%5B%5D=293&category%5B%5D=294&category%5B%5D=295&category%5B%5D=296&category%5B%5D=297&category%5B%5D=298&category%5B%5D=299&category%5B%5D=300&category%5B%5D=301&category%5B%5D=302&category%5B%5D=303&category%5B%5D=304&category%5B%5D=305&category%5B%5D=306&category%5B%5D=307&category%5B%5D=308&category%5B%5D=309&category%5B%5D=310&category%5B%5D=311&category%5B%5D=312&category%5B%5D=313&category%5B%5D=314&category%5B%5D=315&category%5B%5D=316&category%5B%5D=317&category%5B%5D=318&category%5B%5D=319&category%5B%5D=320&category%5B%5D=321&category%5B%5D=322&category%5B%5D=323&category%5B%5D=324&category%5B%5D=325&category%5B%5D=326&category%5B%5D=327&category%5B%5D=329&category%5B%5D=330&currency=all&page={}&from={}".format(i, i*10)
             print(page_url)
             self.response = requests.get(page_url, headers={'User-Agent': UserAgent().chrome}).content.decode("utf8")
             self.soup = BeautifulSoup(self.response, "html.parser")
             for link in self.soup.find_all("a", {"class": "search-results__link"}):
                 self.post_links.append(link.attrs['href'])
+            time.sleep(random.randint(1, 7))
         # Удаление дубликатов списка.
         self.post_links = list(set(self.post_links))
 
@@ -89,8 +90,8 @@ class RoseltorgParser(Parser):
                                         "offer_end_date": str(finish_date),
                                         "owner": "недоступно", "ownercontact": "временно недоступно",
                                         "offer_price": lot_price,
-                                        "subcategory": "Не определена",
-                                        "category": "Не определена",
+                                        #"subcategory": "Не определена",
+                                        #"category": "Не определена",
                                         "additional_data": "не указано", "organisation": organisation.replace('"', ''),
                                         "url": self.url+link})
 
@@ -99,12 +100,12 @@ class RoseltorgParser(Parser):
                                         "offer_end_date": str(finish_date),
                                         "owner": "недоступно", "ownercontact": "временно недоступно",
                                         "offer_price": lot_price,
-                                        "subcategory": "Не определена",
-                                        "category": "Не определена",
+                                        #"subcategory": "Не определена",
+                                        #"category": "Не определена",
                                         "additional_data": "не указано", "organisation": organisation.replace('"', ''),
                                         "url": self.url+link}
 
-                # print(f'ROSeltorg: {z.json()}  {J}')
+                print(f'ROSeltorg: {z.json()}  {J}')
                 time.sleep(random.randint(1, 5)/10)
 
 

@@ -127,8 +127,10 @@ class ParserTektorg(Parser):
                                     #"offer_start_date": str(start_date),
                                     #"offer_end_date": str(fin_date),
                                     "owner": org_owner.replace('"', ''), "ownercontact": org_phone, "offer_price": 0,
-                                    "additional_data": "не указано", "organisation": org_name.replace('"', ''), "url": item_url,
-                                    "category": "Не определена", "subcategory": "не определена"}
+                                    "additional_data": "не указано", "organisation": org_name.replace('"', ''),
+                                    "url": item_url
+                                    #"category": "Не определена", "subcategory": "не определена"
+                      }
 
             if start_date is not None:
                 j_dict["offer_start_date"] = str(start_date)

@@ -95,8 +95,8 @@ class ParserEtpgpb(Parser):
                                         "offer_type": offer_type, "offer_start_date": start_date, "offer_end_date": end_date,
                                         #"owner": None, "ownercontact": None,
                                         "offer_price": price,
-                                        "additional_data": text, "organisation": company, "url": link,
-                                        "category": "Не определена", "subcategory": "не определена"
+                                        "additional_data": text, "organisation": company, "url": link
+                                        #"category": "Не определена", "subcategory": "не определена"
                                         }
 
             cleaned_data.append(data_dict)

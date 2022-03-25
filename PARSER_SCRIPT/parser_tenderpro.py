@@ -49,8 +49,10 @@ class ParserTender(Parser):
                                             "offer_type": "Продажа", "offer_start_date": str(start_date),
                                             "offer_end_date": str(fin_date),
                                             "owner": company.replace('"', ''), "ownercontact": "временно недоступно", "offer_price": 0,
-                                            "additional_data": "не указано", "organisation": company.replace('"', ''), "url": url,
-                                            "category": "Не определена", "subcategory": "не определена"})
+                                            "additional_data": "не указано", "organisation": company.replace('"', ''),
+                                            "url": url
+                                            #"category": "Не определена", "subcategory": "не определена"
+                                            })
 
                     # TESTING -------------
                     J = {"name": name.replace('"', ''), "location": "РФ", "home_name": "tenderpro",
@@ -58,7 +60,8 @@ class ParserTender(Parser):
                                             "offer_end_date": str(fin_date),
                                             "owner": company.replace('"', ''), "ownercontact": "временно недоступно", "offer_price": 0,
                                             "additional_data": "не указано", "organisation": company.replace('"', ''), "url": url,
-                                            "category": "Не определена", "subcategory": "не определена"}
+                         #                   "category": "Не определена", "subcategory": "не определена"
+                         }
                     print(f'Tender-pro: {z.json()}  {J}')
                     time.sleep(random.randint(1, 5) / 10)
                     # ---------------------
