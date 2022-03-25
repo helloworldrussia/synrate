@@ -1,10 +1,10 @@
-﻿{% extends 'base.html' %}
+{% extends 'base.html' %}
 {% load static %}
 {% block title %}{{ offer.name|truncatechars:120 }}{% endblock title %}
 {% block content %}
     <section class="product-card">
         <div class="container">
-            <div class="">
+            <div style="text-align: center; margin-left: 120px; margin-right: 100px;">
                 <p class="product-offer__text">
                     <h1>{{ offer.name|truncatechars:120 }}</h1>
                 </p>
@@ -37,34 +37,55 @@
                     <a href="{{ offer.url }}" target="_blank">Перейти на источник</a>
                 </div>
                 <div class="product-offer">
-
-                    <span class="number-offer">№ процедуры - {{ offer.id }}</span>
-                    {% if offer.additional_data != None %}
-                    {% if offer.additional_data != 'не указано' %}
-                    <div class="product-offer">
-                        <p class="product-additional_data">{{ offer.additional_data }}</p>
-                    </div>
-                    {% endif %}
-                    {% endif %}
-                    <div class="product-offer__organization">
-                        {% if offer.organisation != None and offer.organisation != '' %}
-                        <div class="product-organization">
-                            <p class="product-organization-name"><span>Организация:</span> {{ offer.organisation }}</p>
-                        </div>
-                        {% elif offer.location != None and offer.location != '' %}
-                        <div class="product-organization-region">
-                            <p class="product-organization-region-name">
-                                <span>Регион:</span> {{ offer.location }}
-                            </p>
-                        </div>
-                        <div class="product-organization-deal product_flex">
-                            {% elif offer.type != None %}
+                    <table>
+                      <tr>
+                        <td><span class="number-offer">№ процедуры - {{ offer.id }}</span></td>
+                      </tr>
+                      <tr>
+                        <td>
+                            {% if offer.additional_data != None %}
+                            {% if offer.additional_data != 'не указано' %}
+                            <div class="product-offer">
+                                <p class="product-additional_data">{{ offer.additional_data }}</p>
+                            </div>
+                            {% endif %}
+                            {% endif %}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                            {% if offer.organisation != None and offer.organisation != '' %}
+                            <div class="product-organization">
+                                <p class="product-organization-name"><span>Организация:</span> {{ offer.organisation }}</p>
+                            </div>
+                            {% endif %}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                            <div class="product-offer__organization">
+                                {% if offer.location != None and offer.location != '' %}
+                                <div class="product-organization-region">
+                                    <p class="product-organization-region-name">
+                                        <span>Регион:</span> {{ offer.location }}</p>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                            {% if offer.type != None %}
                             <div class="product-organization-deal__type">
                                 <p class="product-organization-sale">
                                     <span>Тип сделки:</span> {{ offer.type }}
                                 </p>
                             </div>
                             {% endif %}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
                             <div class="product-organization-deal-price">
                                 <p class="product-organization-price">
                                     {% if offer.offer_price != None and offer.offer_price != 0 %}
@@ -72,10 +93,11 @@
                                     {% endif %}
                                 </p>
                             </div>
-                        </div>
-                    </div>
-                    <div class="product-offer__time product_flex">
-                        <div class="product-date">
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                            <div class="product-date">
                             <p class="product-date-time">
                                 {% if offer.offer_start_date != None %}
                                 <span>Размещено:</span> {{ offer.offer_start_date }} <br>
@@ -86,16 +108,10 @@
                                 <span>Просмотров: {{ offer.views }}</span>
                             </p>
                         </div>
-                        <!--<div class="product-views">
-                            <p class="views">
-                                <br>
-                                <br>
-                                <br>
-                                <br>
-                                <span>Просмотров: {{ offer.views }}</span>
-                            </p>
-                        </div>-->
-                    </div>
+                        </td>
+                      </tr>
+
+                    </table>
                 </div>
             </div>
             <!--<div class="ad-unit"></div>-->

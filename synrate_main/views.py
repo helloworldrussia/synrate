@@ -195,7 +195,7 @@ def detail_info(request, id):
     t.views += 1
     t.save()
     t = Offer.objects.get(id=id)
-    return render(request, 'card.html', {"offer": t})
+    return render(request, 'newcard.html', {"offer": t})
 
 
 def category(request):
