@@ -45,6 +45,7 @@ def get_filter_qs(data):
     else:
         return 0, 0
 
+
 def get_filters(data):
     from_filter, search_filter, time_filter = 0, 0, 0
 
