@@ -217,6 +217,7 @@
                               <option {% if from_filter == 'roseltorg' %}selected{% endif%} value="roseltorg">roseltorg.ru</option>
                               <option {% if from_filter == 'isource' %}selected{% endif%} value="isource">reserve.isource.ru</option>
                               <option {% if from_filter == 'etpgpb' %}selected{% endif%} value="etpgpb">etpgpb.ru</option>
+                              <option {% if from_filter == 'fabrikant' %}selected{% endif%} value="fabrikant">fabrikant.ru</option>
                             </select>
                        </li>
                         <li>
@@ -285,6 +286,9 @@
                         {% endif %}
                         {% if offer.home_name == "etpgpb" %}
                         <a href="{{ offer.url }}" target="_blank"><img src="{% static 'img/etp_hd.png' %}" class="offer-block__img" alt=""></a>
+                        {% endif %}
+                        {% if offer.home_name == "fabrikant" %}
+                        <a href="{{ offer.url }}" target="_blank"><img src="{% static 'img/fabrikant.png' %}" class="offer-block__img" alt=""></a>
                         {% endif %}
                     </div>
                     <a href="{% url 'synrate_main:detail_view' id=offer.id %}" class="detailhref">

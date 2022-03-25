@@ -16,6 +16,32 @@ class ParserFabrikant(Parser):
         self.procedure_id = None
         self.response_item = None
         self.core = 'https://fabrikant.ru'
+        self.monthlist = {
+            "янв": 1,
+            "фев": 2,
+            "мар": 3,
+            "апр": 4,
+            "май": 5,
+            "июн": 6,
+            "июл": 7,
+            "авг": 8,
+            "сент": 9,
+            "окт": 10,
+            "ноя": 11,
+            "дек": 12,
+            "янвр": 1,
+            "февр": 2,
+            "март": 3,
+            "апрл": 4,
+            "июнь": 6,
+            "июль": 7,
+            "авгс": 8,
+            "сентб": 9,
+            "октб": 10,
+            "нояб": 11,
+            "дека": 12,
+            "декаб": 12,
+        }
 
     def parse(self):
         self.soup = self.get_page_soup(self.url)
@@ -71,7 +97,7 @@ class ParserFabrikant(Parser):
                          #"offer_type": offer_type,
                          "offer_start_date": start_date, "offer_end_date": end_date,
                          "additional_data": text, "offer_price": price, "organisation": company,
-                         "url": link, "category": "Не определена", "subcategory": "не определена"
+                         "url": link#, "category": "Не определена", "subcategory": "не определена"
                          }
             offers.append(offer_obj)
             for key in offer_obj:
@@ -100,6 +126,12 @@ class ParserFabrikant(Parser):
             end_date = date_divs[1].find("span", attrs={"class": "dt"}).getText()
         except:
             end_date = None
+
+        if start_date is not None:
+            start_date = self.make_date_good(start_date)
+        if end_date is not None:
+            end_date = self.make_date_good(end_date)
+
         return start_date, end_date
 
     def make_name_good(self, name):
@@ -111,7 +143,7 @@ class ParserFabrikant(Parser):
             name = name.replace('Местоположение:', '').replace(region, '')
             print(f'make_name_good:\n{name}\n{region}')
         else:
-            answer['region'] = None
+            answer['region'] = ""
 
         name = name.split(' ')
         while '' in name:
@@ -125,7 +157,7 @@ class ParserFabrikant(Parser):
         if len(new_name) > 120:
             answer['text'] = new_name
         else:
-            answer['text'] = None
+            answer['text'] = ""
 
         return answer
 
@@ -138,6 +170,11 @@ class ParserFabrikant(Parser):
                 new_line += f" {word}"
             i += 1
         return new_line
+
+    def make_date_good(self, date):
+        date = date.split(' ')
+        date = f'{date[2]}-{self.monthlist[f"{date[1]}"]}-{date[0]}'
+        return date
 
 
 if __name__ == '__main__':

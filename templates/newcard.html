@@ -33,6 +33,9 @@
                         {% if offer.home_name == "etpgpb" %}
                         <a href="{{ offer.url }}" target="_blank"><img src="{% static 'img/etpgpb.png' %}" class="offer-block__img" alt=""></a>
                         {% endif %}
+                        {% if offer.home_name == "fabrikant" %}
+                        <a href="{{ offer.url }}" target="_blank"><img src="{% static 'img/fabrikant.png' %}" class="offer-block__img" alt=""></a>
+                        {% endif %}
                     </div>
                     <a href="{{ offer.url }}" target="_blank">Перейти на источник</a>
                 </div>

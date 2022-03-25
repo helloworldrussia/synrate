@@ -61,6 +61,9 @@
                         {% if offer.home_name == "etpgpb" %}
                             <img src="{% static 'img/etpgpb.png' %}" class="offer-block__img" alt="">
                         {% endif %}
+                        {% if offer.home_name == "fabrikant" %}
+                            <img src="{% static 'img/fabrikant.png' %}" class="offer-block__img" alt="">
+                        {% endif %}
                     </div>
                     <a href="{% url 'synrate_main:detail_view' id=offer.id %}" class="detailhref">
                         <div class="offer-wrapper">
