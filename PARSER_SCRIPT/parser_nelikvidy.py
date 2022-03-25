@@ -181,9 +181,9 @@ class ParserNelikvidy(Parser):
                 offer = {"name": name.replace('"', ''), "location": region, "home_name": "nelikvidi",
                                         "offer_type": offer_type, "offer_start_date": str(date),
                                         "owner": owner.replace('"', ''), "ownercontact": "временно недоступно", "offer_price": price,
-                                        "additional_data": "не указано", "organisation": organisation.replace('"', ''), "url": link,
-                                        "category": breadcrumb[1].getText().strip(),
-                                        "subcategory": breadcrumb[2].getText().strip()
+                                        "additional_data": "не указано", "organisation": organisation.replace('"', ''), "url": link
+                                        #"category": breadcrumb[1].getText().strip(),
+                                       # "subcategory": breadcrumb[2].getText().strip()
                                         }
                 z = requests.post("https://synrate.ru/api/offers/create",
                                   json=offer)

@@ -57,15 +57,15 @@ class ParserSource(Parser):
                                         }
                                   )
 
-                try:
-                    if z.json()["name"][0].find("already exists") != -1:
-                        counter += 1
-
-                        if counter == 150:
-                            break
-                except:
-                    counter = 0
-                    z = None
+                # try:
+                #     if z.json()["name"][0].find("already exists") != -1:
+                #         counter += 1
+                #
+                #         if counter == 150:
+                #             break
+                # except:
+                #     counter = 0
+                #     z = None
                 # TESTING -----------------
 
                 J = {"name": self.response_item["name"].replace('"', ''),
@@ -80,9 +80,9 @@ class ParserSource(Parser):
                                         "additional_data": "не указано",
                                         "organisation": organisation.replace('"', ''),
                                         "url": "https://reserve.isource.ru/trades/item/"
-                                               + self.response_item["auction_transliteration_name"],
-                                        "category": category["transliteration_name"],
-                                        "subcategory": self.response_item["category"][0]["name"]
+                                               + self.response_item["auction_transliteration_name"]
+                                        #"category": category["transliteration_name"],
+                                        #"subcategory": self.response_item["category"][0]["name"]
                                         }
                 try:
                     print(f'Isource: {z.json()}  {J}')
