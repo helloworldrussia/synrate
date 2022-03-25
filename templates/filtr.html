@@ -308,7 +308,8 @@
                                     <div class="offer-organization__name">
                                         <p>{{ offer.organisation }}</p>
                                     </div>
-                                    {% elif offer.location != None and offer.location != '' %}
+                                    {% endif %}
+                                    {% if offer.location != None and offer.location != '' %}
                                     <div class="offer-organization__address">
                                         <p>{{ offer.location }}</p>
                                     </div>
