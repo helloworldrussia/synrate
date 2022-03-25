@@ -169,7 +169,7 @@ class ParserNelikvidy(Parser):
                                 date = datetime.date(year, int(month), int(day))
                                 print(date)
                             except Exception as ex:
-                                print(ex)
+                                pass
                         if data_type.getText() == "Просмотров:":
                             views = data.getText().replace(u"Просмотров:", "").strip()
                 if offer_type is None:
