@@ -16,12 +16,15 @@ class ParserOnlineContract(Parser):
 
     def parse(self):
 
-        for i in range(100):
+        for i in range(50):
+            print(i)
             self.response = requests.get(self.url.format(i), headers={'User-Agent': "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Mobile Safari/537.36"}, verify=False).content. \
                 decode("utf8")
+            print(self.response)
             self.soup = BeautifulSoup(self.response, 'html.parser')
             self.post_links = self.soup.find_all("a", attrs={"class": "g-color-black"})
             self.post_links = list(set(self.post_links))
+            time.sleep(random.randint(1, 7))
             for post in self.post_links:
                 self.procedure_id = post["href"].split("/")[2].split("?")[0]
                 self.response_item = requests.get(

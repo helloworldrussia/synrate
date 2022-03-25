@@ -1,5 +1,6 @@
 import requests
 
+from parser_fabrikant import ParserFabrikant
 from parser_etpgpb import ParserEtpgpb
 from parser_nelikvidy import ParserNelikvidy
 from parser_tenderpro import ParserTender
@@ -67,6 +68,7 @@ def server_listener():
     tectorg_obj = ParserTektorg()
     onlinecontract_obj = ParserOnlineContract()
     etpgpb_obj = ParserEtpgpb()
+    fabrikant_obj = ParserFabrikant(True)
 
     parser_roseltorg = ParserThread("parser_roseltorg", roseltorg_obj)
     parser_tender = ParserThread("parser_tender", tender_obj)
@@ -75,7 +77,7 @@ def server_listener():
     parser_tectorg = ParserThread("parser_tectorg", tectorg_obj)
     parser_onlinecontract = ParserThread("parser_onlinecontract", onlinecontract_obj)
     parser_etpgpb = ParserThread("parser_etpgpb", etpgpb_obj)
-
+    parser_fabrikant = ParserThread("parser_fabrikant", fabrikant_obj)
 
     #DEBUG OPTIONS
     #check_thread_1 = CheckThread('parser_roseltorg')
@@ -87,8 +89,8 @@ def server_listener():
 #    parser_isource.start()
 #    parser_tectorg.start()
 #    parser_onlinecontract.start()
-    parser_etpgpb.start()
-
+#    parser_etpgpb.start()
+    parser_fabrikant.start()
     status = True
 
     while status:
