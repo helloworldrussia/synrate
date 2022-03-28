@@ -26,7 +26,7 @@ class ParserEtpActiv(Parser):
             page_url = self.url+f'?PAGEN_1={page}'
             result = self.get_page_offers(page_url)
             self.post_result(result)
-            print(f'Обрабатываем страницу: {page_url}')
+            print(f'etp-activ: Обрабатываем страницу - {page_url}')
             time.sleep(random.randint(1, 10))
 
     def get_page_soup(self, url):
@@ -54,13 +54,9 @@ class ParserEtpActiv(Parser):
             region = offer.find("span", attrs={"class": "product-card__descr-row"})
             region = region.find("span", attrs={"class": "product-card__descr-row__value"})
 
-            name = link_obj.find("img").attrs['alt']
+            name = link_obj.find("img").attrs['alt'].replace('"', '')
             text = name
             link = self.core+link_obj.attrs['href']
-            if region is not None:
-                region = region.getText()
-            else:
-                region = None
 
             offer_obj = {"name": name,
                  "home_name": "etp-activ",
@@ -68,6 +64,11 @@ class ParserEtpActiv(Parser):
                  "additional_data": text,# "organisation": company,
                  "url": link
                          }
+            if region is not None:
+                offer_obj['location'] = region.getText().replace('\n', '').replace(' ', '')
+            else:
+                region = None
+
             answer.append(offer_obj)
         return answer
 
@@ -75,7 +76,7 @@ class ParserEtpActiv(Parser):
         for offer in data:
             z = requests.post("https://synrate.ru/api/offers/create",
                               json=offer)
-            print(f'etp-activ: {z}')
+            print(f'etp-activ: {z}\n{offer}')
 
 
 if __name__ == '__main__':
