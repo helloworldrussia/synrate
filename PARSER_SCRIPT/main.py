@@ -1,4 +1,5 @@
 import requests
+from parser_etp_aktiv import ParserEtpActiv
 from parser_b2b_center import ParserCenter
 from parser_fabrikant import ParserFabrikant
 from parser_etpgpb import ParserEtpgpb
@@ -70,6 +71,7 @@ def server_listener():
     etpgpb_obj = ParserEtpgpb()
     fabrikant_obj = ParserFabrikant(True)
     b2b_center_obj = ParserCenter(True)
+    etp_activ_obj = ParserEtpActiv(True)
 
     parser_roseltorg = ParserThread("parser_roseltorg", roseltorg_obj)
     parser_tender = ParserThread("parser_tender", tender_obj)
@@ -80,6 +82,7 @@ def server_listener():
     parser_etpgpb = ParserThread("parser_etpgpb", etpgpb_obj)
     parser_fabrikant = ParserThread("parser_fabrikant", fabrikant_obj)
     parser_b2b_center = ParserThread("parser_b2b_cetner", b2b_center_obj)
+    parser_etp_aktiv = ParserThread("parser_etp_aktiv", etp_activ_obj)
 
     #DEBUG OPTIONS
     #check_thread_1 = CheckThread('parser_roseltorg')
@@ -93,7 +96,8 @@ def server_listener():
 #    parser_onlinecontract.start()
 #    parser_etpgpb.start()
 #    parser_fabrikant.start()
-    parser_b2b_center.start()
+#    parser_b2b_center.start()
+#    parser_etp_aktiv.start()
 
     status = True
 
