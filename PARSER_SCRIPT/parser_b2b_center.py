@@ -2,6 +2,8 @@ import random
 import time
 from datetime import datetime
 
+from fake_useragent import UserAgent
+
 from ENGINE import Parser
 import requests
 from bs4 import BeautifulSoup
@@ -20,36 +22,67 @@ class ParserCenter(Parser):
 
     def parse(self):
         # делаем запрос, получаем суп и отдаем функции, получающей номер последней страницы
-        soup = self.get_page_soup(self.url)
+        soup = self.get_page_soup(self.url+'&page=1&from=10#search-result')
         pagination = soup.find("div", attrs={"class": "pagi"}).find("ul", attrs={"class": "pagi-list"}).find_all("li", attrs={"class": "pagi-item"})
         last_page = pagination[-1].find("a").getText()
-        # print(pagination)
-        test = self.get_page_soup('https://www.b2b-center.ru/market/?searching=1&%3Bcompany_type=2&%3Bprice_currency=0&%3Bdate=1&%3Btrade=sell&%3Blot_type=0&from=20')
-        test = test.find("div", attrs={"class": "inner"})
-        print(test)
+        print(last_page)
+        time.sleep(random.randint(1, 3))
+        i = 1
+        # for page in range(1, 2):
+        for page in range(1, int(last_page)+1):
+            page_url = self.url+f'&page={page}&from={10*int(page)}'
+            print('Обработка:', page_url)
+            soup = self.get_page_soup(page_url)
+            result = self.get_offers_from_page(soup)
+            time.sleep(random.randint(1, 10))
+            if i == 20:
+                print('Большая пауза. Диапазон 300-600 секунд.')
+                time.sleep(random.randint(300, 600))
+                i = 0
+            i += 1
 
-
-
+    def make_template(self, file_name):
+        content = requests.get(self.url).text
+        with open(f'{file_name}', 'w', encoding='utf-8') as template:
+            template.write(content)
+            template.close()
 
     def get_offers_from_page(self, soup):
-        offers = soup.find("div", attrs={"class": "inner"})
-        print(offers)
+        main = soup.find("div", attrs={"id": "page"}).find("main").find("section").find_all("div", attrs={"class": "inner"})
+        # offers = main[]
+        # print(len(main))
+        i = 1
+        for x in main:
+            if i == 3:
+                main = x
+            i += 1
+        # print(main)
+        # print(main.table)
+        main = main.table.tbody.find_all("tr")
+        offers = main
+        print('Обнаружено заявок:', len(main))
+        print('ALL')
         answer = []
         for offer in offers:
             dates = offer.find_all("td", attrs={"class": "nowrap"})
             link = offer.find("a", attrs={"class": "search-results-title visited"}).attrs['href']
-            name, text = offer.find("div", attrs={"class": "search-results-title-desc"}).getText().replace('"', '')
-            company = offer.find("a", attrs={"class": "visited"}).getText().replace('"', '')
+            name = offer.find("div", attrs={"class": "search-results-title-desc"}).getText().replace('"', '')
+            company = offer.find_all("a", attrs={"class": "visited"})[1].getText().replace('"', '')
 
             start_date, end_date = self.get_dates(dates)
             link = self.core_www+link.replace(self.core, '').replace(self.core_www, '')
+            text = name
+
             offer_obj = {"name": name,
                          "home_name": "b2b-center",
                          "offer_start_date": start_date, "offer_end_date": end_date,
                          "additional_data": text, "organisation": company,
                          "url": link
                          }
+            for key in offer_obj:
+                print(f"{key}: {offer_obj[f'{key}']}")
             answer.append(offer_obj)
+            print('=========================================================================')
         return answer
 
     def get_dates(self, data):
@@ -74,10 +107,10 @@ class ParserCenter(Parser):
 
     def get_page_soup(self, url):
         response = requests.get(url, headers={
-            'User-Agent': "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Mobile Safari/537.36"},
+            'User-Agent': UserAgent().chrome},
                                      verify=self.verify).content.decode("utf8")
         soup = BeautifulSoup(response, 'html.parser')
-        # print(response)
+        print(response)
         return soup
 
 
