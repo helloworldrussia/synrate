@@ -13,7 +13,7 @@ import requests
 from bs4 import BeautifulSoup
 import datetime
 
-from PARSER_SCRIPT.mixins import get_proxy
+from mixins import get_proxy
 
 headers = {
     "content-type": "text/plain",
