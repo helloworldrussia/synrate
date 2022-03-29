@@ -7,7 +7,7 @@ from requests.adapters import HTTPAdapter
 from urllib3 import Retry
 
 from ENGINE import Parser
-from PARSER_SCRIPT.mixins import proxy_data, get_proxy
+from mixins import proxy_data, get_proxy
 
 
 class ParserSource(Parser):

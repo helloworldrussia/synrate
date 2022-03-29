@@ -9,7 +9,7 @@ from ENGINE import Parser
 import requests
 from bs4 import BeautifulSoup
 
-from PARSER_SCRIPT.mixins import proxy_data, get_proxy
+from mixins import proxy_data, get_proxy
 
 
 class ParserFabrikant(Parser):

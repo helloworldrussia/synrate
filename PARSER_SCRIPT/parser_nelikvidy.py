@@ -11,7 +11,7 @@ from requests.adapters import HTTPAdapter
 from urllib3 import Retry
 
 from ENGINE import Parser
-from PARSER_SCRIPT.mixins import get_proxy, proxy_data
+from mixins import get_proxy, proxy_data
 
 
 class ParserNelikvidy(Parser):

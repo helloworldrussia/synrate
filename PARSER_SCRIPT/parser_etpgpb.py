@@ -9,7 +9,7 @@ from ENGINE import Parser
 import requests
 from bs4 import BeautifulSoup
 
-from PARSER_SCRIPT.mixins import get_proxy, proxy_data
+from mixins import get_proxy, proxy_data
 
 
 class ParserEtpgpb(Parser):
