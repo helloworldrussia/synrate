@@ -55,13 +55,9 @@
                       </tr>
                       <tr>
                         <td>
-                            {% if offer.additional_data != None %}
-                            {% if offer.additional_data != 'не указано' %}
                             <div class="product-offer">
-                                <p class="product-additional_data">{{ offer.additional_data }}</p>
+                                <p class="product-additional_data">{{ offer.name }}</p>
                             </div>
-                            {% endif %}
-                            {% endif %}
                         </td>
                       </tr>
                       <tr>
