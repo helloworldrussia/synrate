@@ -2,9 +2,14 @@ import random
 import time
 from datetime import datetime
 
+from fake_useragent import UserAgent
+from requests.adapters import HTTPAdapter, Retry
+
 from ENGINE import Parser
 import requests
 from bs4 import BeautifulSoup
+
+from PARSER_SCRIPT.mixins import proxy_data, get_proxy
 
 
 class ParserFabrikant(Parser):
@@ -17,6 +22,7 @@ class ParserFabrikant(Parser):
         self.response_item = None
         self.core = 'https://fabrikant.ru'
         self.core_www = 'https://www.fabrikant.ru'
+        self.proxy_mode = False
         self.monthlist = {
             "янв": 1,
             "фев": 2,
@@ -46,33 +52,75 @@ class ParserFabrikant(Parser):
         }
 
     def parse(self):
-        self.soup = self.get_page_soup(self.url)
-        pagination = self.soup.find("ul", attrs={"class": "pagination__lt"}).find_all("li", attrs={"class": "pagination__lt__el"})
-        last_page = pagination[-1].find("span").getText()
-        #for page in range(1, 2):
+        last_page = self.get_last_page()
         for page in range(1, int(last_page)+1):
-            print(f'начали СТРАНИЦУ {page}')
-            url = self.url + f'&page={page}'
-            print('Суп страницы получен')
-            page_soup = self.get_page_soup(url)
-            print('Отправляем страницу на парсинг')
-            offers = self.get_page_items(page_soup)
+            successful = 0
+            while not successful:
+                print(f'fabrikant: Сканируем стр. {page}\nproxy_mode: {self.proxy_mode}')
+                page_soup = self.get_page_soup(self.url + f'&page={page}', self.proxy_mode)
+                offers = self.get_page_items(page_soup)
+                if offers:
+                    successful = 1
+
             for offer in offers:
                 z = requests.post("https://synrate.ru/api/offers/create",
                                   json=offer)
-                print(f'SEND {z}')
-            time.sleep(random.randint(1, 7))
-            print('Пауза')
+                print(f'fabrikant {z}')
 
-    def get_page_soup(self, url):
-        response = requests.get(url, headers={
-            'User-Agent': "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Mobile Safari/537.36"},
-                                     verify=self.verify).content.decode("utf8")
+    def get_last_page(self):
+        successful = 0
+        while not successful:
+            soup = self.get_page_soup(self.url, self.proxy_mode)
+            try:
+                pagination = soup.find("ul", attrs={"class": "pagination__lt"}).find_all("li", attrs={
+                    "class": "pagination__lt__el"})
+                last_page = pagination[-1].find("span").getText()
+                successful = 1
+            except:
+                self.change_proxy()
+
+        return last_page
+
+    def change_proxy(self):
+        print('[fabrikant] change_proxy: start')
+        if self.proxy_mode:
+            try:
+                a = proxy_data[self.proxy_mode+1]
+                self.proxy_mode += 1
+                return True
+            except:
+                pass
+        print(f'\n[fabrikant] proxy_mode: {self.proxy_mode}')
+        self.proxy_mode = 1
+        return False
+
+    def get_page_soup(self, url, proxy_mode):
+        if proxy_mode:
+            proxy = get_proxy(proxy_mode)
+            # proxy_status = check_proxy(proxy)
+            try:
+                session = requests.Session()
+                retry = Retry(connect=3, backoff_factor=0.5)
+                adapter = HTTPAdapter(max_retries=retry)
+                session.mount('http://', adapter)
+                session.mount('https://', adapter)
+                response = session.get(url, headers={
+                    'User-Agent': UserAgent().chrome}, proxies=proxy, timeout=5).content.decode("utf8")
+            except:
+                print('[fabrikant] get_page_soup: не получилось сделать запрос с прокси. спим, меняем прокси и снова..')
+                return False
+        else:
+            response = requests.get(url, headers={
+                'User-Agent': UserAgent().chrome}).content.decode("utf8")
         soup = BeautifulSoup(response, 'html.parser')
         return soup
 
     def get_page_items(self, soup):
-        items_divs = soup.find("section", attrs={"class":"marketplace-list"}).find_all("div", attrs={"class": "innerGrid"})
+        try:
+            items_divs = soup.find("section", attrs={"class": "marketplace-list"}).find_all("div", attrs={"class": "innerGrid"})
+        except:
+            self.change_proxy()
+            return False
         offers = []
         for div in items_divs:
             # получаем данные из элементов
@@ -101,20 +149,15 @@ class ParserFabrikant(Parser):
                          "url": link#, "category": "Не определена", "subcategory": "не определена"
                          }
             offers.append(offer_obj)
-            for key in offer_obj:
-                print(f"{key}: {offer_obj[f'{key}']}")
 
         return offers
 
     def make_price_good(self, price):
-        print(price)
         try:
             price = price.getText()
-            print(price)
             price = price.replace(' ', '')
             price = int(price)
         except Exception as ex:
-            print(ex)
             price = 0
         return price
 
@@ -138,11 +181,9 @@ class ParserFabrikant(Parser):
     def make_name_good(self, name):
         answer = {}
         if 'Местоположение:' in name:
-            print(f'регион в имени {name}')
             region = name.split('Местоположение:')[1]
             answer['region'] = region
             name = name.replace('Местоположение:', '').replace(region, '')
-            print(f'make_name_good:\n{name}\n{region}')
         else:
             answer['region'] = ""
 

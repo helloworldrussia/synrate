@@ -6,7 +6,12 @@ from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
 import unicodedata
 import datetime
+
+from requests.adapters import HTTPAdapter
+from urllib3 import Retry
+
 from ENGINE import Parser
+from PARSER_SCRIPT.mixins import get_proxy, proxy_data
 
 
 class ParserNelikvidy(Parser):
@@ -24,6 +29,7 @@ class ParserNelikvidy(Parser):
         super().__init__()
         self.verify = verify
         self.url = "https://nelikvidi.com"
+        self.proxy_mode = False
         self.monthlist = {
             "янв": 1,
             "фев": 2,
@@ -52,31 +58,84 @@ class ParserNelikvidy(Parser):
             "декаб": 12,
         }
 
-    def parse(self):
+    def change_proxy(self):
+        print('[nelikvidy] change_proxy: start')
+        if self.proxy_mode:
+            try:
+                a = proxy_data[self.proxy_mode+1]
+                self.proxy_mode += 1
+                return True
+            except:
+                pass
+        print(f'\n[nelikvidy] proxy_mode: {self.proxy_mode}')
+        self.proxy_mode = 1
+        return False
 
-        self.response = requests.get(self.url, headers={'User-Agent': "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Mobile Safari/537.36"}, verify=self.verify)
-        self.response.encoding = 'utf-8'
-        self.soup = BeautifulSoup(self.response.content, 'html.parser')
-        uls = self.soup.find_all("ul", attrs={"class": "group-list"})
+    def get_page_soup(self, url, proxy_mode):
+        if proxy_mode:
+            proxy = get_proxy(proxy_mode)
+            # proxy_status = check_proxy(proxy)
+            try:
+                session = requests.Session()
+                retry = Retry(connect=3, backoff_factor=0.5)
+                adapter = HTTPAdapter(max_retries=retry)
+                session.mount('http://', adapter)
+                session.mount('https://', adapter)
+                response = session.get(url, headers={
+                    'User-Agent': UserAgent().chrome}, proxies=proxy, timeout=5).content.decode("utf8")
+            except:
+                print('[nelikvidy] get_page_soup: не получилось сделать запрос с прокси. спим, меняем прокси и снова..')
+                return False
+        else:
+            response = requests.get(url, headers={
+                'User-Agent': UserAgent().chrome}).content.decode("utf8")
+        soup = BeautifulSoup(response, 'html.parser')
+        return soup
+
+    # MAIN FUNC!
+    def parse(self):
+        # self.response = requests.get(self.url, headers={'User-Agent': "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Mobile Safari/537.36"}, verify=self.verify)
+        # self.response.encoding = 'utf-8'
+        # self.soup = BeautifulSoup(self.response.content, 'html.parser')
+        successful = 0
+        while not successful:
+            self.soup = self.get_page_soup(self.url, self.proxy_mode)
+            try:
+                uls = self.soup.find_all("ul", attrs={"class": "group-list"})
+                test = uls[0]
+                successful = 1
+            except:
+                print(f'[nelikvidy] new proxy_mode = {self.proxy_mode}')
+                self.change_proxy()
+
         kategories = []
         # Получение всех категорий (формат список из списков. [[ссылка, название], [ссылка, название], ..]
         for ul in uls:
             lis = ul.find_all("li")
             for li in lis:
                 kategories.append([li.find("a").attrs["href"], unicodedata.normalize("NFKD", li.find("a").getText())])
-
+        kategories.reverse()
         for kategory in kategories:
 
-            self.response = requests.get(self.url+kategory[0]+'/sell', headers={'User-Agent': UserAgent().chrome},
-                                         verify=self.verify)
-            print(self.response, self.url+kategory[0]+'/sell')
-            self.response.encoding = 'utf-8'
-            self.soup = BeautifulSoup(self.response.content, 'html.parser')
-            # Определение колличества страниц
-            posts = int(
-                unicodedata.normalize("NFKD", self.soup.find('div', attrs={"class": "summary"}).find_all("b")[1]
-                                      .getText()).replace(u" ", "")
-            )
+            # self.response = requests.get(self.url+kategory[0]+'/sell', headers={'User-Agent': UserAgent().chrome},
+            #                              verify=self.verify)
+            # print(self.response, self.url+kategory[0]+'/sell')
+            # self.response.encoding = 'utf-8'
+            # self.soup = BeautifulSoup(self.response.content, 'html.parser')
+            successful = 0
+            while not successful:
+                try:
+                    self.soup = self.get_page_soup(self.url+kategory[0]+'/sell', self.proxy_mode)
+                    # Определение колличества страниц
+                    posts = int(
+                        unicodedata.normalize("NFKD", self.soup.find('div', attrs={"class": "summary"}).find_all("b")[1]
+                                              .getText()).replace(u" ", "")
+                    )
+                    successful = 1
+                except:
+                    print(f'[nelikvidy] new proxy_mode = {self.proxy_mode}')
+                    self.change_proxy()
+
             pages = posts//50
             if posts % 50 != 0:
                 pages = pages+1
@@ -84,9 +143,19 @@ class ParserNelikvidy(Parser):
             if pages > 20:
                 pages = 20
             for i in range(1, pages):
-                self.response = requests.get(self.url+kategory[0]+"/sell/page-{}".format(self.current_page),
-                                             headers={'User-Agent': "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Mobile Safari/537.36"}, verify=self.verify)
-                self.soup = BeautifulSoup(self.response.content, 'html.parser')
+                # self.response = requests.get(self.url+kategory[0]+"/sell/page-{}".format(self.current_page),
+                #                              headers={'User-Agent': "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Mobile Safari/537.36"}, verify=self.verify)
+                # self.soup = BeautifulSoup(self.response.content, 'html.parser')
+                self.soup = self.get_page_soup(self.url+kategory[0]+"/sell/page-{}".format(self.current_page), self.proxy_mode)
+                successful = 0
+                while not successful:
+                    try:
+                        test = self.soup.find_all("a", attrs={"class":"card-image"})[0]
+                        successful = 1
+                    except:
+                        print(f'[nelikvidy] new proxy_mode = {self.proxy_mode}')
+                        self.change_proxy()
+
                 for link in self.soup.find_all("a", attrs={"class":"card-image"}):
                     self.post_links.append(link.attrs['href'])
                 self.current_page += 1
@@ -116,8 +185,19 @@ class ParserNelikvidy(Parser):
                 region = None
                 date = None
 
-                self.response = requests.get(link, headers={'User-Agent': "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Mobile Safari/537.36"}, verify=self.verify)
-                self.soup = BeautifulSoup(self.response.content, 'html.parser')
+                # self.response = requests.get(link, headers={'User-Agent': "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Mobile Safari/537.36"}, verify=self.verify)
+                # self.soup = BeautifulSoup(self.response.content, 'html.parser')
+                successful = 0
+                while not successful:
+                    try:
+                        self.soup = self.get_page_soup(link, self.proxy_mode)
+                        data_paragraphs = self.soup.find_all("p")
+                        test = data_paragraphs[0]
+                        successful = 1
+                    except:
+                        print(f'[nelikvidy] new proxy_mode = {self.proxy_mode}')
+                        self.change_proxy()
+
                 try:
                     name = self.soup.find("div", attrs={"class": "section-title"}).find("h1").getText()
                 except AttributeError:
@@ -131,7 +211,6 @@ class ParserNelikvidy(Parser):
                 except AttributeError:
                     continue
 
-                data_paragraphs = self.soup.find_all("p")
                 try:
                     organisation = self.soup.find("div", attrs={"class": "company-info"}).find("a").getText()
                 except:
@@ -158,7 +237,6 @@ class ParserNelikvidy(Parser):
                                 line = line.split(' ')
                                 try:
                                     year = int(line[-2].replace(',', ''))
-                                    print(f'year: {year}')
                                     line.pop(-2)
                                 except:
                                     year = datetime.date.today().year
@@ -167,7 +245,6 @@ class ParserNelikvidy(Parser):
                                 day = line[-3]
                                 month = self.monthlist[f'{month}']
                                 date = datetime.date(year, int(month), int(day))
-                                print(date)
                             except Exception as ex:
                                 pass
                         if data_type.getText() == "Просмотров:":
@@ -189,11 +266,9 @@ class ParserNelikvidy(Parser):
                                   json=offer)
                 # ---------------------------- TESTING
                 try:
-                    print(z.json())
+                    print('[nelikvidy]:', z.json(), offer)
                 except:
-                    print(z)
-                print(f"\n{link}")
-                time.sleep(random.randint(1, 5) / 10)
+                    print('[nelikvidy]:', z)
                 # ------------------------------------
             self.post_links = []
 

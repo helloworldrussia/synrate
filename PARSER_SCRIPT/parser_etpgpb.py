@@ -2,9 +2,14 @@ import random
 import time
 from datetime import datetime
 
+from fake_useragent import UserAgent
+from requests.adapters import HTTPAdapter, Retry
+
 from ENGINE import Parser
 import requests
 from bs4 import BeautifulSoup
+
+from PARSER_SCRIPT.mixins import get_proxy, proxy_data
 
 
 class ParserEtpgpb(Parser):
@@ -14,36 +19,72 @@ class ParserEtpgpb(Parser):
         self.procedure_id = None
         self.response_item = None
         self.core = 'https://etpgpb.ru'
+        self.proxy_mode = False
 
     def parse(self):
         # делаем запрос, получаем суп и отдаем функции, получающей номер последней страницы
-        self.response = requests.get(self.url, headers={
-            'User-Agent': "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Mobile Safari/537.36"})
-        self.response.encoding = 'utf-8'
-        self.soup = BeautifulSoup(self.response.content, 'html.parser')
-        last_page = self.get_last_page(self.soup)
+        # self.response = requests.get(self.url, headers={
+        #     'User-Agent': "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Mobile Safari/537.36"})
+        # self.response.encoding = 'utf-8'
+        # self.soup = BeautifulSoup(self.response.content, 'html.parser')
+        last_page = self.get_last_page()
         # запускаем цикл сбора информации с каждой страницы
-        print('запускаем цикл сбора информации')
         results = 0
         for page in range(1, int(last_page)+1):
-            print(f'начали СТРАНИЦУ {page}')
-        # for page in range(1, 2):
-            url = self.url+f'&page={page}'
-            self.response = requests.get(url, headers={
-                'User-Agent': "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Mobile Safari/537.36"})
-            self.response.encoding = 'utf-8'
-            page_soup = BeautifulSoup(self.response.content, 'html.parser')
-            result = self.get_offers(page_soup, self.core)
-            print(result)
-            self.send_result(result)
-            results += len(result)
-            print('прошли по странице')
-            time.sleep(random.randint(1, 7))
+            successful = 0
+            while not successful:
+                print(f'etpgpb: Сканируем стр. {page}\nproxy_mode: {self.proxy_mode}')
+                page_soup = self.get_page_soup(self.url+f'&page={page}', self.proxy_mode)
+                result = self.get_offers(page_soup, self.core)
+                if result:
+                    successful = 1
+                    self.send_result(result)
+
         print(f'Закончили len = {results}')
+
+    def get_page_soup(self, url, proxy_mode):
+        if proxy_mode:
+            proxy = get_proxy(proxy_mode)
+            # proxy_status = check_proxy(proxy)
+            try:
+                session = requests.Session()
+                retry = Retry(connect=3, backoff_factor=0.5)
+                adapter = HTTPAdapter(max_retries=retry)
+                session.mount('http://', adapter)
+                session.mount('https://', adapter)
+                response = session.get(url, headers={
+                    'User-Agent': UserAgent().chrome}, proxies=proxy, timeout=5).content.decode("utf8")
+                soup = BeautifulSoup(response, 'html.parser')
+            except:
+                print('get_page_soup: не получилось сделать запрос с прокси. спим, меняем прокси и снова..')
+                return False
+        else:
+            response = requests.get(url, headers={
+                'User-Agent': UserAgent().chrome}).content.decode("utf8")
+        soup = BeautifulSoup(response, 'html.parser')
+        # print(response)
+        return soup
+
+    def change_proxy(self):
+        print('change_proxy: start')
+        if self.proxy_mode:
+            try:
+                a = proxy_data[self.proxy_mode+1]
+                self.proxy_mode += 1
+                return True
+            except:
+                pass
+        print(f'\nproxy_mode: {self.proxy_mode}')
+        self.proxy_mode = 1
+        return False
 
     def get_offers(self, soup, core):
         # вытаскиваем информацию из дивов заявок в словари, те в список и возвращаем
-        offers_list = soup.find_all("div", attrs={"class": "procedure"})
+        try:
+            offers_list = soup.find_all("div", attrs={"class": "procedure"})
+        except:
+            self.change_proxy()
+            return False
         cleaned_data = []
         end_date = None
         start_date = None
@@ -73,17 +114,14 @@ class ParserEtpgpb(Parser):
             if len(divs_texts) == 3:
                 start_date, end_date = self.get_date_from_details(link)
                 region = divs_texts[2]
-                print(3)
             elif len(divs_texts) == 5 and divs_texts[4] == '':
                 start_date = divs_texts[3]
                 region = divs_texts[2]
-                print('ИСКЛЮЧЕНИЕ', 5)
             elif len(divs_texts) == 5:
                 end_date = divs_texts[0]
                 start_date = divs_texts[3]
                 region = divs_texts[2]
                 main_day = divs_texts[4] # дата аукциона
-                print(5)
 
             # отправляем значения, которые имеют неверный для нас формат, на реплейсы и сплиты
             price = self.make_price_good(price)
@@ -100,9 +138,6 @@ class ParserEtpgpb(Parser):
                                         }
 
             cleaned_data.append(data_dict)
-            for key in data_dict:
-                print(f'{key}: {data_dict[f"{key}"]}')
-            print('\n-----------')
         # передаем список из словарей с информацией о заявках обратно
         return cleaned_data
 
@@ -124,26 +159,19 @@ class ParserEtpgpb(Parser):
 
     def make_date_good(self, date):
         try:
-            print(f'Поступило: {date}')
             test = int(date.split('.')[0])
             if date.find(':') or date.find('('):
-                print('фиксация лишнего')
                 date = date.split(' ')[0]
-                print(f'после отброса лишнего: {date}')
-            print(f'стандартные действия')
             date = date.split('.')
-            print(date)
             date = f"{date[2]}-{date[1]}-{date[0]}"
         except:
             date = None
-        print(date)
         return date
 
     def make_price_good(self, price):
         try:
             split_price = price.split(' ')
             price = price.replace(f'{split_price[-1]}', '').replace(' ', '')
-            print(price)
         except:
             price = 0
         return price
@@ -154,10 +182,16 @@ class ParserEtpgpb(Parser):
                               json=offer)
             print(f'SEND {z}\n{offer}')
 
-    @staticmethod
-    def get_last_page(soup):
-        pag_items = soup.find("div", attrs={"class": "pagination"}).find_all("a", attrs={"class": "pagination__item"})
-        last_page = pag_items[-1].getText()
+    def get_last_page(self):
+        successful = 0
+        while not successful:
+            soup = self.get_page_soup(self.url, self.proxy_mode)
+            try:
+                pag_items = soup.find("div", attrs={"class": "pagination"}).find_all("a", attrs={"class": "pagination__item"})
+                last_page = pag_items[-1].getText()
+                successful = 1
+            except:
+                self.change_proxy()
         return last_page
 
 

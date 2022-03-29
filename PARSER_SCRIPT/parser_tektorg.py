@@ -2,48 +2,38 @@ import random
 import time
 
 import undetected_chromedriver as uc
+from fake_useragent import UserAgent
+from requests.adapters import HTTPAdapter
 from selenium import webdriver
 from lxml import html
+from urllib3 import Retry
 
 from ENGINE import Parser
 import requests
 from bs4 import BeautifulSoup
 import datetime
 
+from PARSER_SCRIPT.mixins import get_proxy
+
+headers = {
+    "content-type": "text/plain",
+    "content-lenght": "2144",
+    "accept-language": "ru,en;q=0.9",
+    'User-Agent': UserAgent().opera
+}
+
 
 class ParserTektorg(Parser):
     def __init__(self):
         super(ParserTektorg, self).__init__()
-        self.list_url = "https://www.tektorg.ru/sale/procedures?lang=ru&q=&page={}"
+        self.list_url = "https://www.tektorg.ru/sale/procedures?lang=ru&q="
         self.item_urls = []
+        self.proxy_mode = 1
 
     def parse(self):
-#        opts = undetected_chromedriver.ChromeOptions()
-#        opts.headless = True
-        # driver = webdriver.Firefox(executable_path=GeckoDriverManager().install(), options=opts)
-        # core = GeckoDriverManager().install()
-        options = webdriver.ChromeOptions()
-        options.headless = True
-        options.add_argument("--no-sandbox")
-        options.add_argument('--disable-gpu')
-        #options.add_argument("--disable-setuid-sandbox")
-        driver = uc.Chrome(options=options)
-
-
-        frills(driver)
+        last_page = self.get_last_page()
         for i in range(1, 30):
-            # ---------
-            print(f'new itarion {i}/30')
-            driver.get(self.list_url.format(i))
-            try:
-                content = driver.page_source
-            except:
-                print('Some problems... TECHTORG')
-                continue
-            tree = html.fromstring(content)
-            # ---------
-            # self.response = requests.get(f"{self.list_url.format(i)}&", headers={'User-Agent': UserAgent().chrome}, verify=False).content.decode("utf8") #"Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Mobile Safari/537.36"}).text
-            self.soup = BeautifulSoup(content, 'html.parser')#self.response, 'html.parser')
+
             urls = (self.soup.find_all("a", attrs={"class": "section-procurement__item-title"}))
             for url in urls:
                 self.item_urls.append(url["href"])
@@ -60,10 +50,10 @@ class ParserTektorg(Parser):
             org_owner = None
             start_date = None
             # self.response = requests.get("https://www.tektorg.ru"+url, headers={'User-Agent': UserAgent().chrome}).text
-            driver.get(f'https://www.tektorg.ru{url}')
-            content = driver.page_source
-            self.soup = BeautifulSoup(content,#self.response,
-                                      'html.parser')
+
+
+            # self.soup = BeautifulSoup(content,#self.response,
+            #                           'html.parser')
             try:
                 name = self.soup.find("span", attrs={"class": "procedure__item-name"}).getText()
             except AttributeError:
@@ -145,15 +135,31 @@ class ParserTektorg(Parser):
             time.sleep(random.randint(1, 5) / 10)
             # ---------------------
 
+    def get_last_page(self):
+        soup = self.get_page_soup(self.list_url+'&page=1', self.proxy_mode)
+        last_page = soup.find("ul", attrs={"class": "pagination"}).find_all("li")[-2].find("a").getText()
+        print(last_page)
 
-def frills(driver):
-    print('Подготовка..')
-    driver.get('https://yandex.ru/images/')
-    time.sleep(random.randint(1, 4))
-    driver.get('https://yandex.ru')
-    time.sleep(random.randint(1, 4))
-    driver.get('https://yandex.ru/search/?lr=50&text=погода+в+москве')
-    print('Начинаю парсинг')
+    def get_page_soup(self, url, proxy):
+        if proxy:
+            proxy = get_proxy(proxy)
+            # proxy_status = check_proxy(proxy)
+            try:
+                session = requests.Session()
+                retry = Retry(connect=3, backoff_factor=0.5)
+                adapter = HTTPAdapter(max_retries=retry)
+                session.mount('http://', adapter)
+                session.mount('https://', adapter)
+                response = session.get(url, headers=headers, proxies=proxy, timeout=5).content.decode("utf8")
+                soup = BeautifulSoup(response, 'html.parser')
+            except:
+                print('get_page_soup: не получилось сделать запрос с прокси. спим, меняем прокси и снова..')
+                return False
+        else:
+            response = requests.get(url, headers=headers).content.decode("utf8")
+            soup = BeautifulSoup(response, 'html.parser')
+        print(response)
+        return soup
 
 
 if __name__ == '__main__':

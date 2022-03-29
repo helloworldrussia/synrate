@@ -3,10 +3,13 @@ import time
 from datetime import datetime
 
 from fake_useragent import UserAgent
+from requests.adapters import HTTPAdapter, Retry
 
 from ENGINE import Parser
 import requests
 from bs4 import BeautifulSoup
+
+from PARSER_SCRIPT.mixins import proxy_data, get_proxy, check_proxy
 
 
 class ParserCenter(Parser):
@@ -19,27 +22,37 @@ class ParserCenter(Parser):
         self.core = 'https://b2b-center.ru'
         self.core_www = 'https://www.b2b-center.ru'
         self.verify = verify
+        # значение либо int (соотвествующее желаемому прокси из mixins.proxy_data), либо False - прокси не используем
+        self.proxy_mode = False
 
     def parse(self):
         # делаем запрос, получаем суп и отдаем функции, получающей номер последней страницы
-        soup = self.get_page_soup(self.url+'&page=1&from=10#search-result')
-        pagination = soup.find("div", attrs={"class": "pagi"}).find("ul", attrs={"class": "pagi-list"}).find_all("li", attrs={"class": "pagi-item"})
-        last_page = pagination[-1].find("a").getText()
+        last_page = self.get_last_page()
         print(last_page)
-        time.sleep(random.randint(1, 3))
+        # time.sleep(random.randint(1, 3))
         i = 1
         # for page in range(1, 2):
         for page in range(1, int(last_page)+1):
-            page_url = self.url+f'&page={page}&from={10*int(page)}'
-            print('Обработка:', page_url)
-            soup = self.get_page_soup(page_url)
-            result = self.get_offers_from_page(soup)
-            time.sleep(random.randint(1, 10))
+            page_url = self.url + f'&page={page}&from={10 * int(page)}'
+            # проходим страницу пока не получим результат.
+            # если результат Flase - нас задетектили, повторяем.
+            # get_offers_from_page сама сменит/включит прокси и вернет False, если поймет, что анти-парсер нас засек
+            successful = 0
+            while not successful:
+                print('Обработка:', page_url)
+                soup = self.get_page_soup(page_url, proxy=self.proxy_mode)
+                result = self.get_offers_from_page(soup)
+                if result:
+                    successful = 1
+                print(f'\nproxy_mode: {self.proxy_mode}')
+                # time.sleep(random.randint(1, 5))
+            # счетчик успешно пройденных страниц
             if i == 20:
-                print('Большая пауза. Диапазон 300-600 секунд.')
-                time.sleep(random.randint(300, 600))
+                # print('Большая пауза. Диапазон 300-600 секунд.')
+                # time.sleep(random.randint(300, 600))
                 i = 0
             i += 1
+            self.post_result(result)
 
     def make_template(self, file_name):
         content = requests.get(self.url).text
@@ -48,9 +61,14 @@ class ParserCenter(Parser):
             template.close()
 
     def get_offers_from_page(self, soup):
-        main = soup.find("div", attrs={"id": "page"}).find("main").find("section").find_all("div", attrs={"class": "inner"})
-        # offers = main[]
-        # print(len(main))
+        # проверяем поймал ли нас анти-парсер сайта.
+        try:
+            main = soup.find("div", attrs={"id": "page"}).find("main").find("section").find_all("div", attrs={"class": "inner"})
+        except:
+            print(self.proxy_mode)
+            print(self.change_proxy())
+            print(self.proxy_mode)
+            return False
         i = 1
         for x in main:
             if i == 3:
@@ -79,10 +97,8 @@ class ParserCenter(Parser):
                          "additional_data": text, "organisation": company,
                          "url": link
                          }
-            for key in offer_obj:
-                print(f"{key}: {offer_obj[f'{key}']}")
             answer.append(offer_obj)
-            print('=========================================================================')
+
         return answer
 
     def get_dates(self, data):
@@ -105,15 +121,66 @@ class ParserCenter(Parser):
 
         return start_date, end_date
 
-    def get_page_soup(self, url):
-        response = requests.get(url, headers={
-            'User-Agent': UserAgent().chrome},
-                                     verify=self.verify).content.decode("utf8")
-        soup = BeautifulSoup(response, 'html.parser')
-        print(response)
+    def get_page_soup(self, url, proxy):
+        if proxy:
+            proxy = get_proxy(proxy)
+            # proxy_status = check_proxy(proxy)
+            try:
+                session = requests.Session()
+                retry = Retry(connect=3, backoff_factor=0.5)
+                adapter = HTTPAdapter(max_retries=retry)
+                session.mount('http://', adapter)
+                session.mount('https://', adapter)
+                response = session.get(url, headers={
+                    'User-Agent': UserAgent().chrome}, proxies=proxy, timeout=5).content.decode("utf8")
+                soup = BeautifulSoup(response, 'html.parser')
+            except:
+                print('get_page_soup: не получилось сделать запрос с прокси. спим, меняем прокси и снова..')
+                return False
+        else:
+            response = requests.get(url, headers={
+                'User-Agent': UserAgent().chrome}).content.decode("utf8")
+            soup = BeautifulSoup(response, 'html.parser')
         return soup
+
+    def change_proxy(self):
+        print('change_proxy: start')
+        if self.proxy_mode:
+            try:
+                a = proxy_data[self.proxy_mode+1]
+                self.proxy_mode += 1
+                return True
+            except:
+                pass
+        print(f'\nproxy_mode: {self.proxy_mode}')
+        self.proxy_mode = 1
+        return False
+
+    def get_last_page(self):
+        successful = 0
+        while not successful:
+            try:
+                soup = self.get_page_soup(self.url + '&page=1&from=10#search-result', proxy=self.proxy_mode)
+                pagination = soup.find("div", attrs={"class": "pagi"}).find("ul", attrs={"class": "pagi-list"}).find_all("li", attrs={"class": "pagi-item"})
+                last_page = pagination[-1].find("a").getText()
+                successful = 1
+                time.sleep(random.randint(1, 5))
+            except Exception as ex:
+                print(ex)
+                print('get_last_page: Не смогли определить last_page')
+                print('proxy_mode: ', self.proxy_mode)
+                print(self.change_proxy())
+                print('proxy_mode: ', self.proxy_mode)
+                time.sleep(random.randint(1, 5))
+        return last_page
+
+    def post_result(self, data):
+        for offer in data:
+            z = requests.post("https://synrate.ru/api/offers/create",
+                              json=offer)
+            print(f'b2b-center: {z}\n{offer}')
 
 
 if __name__ == '__main__':
-    Parser = ParserCenter(True)
+    Parser = ParserCenter(False)
     Parser.parse()

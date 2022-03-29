@@ -2,7 +2,12 @@ import random
 import time
 
 import requests
+from fake_useragent import UserAgent
+from requests.adapters import HTTPAdapter
+from urllib3 import Retry
+
 from ENGINE import Parser
+from PARSER_SCRIPT.mixins import proxy_data, get_proxy
 
 
 class ParserSource(Parser):
@@ -14,25 +19,45 @@ class ParserSource(Parser):
         self.response_item = None
         self.response_items = None
         self.response_categories = None
+        self.proxy_mode = False
 
     def parse(self):
-
-        self.response_categories = requests.post(self.api_get_categories_url, headers={'User-Agent': "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Mobile Safari/537.36"}
-                                                 , data={"lvl": "1"}).json()
-        category_list = (self.response_categories["data"])
+        successful = 0
+        while not successful:
+            try:
+                self.response_categories = self.get_responce(self.api_get_categories_url, {"lvl": "1"}, self.proxy_mode)
+                category_list = (self.response_categories["data"])
+                successful = 1
+            except:
+                print(f'[isource] proxy_mode change. proxy_mode: {self.proxy_mode}')
+                self.change_proxy()
+        category_list.reverse()
         for category in category_list:
-            counter = 0
-            self.response_items = requests.post(self.api_get_auction_url, headers={'User-Agent': "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Mobile Safari/537.36"},
-                                                data={
-                                                    "category_name": category["transliteration_name"],
-                                                    "page": 1,
-                                                    "per_page": 100,
+            successful = 0
+            while not successful:
+                try:
+                    counter = 0
+                    self.response_items = self.get_responce(self.api_get_auction_url, {
+                                                            "category_name": category["transliteration_name"],
+                                                            "page": 1,
+                                                            "per_page": 100,}, self.proxy_mode)
+                    test = self.response_items["data"]
+                    successful = 1
+                except:
+                    print(f'[isource] proxy_mode change. proxy_mode: {self.proxy_mode}')
+                    self.change_proxy()
 
-                                                }).json()
             for z in self.response_items["data"]:
-                self.response_item = requests.post(self.api_get_info_url, headers={'User-Agent': "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Mobile Safari/537.36"},
-                                                   data={"auction_transliteration_name": z
-                                                   ["auction_transliteration_name"]}).json()["data"]
+                successful = 0
+                while not successful:
+                    try:
+                        self.response_item = self.get_responce(self.api_get_info_url, {"auction_transliteration_name": z
+                                                           ["auction_transliteration_name"]}, self.proxy_mode)
+                        self.response_item = self.response_item["data"]
+                        successful = 1
+                    except:
+                        self.change_proxy()
+                        print(f'[isource] proxy_mode change. proxy_mode: {self.proxy_mode}')
 
                 if self.response_item["supplier_name"] != None:
                     organisation = self.response_item["supplier_name"]
@@ -50,29 +75,54 @@ class ParserSource(Parser):
                                         "additional_data": "не указано",
                                         "organisation": organisation.replace('"', ''),
                                         "url": "https://reserve.isource.ru/trades/item/"
-                                               + self.response_item["auction_transliteration_name"],
-                                        "category": category["transliteration_name"],
-                                        "subcategory": self.response_item["category"][0]["name"]
+                                               + self.response_item["auction_transliteration_name"]
                                         }
                 z = requests.post("https://synrate.ru/api/offers/create",
                                   json=J)
-
-                # try:
-                #     if z.json()["name"][0].find("already exists") != -1:
-                #         counter += 1
-                #
-                #         if counter == 150:
-                #             break
-                # except:
-                #     counter = 0
-                #     z = None
                 # TESTING -----------------
                 try:
-                    print(f'Isource: {z.json()}  {J}')
+                    print(f'[isource]: {z.json()}  {J}')
                 except:
-                    print(f'Isource !!!!: {z}  {J}')
-                time.sleep(random.randint(1, 5) / 10)
+                    print(f'[isource] !!!!: {z}  {J}')
+                # time.sleep(random.randint(1, 5) / 10)
                 # --------------------
+
+    def get_responce(self, url, data, proxy_mode):
+        if proxy_mode:
+            successful = 0
+            while not successful:
+                proxy = get_proxy(proxy_mode)
+                # proxy_status = check_proxy(proxy)
+                try:
+                    session = requests.Session()
+                    retry = Retry(connect=3, backoff_factor=0.5)
+                    adapter = HTTPAdapter(max_retries=retry)
+                    session.mount('http://', adapter)
+                    session.mount('https://', adapter)
+                    response = session.post(url, headers={
+                        'User-Agent': UserAgent().chrome}, data=data, proxies=proxy, timeout=5).json()
+                    successful = 1
+                except:
+                    print(
+                        '[isource] get_page_soup: не получилось сделать запрос с прокси. спим, меняем прокси и снова..')
+                    self.change_proxy()
+        else:
+            response = requests.post(url, headers={
+                'User-Agent': UserAgent().chrome}, data=data).json()
+        return response
+
+    def change_proxy(self):
+        print('change_proxy: start')
+        if self.proxy_mode:
+            try:
+                a = proxy_data[self.proxy_mode+1]
+                self.proxy_mode += 1
+                return True
+            except:
+                pass
+        print(f'\n[isource] proxy_mode: {self.proxy_mode}')
+        self.proxy_mode = 1
+        return False
 
 
 if __name__ == '__main__':
