@@ -22,19 +22,19 @@
                         <a href="{{ offer.url }}" target="_blank"><img src="{% static 'img/nelikvidi.png' %}" alt=""></a>
                         {% endif %}
                         {% if offer.home_name == "tektorg" %}
-                            <a href="{{ offer.url }}" target="_blank"><img src="{% static 'img/tectorg.png' %}" alt=""></a>
+                        <a href="{{ offer.url }}" target="_blank"><img src="{% static 'img/tectorg.png' %}" alt=""></a>
                         {% endif %}
                         {% if offer.home_name == "tenderpro" %}
-                            <a href="{{ offer.url }}" target="_blank"><img src="{% static 'img/tender.png' %}" alt=""></a>
+                        <a href="{{ offer.url }}" target="_blank"><img src="{% static 'img/tender.png' %}" alt=""></a>
                         {% endif %}
                         {% if offer.home_name == "isource" %}
-                            <a href="{{ offer.url }}" target="_blank"><img src="{% static 'img/isource.png' %}" alt=""></a>
+                        <a href="{{ offer.url }}" target="_blank"><img src="{% static 'img/isource.png' %}" alt=""></a>
                         {% endif %}
                         {% if offer.home_name == "onlinecontract" %}
-                            <a href="{{ offer.url }}" target="_blank"><img src="{% static 'img/onlinecontract.png' %}" alt=""></a>
+                        <a href="{{ offer.url }}" target="_blank"><img src="{% static 'img/onlinecontract.png' %}" alt=""></a>
                         {% endif %}
                         {% if offer.home_name == "roseltorg" %}
-                            <a href="{{ offer.url }}" target="_blank"><img src="{% static 'img/roseltorg.png' %}" alt=""></a>
+                        <a href="{{ offer.url }}" target="_blank"><img src="{% static 'img/roseltorg.png' %}" alt=""></a>
                         {% endif %}
                         {% if offer.home_name == "etpgpb" %}
                         <a href="{{ offer.url }}" target="_blank"><img src="{% static 'img/etpgpb_1.png' %}" alt=""></a>
@@ -43,7 +43,7 @@
                         <a href="{{ offer.url }}" target="_blank"><img src="{% static 'img/fabrikant_1.png' %}" alt=""></a>
                         {% endif %}
                         {% if offer.home_name == "etp-activ" %}
-                            <img src="{% static 'img/etp-activ.png' %}" class="offer-block__img" alt="">
+                        <a href="{{ offer.url }}" target="_blank"><img src="{% static 'img/etp-activ.png' %}" class="offer-block__img" alt=""></a>
                         {% endif %}
                     </div>
                     <a href="{{ offer.url }}" target="_blank">Перейти на источник</a>
@@ -141,28 +141,31 @@
                 <div class="offer-block">
                     <div class="offer-block-img">
                             {% if offer.home_name == "nelikvidi" %}
-                        <a href="{{ offer.url }}" target="_blank"><img src="{% static 'img/nelikvidi.png' %}" class="offer-block__img" alt=""></a>
+                            <img src="{% static 'img/nelikvidi.png' %}" class="offer-block__img" alt="">
                             {% endif %}
                             {% if offer.home_name == "tektorg" %}
-                            <a href="{{ offer.url }}" target="_blank"><img src="{% static 'img/tectorg.png' %}" class="offer-block__img" alt=""></a>
+                            <img src="{% static 'img/tectorg.png' %}" class="offer-block__img" alt="">
                             {% endif %}
                             {% if offer.home_name == "tenderpro" %}
-                            <a href="{{ offer.url }}" target="_blank"><img src="{% static 'img/tender.png' %}" class="offer-block__img" alt=""></a>
+                            <img src="{% static 'img/tender.png' %}" class="offer-block__img" alt="">
                             {% endif %}
                             {% if offer.home_name == "isource" %}
-                            <a href="{{ offer.url }}" target="_blank"><img src="{% static 'img/isource.png' %}" class="offer-block__img" alt=""></a>
+                            <img src="{% static 'img/isource.png' %}" class="offer-block__img" alt="">
                             {% endif %}
                             {% if offer.home_name == "onlinecontract" %}
-                            <a href="{{ offer.url }}" target="_blank"><img src="{% static 'img/onlinecontract.png' %}" class="offer-block__img" alt=""></a>
+                            <img src="{% static 'img/onlinecontract.png' %}" class="offer-block__img" alt="">
                             {% endif %}
                             {% if offer.home_name == "roseltorg" %}
-                                <a href="{{ offer.url }}" target="_blank"><img src="{% static 'img/roseltorg.png' %}" class="offer-block__img" alt=""></a>
+                            <img src="{% static 'img/roseltorg.png' %}" class="offer-block__img" alt="">
                             {% endif %}
                             {% if offer.home_name == "etpgpb" %}
-                            <a href="{{ offer.url }}" target="_blank"><img src="{% static 'img/etp_hd.png' %}" class="offer-block__img" alt=""></a>
+                            <img src="{% static 'img/etp_hd.png' %}" class="offer-block__img" alt="">
                             {% endif %}
                             {% if offer.home_name == "fabrikant" %}
-                            <a href="{{ offer.url }}" target="_blank"><img src="{% static 'img/fabrikant.png' %}" class="offer-block__img" alt=""></a>
+                            <img src="{% static 'img/fabrikant.png' %}" class="offer-block__img" alt="">
+                            {% endif %}
+                            {% if offer.home_name == "etp-activ" %}
+                            <img src="{% static 'img/etp-activ.png' %}" class="offer-block__img" alt="">
                             {% endif %}
                         </div>
                         <a href="{% url 'synrate_main:detail_view' id=offer.id %}" class="detailhref">
