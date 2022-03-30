@@ -183,10 +183,21 @@ class ParserEtpgpb(Parser):
         for offer in data:
             z = requests.post("https://synrate.ru/api/offers/create",
                               json=offer)
+            today = datetime.today().strftime('%d-%m %H:%M')
             try:
-                print(f'[GPB] {z.json()}\n{offer}')
+                print(f'[etpgpb] {z.json()}\n{offer}')
+                with open('/var/www/synrate_dir/etpgpb.txt', 'r+') as f:
+                    # ...
+                    f.seek(0, 2)
+                    f.write(f'[{today}] {z.json()}\n{offer}')
+                    f.close()
             except:
-                print(f'[GPB] {z}\n{offer}')
+                print(f'[etpgpb] {z}\n{offer}')
+                with open('/var/www/synrate_dir/etpgpb.txt', 'r+') as f:
+                    # ...
+                    f.seek(0, 2)
+                    f.write(f'[{today}] {z}\n{offer}')
+                    f.close()
 
     def get_last_page(self):
         successful = 0

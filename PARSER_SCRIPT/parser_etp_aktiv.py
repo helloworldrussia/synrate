@@ -130,10 +130,21 @@ class ParserEtpActiv(Parser):
         for offer in data:
             z = requests.post("https://synrate.ru/api/offers/create",
                               json=offer)
+            today = datetime.today().strftime('%d-%m %H:%M')
             try:
                 print(f'[etp-aktiv] {z.json()}\n{offer}')
+                with open('/var/www/synrate_dir/etp-aktiv.txt', 'r+') as f:
+                    # ...
+                    f.seek(0, 2)
+                    f.write(f'[{today}] {z.json()}\n{offer}')
+                    f.close()
             except:
                 print(f'[etp-aktiv] {z}\n{offer}')
+                with open('/var/www/synrate_dir/etp-aktiv.txt', 'r+') as f:
+                    # ...
+                    f.seek(0, 2)
+                    f.write(f'[{today}] {z}\n{offer}')
+                    f.close()
 
 
 if __name__ == '__main__':

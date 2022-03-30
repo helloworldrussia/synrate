@@ -65,7 +65,7 @@ class ParserTender(Parser):
                     start_date = datetime.date(int(x[2]), int(x[1]), int(x[0]))
                     z = finishes.split(".")
                     fin_date = datetime.date(int(z[2]), int(z[1]), int(z[0]))
-                    J = {"name": name.replace('"', ''), "location": "РФ", "home_name": "tenderpro",
+                    offer = {"name": name.replace('"', ''), "location": "РФ", "home_name": "tenderpro",
                                             "offer_type": "Продажа", "offer_start_date": str(start_date),
                                             "offer_end_date": str(fin_date),
                                             "owner": company.replace('"', ''), "ownercontact": "временно недоступно", "offer_price": 0,
@@ -74,14 +74,25 @@ class ParserTender(Parser):
                                             #"category": "Не определена", "subcategory": "не определена"
                                             }
                     z = requests.post("https://synrate.ru/api/offers/create",
-                                      json=J)
+                                      json=offer)
 
                     # TESTING -------------
 
+                    today = datetime.datetime.today().strftime('%d-%m %H:%M')
                     try:
-                        print(f'[tenderpro] {z.json()}\n{J}')
+                        print(f'[tenderpro] {z.json()}\n{offer}')
+                        with open('/var/www/synrate_dir/tenderpro.txt', 'r+') as f:
+                            # ...
+                            f.seek(0, 2)
+                            f.write(f'[{today}] {z.json()}\n{offer}')
+                            f.close()
                     except:
-                        print(f'[tenderpro] {z}\n{J}')
+                        print(f'[tenderpro] {z}\n{offer}')
+                        with open('/var/www/synrate_dir/tenderpro.txt', 'r+') as f:
+                            # ...
+                            f.seek(0, 2)
+                            f.write(f'[{today}] {z}\n{offer}')
+                            f.close()
                     time.sleep(random.randint(1, 5) / 10)
                     # ---------------------
 

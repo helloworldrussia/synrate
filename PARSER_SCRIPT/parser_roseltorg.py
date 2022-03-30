@@ -48,10 +48,21 @@ class RoseltorgParser(Parser):
         for offer in data:
             z = requests.post("https://synrate.ru/api/offers/create",
                               json=offer)
+            today = datetime.datetime.today().strftime('%d-%m %H:%M')
             try:
                 print(f'[roseltorg] {z.json()}\n{offer}')
+                with open('/var/www/synrate_dir/roseltorg.txt', 'r+') as f:
+                    # ...
+                    f.seek(0, 2)
+                    f.write(f'[{today}] {z.json()}\n{offer}')
+                    f.close()
             except:
                 print(f'[roseltorg] {z}\n{offer}')
+                with open('/var/www/synrate_dir/roseltorg.txt', 'r+') as f:
+                    # ...
+                    f.seek(0, 2)
+                    f.write(f'[{today}] {z}\n{offer}')
+                    f.close()
 
     def get_offers_from_page(self, soup):
         try:

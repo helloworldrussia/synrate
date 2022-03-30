@@ -66,10 +66,21 @@ class ParserFabrikant(Parser):
             for offer in offers:
                 z = requests.post("https://synrate.ru/api/offers/create",
                                   json=offer)
+                today = datetime.today().strftime('%d-%m %H:%M')
                 try:
                     print(f'[fabrikant] {z.json()}\n{offer}')
+                    with open('/var/www/synrate_dir/fabrikant.txt', 'r+') as f:
+                        # ...
+                        f.seek(0, 2)
+                        f.write(f'[{today}] {z.json()}\n{offer}')
+                        f.close()
                 except:
                     print(f'[fabrikant] {z}\n{offer}')
+                    with open('/var/www/synrate_dir/fabrikant.txt', 'r+') as f:
+                        # ...
+                        f.seek(0, 2)
+                        f.write(f'[{today}] {z}\n{offer}')
+                        f.close()
 
     def get_last_page(self):
         successful = 0

@@ -1,4 +1,5 @@
 import time
+from datetime import datetime
 
 import requests
 from ENGINE import Parser
@@ -60,11 +61,21 @@ class ParserSource(Parser):
 
                 z = requests.post("https://synrate.ru/api/offers/create",
                                   json=offer)
-                self.count += 1
+                today = datetime.today().strftime('%d-%m %H:%M')
                 try:
-                    print(f'[isource] {z.json()} {offer}\n{self.count}')
+                    print(f'[isource] {z.json()}\n{offer}')
+                    with open('/var/www/synrate_dir/isource.txt', 'r+') as f:
+                        # ...
+                        f.seek(0, 2)
+                        f.write(f'[{today}] {z.json()}\n{offer}')
+                        f.close()
                 except:
-                    print(f'[isource] {z} {offer}\n{self.count}')
+                    print(f'[isource] {z}\n{offer}')
+                    with open('/var/www/synrate_dir/isource.txt', 'r+') as f:
+                        # ...
+                        f.seek(0, 2)
+                        f.write(f'[{today}] {z}\n{offer}')
+                        f.close()
 
                 # try:
                 #     if z.json()["name"][0].find("already exists") != -1:
