@@ -33,6 +33,7 @@ class ParserEtpgpb(Parser):
         for page in range(1, int(last_page)+1):
             successful = 0
             while not successful:
+                time.sleep(random.randint(1, 7))
                 print(f'etpgpb: Сканируем стр. {page}\nproxy_mode: {self.proxy_mode}')
                 page_soup = self.get_page_soup(self.url+f'&page={page}', self.proxy_mode)
                 result = self.get_offers(page_soup, self.core)
@@ -76,6 +77,8 @@ class ParserEtpgpb(Parser):
                 pass
         print(f'\nproxy_mode: {self.proxy_mode}')
         self.proxy_mode = 1
+        if self.proxy_mode > 1:
+            time.sleep(300)
         return False
 
     def get_offers(self, soup, core):

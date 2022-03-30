@@ -39,6 +39,7 @@ class ParserCenter(Parser):
             # get_offers_from_page сама сменит/включит прокси и вернет False, если поймет, что анти-парсер нас засек
             successful = 0
             while not successful:
+                time.sleep(random.randint(1, 7))
                 print('Обработка:', page_url)
                 soup = self.get_page_soup(page_url, proxy=self.proxy_mode)
                 result = self.get_offers_from_page(soup)
@@ -154,6 +155,8 @@ class ParserCenter(Parser):
                 pass
         print(f'\nproxy_mode: {self.proxy_mode}')
         self.proxy_mode = 1
+        if self.proxy_mode > 1:
+            time.sleep(300)
         return False
 
     def get_last_page(self):

@@ -28,7 +28,8 @@ class ParserNelikvidy(Parser):
         """
         super().__init__()
         self.verify = verify
-        self.url = "https://nelikvidi.com"
+        self.url = "https://nelikvidi.com/sell"
+        self.core = 'https://nelikvidi.com'
         self.proxy_mode = False
         self.monthlist = {
             "янв": 1,
@@ -58,6 +59,102 @@ class ParserNelikvidy(Parser):
             "декаб": 12,
         }
 
+    def parse(self):
+        successful = 0
+        while not successful:
+            time.sleep(random.randint(1, 7))
+            try:
+                last_page = self.get_last_page()
+                successful = 1
+            except Exception as ex:
+                print(ex)
+                self.change_proxy()
+        for i in range(1, last_page+1):
+            successful = 0
+            while not successful:
+                time.sleep(random.randint(1, 7))
+                try:
+                    soup = self.get_page_soup(self.url+f'?page={i}')
+                    result = self.get_offers_from_page(soup)
+                    if result:
+                        self.send_result(result)
+                        successful = 1
+                except Exception as ex:
+                    print(ex)
+                    self.change_proxy()
+
+    def send_result(self, result):
+        for offer in result:
+            z = requests.post("https://synrate.ru/api/offers/create",
+                              json=offer)
+            try:
+                print(f'[nelikvid] {z.json()}\n{offer}')
+            except:
+                print(f'[nelikvid] {z}\n{offer}')
+
+    def get_offers_from_page(self, soup):
+        try:
+            offers = soup.find("div", attrs={"class": "items-container"})
+            offers = offers.find_all("div", attrs={"class": "table-card img-card catalog-cart"})
+            test = offers[1]
+        except:
+            return False
+        answer = []
+        for offer in offers:
+            link_obj = offer.find("div", attrs={"class": "card-title"}).find("a")
+            link = link_obj.attrs['href']
+            name = link_obj.attrs['title'].replace('"', '')
+            region = offer.find("div", attrs={"class": "card-subtitle"}).find("span")
+            date = offer.find("div", attrs={"class": "action-left"}).find_all("span", attrs={"class": "doit"})[1]
+            date = date.find("span", attrs={"class": "btn-icon"}).find("small")
+            price = offer.find("p", attrs={"class": "formated_price"})
+
+            try:
+                company = region.find("a").getText().replace('"', '')
+            except:
+                company = None
+
+            if date:
+                date = self.make_date_good(date.getText())
+            else:
+                date = None
+            if price:
+                price = price.getText()
+                price = price.replace(' ', '')
+                price = int(price)
+            if region:
+                region = region.find("span").getText()
+                region = region.split(' ')[-1][:-1]
+            else:
+                region = None
+            offer_obj = {"name": name.replace('"', ''), "location": region, "home_name": "nelikvidi",
+                                        "offer_start_date": str(date),
+                                        "offer_price": price,
+                                        "additional_data": name.replace('"', ''), "organisation": company, "url": link
+                                        }
+            answer.append(offer_obj)
+
+        return answer
+
+    def make_date_good(self, date):
+        line = date.split(' ')
+        try:
+            year = int(line[-2].replace(',', ''))
+            line.pop(-2)
+        except:
+            year = datetime.date.today().year
+
+        month = line[-2].replace('.', '').replace(',', '')
+        day = line[-3]
+        month = self.monthlist[f'{month}']
+        date = datetime.date(year, int(month), int(day))
+        return date
+
+    def get_last_page(self):
+        soup = self.get_page_soup(self.url+'?page=5000')
+        last_page = soup.find("ul", attrs={"class": "pagination"}).find("li", attrs={"class": "active"}).getText()
+        return int(last_page)
+
     def change_proxy(self):
         print('[nelikvidy] change_proxy: start')
         if self.proxy_mode:
@@ -69,9 +166,12 @@ class ParserNelikvidy(Parser):
                 pass
         print(f'\n[nelikvidy] proxy_mode: {self.proxy_mode}')
         self.proxy_mode = 1
+        if self.proxy_mode > 1:
+            time.sleep(300)
         return False
 
-    def get_page_soup(self, url, proxy_mode):
+    def get_page_soup(self, url):
+        proxy_mode = self.proxy_mode
         if proxy_mode:
             proxy = get_proxy(proxy_mode)
             # proxy_status = check_proxy(proxy)
@@ -90,187 +190,8 @@ class ParserNelikvidy(Parser):
             response = requests.get(url, headers={
                 'User-Agent': UserAgent().chrome}).content.decode("utf8")
         soup = BeautifulSoup(response, 'html.parser')
+        # print(response)
         return soup
-
-    # MAIN FUNC!
-    def parse(self):
-        # self.response = requests.get(self.url, headers={'User-Agent': "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Mobile Safari/537.36"}, verify=self.verify)
-        # self.response.encoding = 'utf-8'
-        # self.soup = BeautifulSoup(self.response.content, 'html.parser')
-        successful = 0
-        while not successful:
-            self.soup = self.get_page_soup(self.url, self.proxy_mode)
-            try:
-                uls = self.soup.find_all("ul", attrs={"class": "group-list"})
-                test = uls[0]
-                successful = 1
-            except:
-                print(f'[nelikvidy] new proxy_mode = {self.proxy_mode}')
-                self.change_proxy()
-
-        kategories = []
-        # Получение всех категорий (формат список из списков. [[ссылка, название], [ссылка, название], ..]
-        for ul in uls:
-            lis = ul.find_all("li")
-            for li in lis:
-                kategories.append([li.find("a").attrs["href"], unicodedata.normalize("NFKD", li.find("a").getText())])
-        kategories.reverse()
-        for kategory in kategories:
-
-            # self.response = requests.get(self.url+kategory[0]+'/sell', headers={'User-Agent': UserAgent().chrome},
-            #                              verify=self.verify)
-            # print(self.response, self.url+kategory[0]+'/sell')
-            # self.response.encoding = 'utf-8'
-            # self.soup = BeautifulSoup(self.response.content, 'html.parser')
-            successful = 0
-            while not successful:
-                try:
-                    self.soup = self.get_page_soup(self.url+kategory[0]+'/sell', self.proxy_mode)
-                    # Определение колличества страниц
-                    posts = int(
-                        unicodedata.normalize("NFKD", self.soup.find('div', attrs={"class": "summary"}).find_all("b")[1]
-                                              .getText()).replace(u" ", "")
-                    )
-                    successful = 1
-                except:
-                    print(f'[nelikvidy] new proxy_mode = {self.proxy_mode}')
-                    self.change_proxy()
-
-            pages = posts//50
-            if posts % 50 != 0:
-                pages = pages+1
-
-            if pages > 20:
-                pages = 20
-            for i in range(1, pages):
-                # self.response = requests.get(self.url+kategory[0]+"/sell/page-{}".format(self.current_page),
-                #                              headers={'User-Agent': "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Mobile Safari/537.36"}, verify=self.verify)
-                # self.soup = BeautifulSoup(self.response.content, 'html.parser')
-                self.soup = self.get_page_soup(self.url+kategory[0]+"/sell/page-{}".format(self.current_page), self.proxy_mode)
-                successful = 0
-                while not successful:
-                    try:
-                        test = self.soup.find_all("a", attrs={"class":"card-image"})[0]
-                        successful = 1
-                    except:
-                        print(f'[nelikvidy] new proxy_mode = {self.proxy_mode}')
-                        self.change_proxy()
-
-                for link in self.soup.find_all("a", attrs={"class":"card-image"}):
-                    self.post_links.append(link.attrs['href'])
-                self.current_page += 1
-
-            self.post_links = list(dict.fromkeys(self.post_links))
-
-            # data_on_serv = requests.get("https://synrate.ru/api/offers/list")
-            # for url in data_on_serv.json():
-            #     try:
-            #         self.post_links.remove(url["url"])
-            #     except ValueError:
-            #         zxc = 0
-
-            for link in self.post_links:
-                url = None
-                name = None
-                location = None
-                offer_type = None
-                offer_start_date = None
-                offer_end_date = None
-                offer_price = None
-                owner = None
-                organisation = None
-                views = None
-                sostoyanie = None
-                amount = None
-                region = None
-                date = None
-
-                # self.response = requests.get(link, headers={'User-Agent': "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Mobile Safari/537.36"}, verify=self.verify)
-                # self.soup = BeautifulSoup(self.response.content, 'html.parser')
-                successful = 0
-                while not successful:
-                    try:
-                        self.soup = self.get_page_soup(link, self.proxy_mode)
-                        data_paragraphs = self.soup.find_all("p")
-                        test = data_paragraphs[0]
-                        successful = 1
-                    except:
-                        print(f'[nelikvidy] new proxy_mode = {self.proxy_mode}')
-                        self.change_proxy()
-
-                try:
-                    name = self.soup.find("div", attrs={"class": "section-title"}).find("h1").getText()
-                except AttributeError:
-                    continue
-
-                try:
-                    price = unicodedata.normalize("NFKD",
-                                                  self.soup.find("span", attrs={"class": "formated_price"})
-                                                  .getText().replace(u" ", "").replace(u",", ".")).strip()
-                    price = round(float(price))
-                except AttributeError:
-                    continue
-
-                try:
-                    organisation = self.soup.find("div", attrs={"class": "company-info"}).find("a").getText()
-                except:
-                    organisation = None
-                for data in data_paragraphs:
-                    data_type = data.find('b')
-                    if data_type is not None:
-                        if data_type.getText() == "Количество:":
-                            amount = data.getText().replace(u"Количество:", "").strip()
-                        if data_type.getText() == "Разместил:":
-                            owner = data.getText().replace(u"Разместил:", "")
-                            delto = data.find("a").getText()
-                            owner = owner.replace(delto, "")
-                            numberurl = "https://nelikvidi.com"+data.find("a")["data-url"]
-                        if data_type.getText() == "Регион:":
-                            region = data.getText().replace(u"Регион:", "").strip()
-                        if data_type.getText() == "Тип объявления:":
-                            offer_type = data.getText().replace(u"Тип объявления:", "").strip()
-                        if data_type.getText() == "Состояние:":
-                            sostoyanie = data.getText().replace(u"Состояние:", "").strip()
-                        if data_type.getText().find('объявление размещено'):
-                            try:
-                                line = data.getText().replace(f"{name}- объявление размещено:", '')
-                                line = line.split(' ')
-                                try:
-                                    year = int(line[-2].replace(',', ''))
-                                    line.pop(-2)
-                                except:
-                                    year = datetime.date.today().year
-
-                                month = line[-2].replace('.', '').replace(',', '')
-                                day = line[-3]
-                                month = self.monthlist[f'{month}']
-                                date = datetime.date(year, int(month), int(day))
-                            except Exception as ex:
-                                pass
-                        if data_type.getText() == "Просмотров:":
-                            views = data.getText().replace(u"Просмотров:", "").strip()
-                if offer_type is None:
-                    offer_type = "продажа"
-                if date is None:
-                    date = datetime.date.today()
-
-                breadcrumb = self.soup.find("ul", attrs={"class": "breadcrumb"}).find_all("li")
-                offer = {"name": name.replace('"', ''), "location": region, "home_name": "nelikvidi",
-                                        "offer_type": offer_type, "offer_start_date": str(date),
-                                        "owner": owner.replace('"', ''), "ownercontact": "временно недоступно", "offer_price": price,
-                                        "additional_data": name.replace('"', ''), "organisation": organisation.replace('"', ''), "url": link
-                                        #"category": breadcrumb[1].getText().strip(),
-                                       # "subcategory": breadcrumb[2].getText().strip()
-                                        }
-                z = requests.post("https://synrate.ru/api/offers/create",
-                                  json=offer)
-                # ---------------------------- TESTING
-                try:
-                    print('[nelikvidy]', z.json(), offer)
-                except:
-                    print('[nelikvidy]', z, offer)
-                # ------------------------------------
-            self.post_links = []
 
 
 if __name__ == '__main__':

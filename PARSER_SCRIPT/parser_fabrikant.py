@@ -56,6 +56,7 @@ class ParserFabrikant(Parser):
         for page in range(1, int(last_page)+1):
             successful = 0
             while not successful:
+                time.sleep(random.randint(1, 7))
                 print(f'fabrikant: Сканируем стр. {page}\nproxy_mode: {self.proxy_mode}')
                 page_soup = self.get_page_soup(self.url + f'&page={page}', self.proxy_mode)
                 offers = self.get_page_items(page_soup)
@@ -95,6 +96,8 @@ class ParserFabrikant(Parser):
                 pass
         print(f'\n[fabrikant] proxy_mode: {self.proxy_mode}')
         self.proxy_mode = 1
+        if self.proxy_mode > 1:
+            time.sleep(300)
         return False
 
     def get_page_soup(self, url, proxy_mode):

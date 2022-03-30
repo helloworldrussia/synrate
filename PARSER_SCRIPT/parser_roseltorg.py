@@ -32,6 +32,7 @@ class RoseltorgParser(Parser):
             print(i)
             successful = 0
             while not successful:
+                time.sleep(random.randint(1, 7))
                 try:
                     self.soup = self.get_page_soup(self.sale_url.format(i, i * 10))
                     result = self.get_offers_from_page(self.soup)
@@ -156,6 +157,8 @@ class RoseltorgParser(Parser):
             except:
                 pass
         self.proxy_mode = 1
+        if self.proxy_mode > 1:
+            time.sleep(300)
         print(f'[roseltorg] new proxy_mode {self.proxy_mode}')
         time.sleep(random.randint(1, 4))
         return False

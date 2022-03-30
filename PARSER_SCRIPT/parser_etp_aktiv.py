@@ -27,8 +27,10 @@ class ParserEtpActiv(Parser):
     def parse(self):
         last_page = self.get_last_page()
         for page in range(1, int(last_page)+1):
+            time.sleep(random.randint(1, 7))
             successful = 0
             while not successful:
+                time.sleep(random.randint(1, 7))
                 page_url = self.url+f'?PAGEN_1={page}'
                 result = self.get_page_offers(page_url)
                 if result:
@@ -86,6 +88,8 @@ class ParserEtpActiv(Parser):
                 pass
         print(f'\nproxy_mode: {self.proxy_mode}')
         self.proxy_mode = 1
+        if self.proxy_mode > 1:
+            time.sleep(300)
         return False
 
     def get_page_offers(self, url):

@@ -27,6 +27,7 @@ class ParserTender(Parser):
         # self.soup = BeautifulSoup(self.response.content, 'html.parser')
         successful = 0
         while not successful:
+            time.sleep(random.randint(1, 7))
             try:
                 self.soup = self.get_page_soup(self.url.format(0))
                 pages = self.soup.find("div", attrs={"class": "pager"}).find_all('a')
@@ -36,13 +37,13 @@ class ParserTender(Parser):
             except:
                 self.change_proxy()
 
-
         for i in range(1, int(pages_num)):
             # self.response = requests.get(self.url.format(i*25), headers={'User-Agent': "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Mobile Safari/537.36"})
             # self.response.encoding = 'utf-8'
             # self.soup = BeautifulSoup(self.response.content, 'html.parser')
             successful = 0
             while not successful:
+                time.sleep(random.randint(1, 7))
                 try:
                     self.soup = self.get_page_soup(self.url.format(i*25))
                     table = self.soup.find('table', attrs={"class": "baseTable"})
@@ -123,6 +124,8 @@ class ParserTender(Parser):
             except:
                 pass
         self.proxy_mode = 1
+        if self.proxy_mode > 1:
+            time.sleep(300)
         print(f'[tenderpro] new proxy_mode {self.proxy_mode}')
         time.sleep(random.randint(1, 4))
         return False

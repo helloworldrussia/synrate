@@ -25,6 +25,7 @@ class ParserOnlineContract(Parser):
     def parse(self):
         successful = 0
         while not successful:
+            time.sleep(random.randint(1, 7))
             try:
                 last_page = self.get_last_page()
                 successful = 1
@@ -34,6 +35,7 @@ class ParserOnlineContract(Parser):
         for i in range(1, last_page+1):
             successful = 0
             while not successful:
+                time.sleep(random.randint(1, 7))
                 try:
                     soup = self.get_page_soup(self.url.format(i))
                     result = self.get_offers_from_page(soup)
@@ -101,6 +103,8 @@ class ParserOnlineContract(Parser):
                 pass
         print(f'\n[online] proxy_mode: {self.proxy_mode}')
         self.proxy_mode = 1
+        if self.proxy_mode > 1:
+            time.sleep(300)
         return False
 
     def get_page_soup(self, url):
