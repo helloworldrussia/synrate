@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import SignUpView, user_login, user_cabinet, user_logout, \
-    CabinetView, CabinetPaymentView, CabinetFavView
+    CabinetView, CabinetPaymentView, CabinetFavView, stat_view
 from . import views
 app_name = 'Users'
 
@@ -13,5 +13,6 @@ urlpatterns = [
     path('lk', CabinetView.as_view(), name='cabinet_lk'),
     path('payment', CabinetPaymentView.as_view(), name='cabinet_payment'),
     path('fav', CabinetFavView.as_view(), name='cabinet_fav'),
+    path('stat', stat_view, name='cabinet_stat'),
 
 ]

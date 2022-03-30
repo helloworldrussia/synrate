@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load static%}
+{% block content %}
+<h2>Всего заявок: {{ all }}</h2>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Парсер</th>
+      <th scope="col">Всего</th>
+      <th scope="col">Месяц</th>
+      <th scope="col">День</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">b2b-center</th>
+      <td>{{ b2b_center_all }}</td>
+      <td>{{ b2b_center_month }}</td>
+      <td>{{ b2b_center_day }}</td>
+    </tr>
+    <tr>
+      <th scope="row">etp-aktiv</th>
+      <td>{{ etp_aktiv_all }}</td>
+      <td>{{ etp_aktiv_month }}</td>
+      <td>{{ etp_aktiv_day }}</td>
+    </tr>
+    <tr>
+      <th scope="row">etp-gpb</th>
+      <td>{{ etpgpb_all }}</td>
+      <td>{{ etpgpb_month }}</td>
+      <td>{{ etpgpb_day }}</td>
+    </tr>
+    <tr>
+      <th scope="row">fabrikant</th>
+      <td>{{ fabrikant_all }}</td>
+      <td>{{ fabrikant_month }}</td>
+      <td>{{ fabrikant_day }}</td>
+    </tr>
+    <tr>
+      <th scope="row">isource</th>
+      <td>{{ isource_all }}</td>
+      <td>{{ isource_month }}</td>
+      <td>{{ isource_day }}</td>
+    </tr>
+    <tr>
+      <th scope="row">nelikvidy</th>
+      <td>{{ nelikvidy_all }}</td>
+      <td>{{ nelikvidy_month }}</td>
+      <td>{{ nelikvidy_day }}</td>
+    </tr>
+    <tr>
+      <th scope="row">online-contract</th>
+      <td>{{ onlinecontract_all }}</td>
+      <td>{{ onlinecontract_month }}</td>
+      <td>{{ onlinecontract_day }}</td>
+    </tr>
+    <tr>
+      <th scope="row">roseltorg</th>
+      <td>{{ roseltorg_all }}</td>
+      <td>{{ roseltorg_month }}</td>
+      <td>{{ roseltorg_day }}</td>
+    </tr>
+    <tr>
+      <th scope="row">tektorg</th>
+      <td>{{ tektorg_all }}</td>
+      <td>{{ tektorg_month }}</td>
+      <td>{{ tektorg_day }}</td>
+    </tr>
+    <tr>
+      <th scope="row">tenderpro</th>
+      <td>{{ tenderpro_all }}</td>
+      <td>{{ tenderpro_month }}</td>
+      <td>{{ tenderpro_day }}</td>
+    </tr>
+  </tbody>
+</table>
+{% endblock content %}
