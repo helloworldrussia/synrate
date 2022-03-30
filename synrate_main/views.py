@@ -29,7 +29,7 @@ def get_all_category_names():
 
 
 def index(request):
-    queryset = Offer.objects.all().order_by('-created_at')
+    queryset = Offer.objects.all().order_by('-offer_start_date')
     # получаем количество заявок всего, за мес., день
     all_count, month_count, today_count = get_counts(queryset)
 
@@ -228,13 +228,13 @@ def listing(request):
         qs = 1
 
     if and_dict == 0:
-        queryset = Offer.objects.all().order_by('-created_at')
+        queryset = Offer.objects.all().order_by('-offer_start_date')
     else:
         if len(or_dict):
             queryset = Offer.objects.filter(**and_dict).filter(reduce(operator.or_,
-                                    (Q(**d) for d in [dict([i]) for i in or_dict.items()]))).order_by('-created_at')
+                                    (Q(**d) for d in [dict([i]) for i in or_dict.items()]))).order_by('-offer_start_date')
         else:
-            queryset = Offer.objects.filter(**and_dict).order_by('-created_at')
+            queryset = Offer.objects.filter(**and_dict).order_by('-offer_start_date')
 
     all_count, month_count, today_count = get_counts(queryset)
     paginator = Paginator(queryset, 30)

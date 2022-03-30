@@ -67,6 +67,9 @@
                         {% if offer.home_name == "etp-activ" %}
                             <img src="{% static 'img/etp-activ.png' %}" class="offer-block__img" alt="">
                         {% endif %}
+                        {% if offer.home_name == "b2b-center" %}
+                        <img src="{% static 'img/b2b-center.png' %}" class="offer-block__img" alt="">
+                        {% endif %}
                     </div>
                     <a href="{% url 'synrate_main:detail_view' id=offer.id %}" class="detailhref">
                         <div class="offer-wrapper">
