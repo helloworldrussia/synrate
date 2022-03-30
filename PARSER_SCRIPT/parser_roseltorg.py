@@ -1,102 +1,173 @@
 import requests
 from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
+from requests.adapters import HTTPAdapter
+from urllib3 import Retry
+
 from ENGINE import Parser
 import time
 import random
 import datetime
+
+from mixins import proxy_data, get_proxy
 
 
 class RoseltorgParser(Parser):
     def __init__(self):
         super().__init__()
         self.url = "https://www.roseltorg.ru"
+        self.sale_url = self.url+"/search/sale?status%5B%5D=0&category%5B%5D=273&category%5B%5D=274&category%5B%5D=275&category%5B%5D=276&category%5B%5D=277&category%5B%5D=278&category%5B%5D=279&category%5B%5D=280&category%5B%5D=281&category%5B%5D=282&category%5B%5D=283&category%5B%5D=284&category%5B%5D=285&category%5B%5D=286&category%5B%5D=287&category%5B%5D=288&category%5B%5D=289&category%5B%5D=290&category%5B%5D=291&category%5B%5D=292&category%5B%5D=293&category%5B%5D=294&category%5B%5D=295&category%5B%5D=296&category%5B%5D=297&category%5B%5D=298&category%5B%5D=299&category%5B%5D=300&category%5B%5D=301&category%5B%5D=302&category%5B%5D=303&category%5B%5D=304&category%5B%5D=305&category%5B%5D=306&category%5B%5D=307&category%5B%5D=308&category%5B%5D=309&category%5B%5D=310&category%5B%5D=311&category%5B%5D=312&category%5B%5D=313&category%5B%5D=314&category%5B%5D=315&category%5B%5D=316&category%5B%5D=317&category%5B%5D=318&category%5B%5D=319&category%5B%5D=320&category%5B%5D=321&category%5B%5D=322&category%5B%5D=323&category%5B%5D=324&category%5B%5D=325&category%5B%5D=326&category%5B%5D=327&category%5B%5D=329&category%5B%5D=330&currency=all&page={}&from={}"
+        self.proxy_mode = False
 
     def parse(self):
+        successful = 0
+        while not successful:
+            try:
+                last_page = self.get_last_page()
+                successful = 1
+            except:
+                self.change_proxy()
 
-        for i in range(1, 50):
-            page_url = self.url+"/search/sale?status%5B%5D=0&category%5B%5D=273&category%5B%5D=274&category%5B%5D=275&category%5B%5D=276&category%5B%5D=277&category%5B%5D=278&category%5B%5D=279&category%5B%5D=280&category%5B%5D=281&category%5B%5D=282&category%5B%5D=283&category%5B%5D=284&category%5B%5D=285&category%5B%5D=286&category%5B%5D=287&category%5B%5D=288&category%5B%5D=289&category%5B%5D=290&category%5B%5D=291&category%5B%5D=292&category%5B%5D=293&category%5B%5D=294&category%5B%5D=295&category%5B%5D=296&category%5B%5D=297&category%5B%5D=298&category%5B%5D=299&category%5B%5D=300&category%5B%5D=301&category%5B%5D=302&category%5B%5D=303&category%5B%5D=304&category%5B%5D=305&category%5B%5D=306&category%5B%5D=307&category%5B%5D=308&category%5B%5D=309&category%5B%5D=310&category%5B%5D=311&category%5B%5D=312&category%5B%5D=313&category%5B%5D=314&category%5B%5D=315&category%5B%5D=316&category%5B%5D=317&category%5B%5D=318&category%5B%5D=319&category%5B%5D=320&category%5B%5D=321&category%5B%5D=322&category%5B%5D=323&category%5B%5D=324&category%5B%5D=325&category%5B%5D=326&category%5B%5D=327&category%5B%5D=329&category%5B%5D=330&currency=all&page={}&from={}".format(i, i*10)
-            print(page_url)
-            self.response = requests.get(page_url, headers={'User-Agent': UserAgent().chrome}).content.decode("utf8")
-            self.soup = BeautifulSoup(self.response, "html.parser")
-            for link in self.soup.find_all("a", {"class": "search-results__link"}):
-                self.post_links.append(link.attrs['href'])
-            time.sleep(random.randint(1, 7))
-        # Удаление дубликатов списка.
-        self.post_links = list(set(self.post_links))
+        for i in range(1, last_page + 1):
+            print(i)
+            successful = 0
+            while not successful:
+                try:
+                    self.soup = self.get_page_soup(self.sale_url.format(i, i * 10))
+                    result = self.get_offers_from_page(self.soup)
+                    if result:
+                        self.send_result(result)
+                        successful = 1
+                    else:
+                        self.change_proxy()
+                except:
+                    self.change_proxy()
 
-        for link in self.post_links:
-            print(link)
-            lot_name = None
-            lot_price = None
-            publish_date = None
-            finish_date = None
-            organisation = None
-            self.response = requests.get(self.url+link,
-                                         headers={'User-Agent': "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Mobile Safari/537.36"}).content.decode("utf8")
-            self.soup = BeautifulSoup(self.response, "html.parser")
-            lots = self.soup.find_all("div", {"class": "lot-item"})
-            for lot in lots:
-                lot_name = lot.find("div", {"class": "lot-item__subject"}).find("p").getText()
-                # print(lot_name)
+    def send_result(self, data):
+        for offer in data:
+            z = requests.post("https://synrate.ru/api/offers/create",
+                              json=offer)
+            try:
+                print(f'[roseltorg] {z.json()}\n{offer}')
+            except:
+                print(f'[roseltorg] {z}\n{offer}')
 
-                lot_price = lot.find("div", {"class": "lot-item__sum"}).find("p").getText().split(",")[0].strip()\
-                    .replace(" ", "")
-                # print(lot_price)
-                details = lot.find("div", {"class": "hidden-content"})
-                date_table = details.find_all("tbody")[0]
-                for row in date_table.find_all("tr", {"class": "data-table__item"}):
-                    # print(row.find("span").getText(), row.find("p").getText())
-                    if row.find("span").getText() == "Дата публикации" or row.find("span").getText() == "Публикация извещения":
-                        publish_date = row.find("p").getText().split(" ")[0]
-                        z = publish_date.split(".")
+    def get_offers_from_page(self, soup):
+        try:
+            offers = self.soup.find_all("div", {"class": "search-results__item"})
+            test = offers[0]
+        except:
+            return False
+        answer = []
+        for offer in offers:
+            link_obj = offer.find("div", attrs={"class": "search-results__subject"}).find("a", attrs={"class": "search-results__link"})
+            link = self.url+link_obj.attrs['href']
+            name = link_obj.getText()
+            company = offer.find("div", attrs={"class": "search-results__customer"}).find("p")
+            price = offer.find("div", attrs={"class": "search-results__sum"})
+            region = offer.find("div", attrs={"class": "search-results__region"})
+            end_date = offer.find("time", attrs={"class": "search-results__time"})
 
-                        publish_date = datetime.date(int("20"+z[2]), int(z[1]), int(z[0]))
+            if region:
+                region = region.find("p").getText()
+                region = self.make_region_good(region)
+            else:
+                region = None
+            if price:
+                price = price.find("p").getText()
+                price = self.make_price_good(price)
+            else:
+                price = None
+            if end_date:
+                end_date = end_date.getText()
+                end_date = self.make_date_good(end_date)
+            else:
+                end_date = None
+            if company:
+                company = company.getText().replace('"', '')
+            else:
+                company = None
 
-                    if row.find("span").getText() == "Дата и время окончания подачи заявок":
-                        finish_date = row.find("p").getText().split(" ")[1]
-                        z = finish_date.split(".")
+            offer_obj = {"name": name, "location": region, "home_name": "roseltorg",
+             "offer_type": "Продажа",# "offer_start_date": str(publish_date),
+             "offer_end_date": end_date,
+             "owner": "недоступно", "ownercontact": "временно недоступно",
+             "offer_price": price,
+             # "subcategory": "Не определена",
+             # "category": "Не определена",
+             "additional_data": name, "organisation": company,
+             "url": link
+             }
+            answer.append(offer_obj)
 
-                        finish_date = datetime.date(int("20"+z[2]), int(z[1]), int(z[0]))
-                    if row.find("span").getText() == "Рассмотрение заявок":
-                        finish_date = row.find("p").getText().split(" ")[1].split(".")
-                        finish_date = datetime.date(int("20"+finish_date[2]), int(finish_date[1]), int(finish_date[0]))
+        return answer
 
-                    if row.find("span").getText() == "Приём заявок":
-                        finish_date = row.find("p").getText().split(" ")[1].split(".")
-                        finish_date = datetime.date(int("20"+finish_date[2]), int(finish_date[1]), int(finish_date[0]))
+    def make_price_good(self, price):
+        price = price.split(',')[0].replace(' ', '')
+        return int(price)
 
-                another_table = details.find_all("tbody")[1]
-                for row in another_table.find_all("tr", {"class": "data-table__item"}):
-                    if row.find("span"):
-                        if row.find("span").getText() == "Название организации (ИНН)":
-                            organisation = row.find("p").getText()
+    def make_date_good(self, date):
+        by_points = date.split('.')
+        day, month = by_points[0], by_points[1]
+        year = by_points[2].split(" ")[0]
+        date = f'{year}-{month}-{day}'
+        return date
 
-                        if row.find("span").getText() == "Почтовый адрес":
-                            post_adress = row.find("p").getText()
+    def make_region_good(self, region):
+        region = region.split('.')[1].replace(' ', '')
+        return region
 
-                        if row.find("span").getText() == "Телефон":
-                            phone = row.find("p").getText()
+    def get_page_soup(self, url):
+        proxy_mode = self.proxy_mode
+        if proxy_mode:
+            proxy = get_proxy(proxy_mode)
+            # proxy_status = check_proxy(proxy)
+            try:
+                session = requests.Session()
+                retry = Retry(connect=3, backoff_factor=0.5)
+                adapter = HTTPAdapter(max_retries=retry)
+                session.mount('http://', adapter)
+                session.mount('https://', adapter)
+                response = session.get(url, headers={
+                    'User-Agent': UserAgent().chrome}, proxies=proxy, timeout=5)#.content.decode("utf8")
+                response.encoding = 'utf-8'
+                response = response.content
+            except Exception as ex:
+                print('get_page_soup: не получилось сделать запрос с прокси. спим, меняем прокси и снова..',
+                      f'\n{url}\n\n{ex}')
+                time.sleep(2)
+                return False
+        else:
+            response = requests.get(url, headers={
+                'User-Agent': UserAgent().chrome}).content.decode("utf8")
+        soup = BeautifulSoup(response, 'html.parser')
+        # print(response)
+        return soup
 
-                        if row.find("span").getText() == "E-mail":
-                            email = row.find("p").getText()
+    def change_proxy(self):
+        print('change_proxy: start')
+        if self.proxy_mode:
+            try:
+                a = proxy_data[self.proxy_mode+1]
+                self.proxy_mode += 1
+                print(f'[roseltorg] new proxy_mode {self.proxy_mode}')
+                time.sleep(random.randint(1, 4))
+                return True
+            except:
+                pass
+        self.proxy_mode = 1
+        print(f'[roseltorg] new proxy_mode {self.proxy_mode}')
+        time.sleep(random.randint(1, 4))
+        return False
 
-                        if row.find("span").getText() == "Место поставки":
-                            place = row.find("p").getText()
-                J = {"name": lot_name.replace('"', ''), "location": "РФ", "home_name": "roseltorg",
-                                        "offer_type": "Продажа", "offer_start_date": str(publish_date),
-                                        "offer_end_date": str(finish_date),
-                                        "owner": "недоступно", "ownercontact": "временно недоступно",
-                                        "offer_price": lot_price,
-                                        #"subcategory": "Не определена",
-                                        #"category": "Не определена",
-                                        "additional_data": "не указано", "organisation": organisation.replace('"', ''),
-                                        "url": self.url+link}
-
-                z = requests.post("https://synrate.ru/api/offers/create", json=J)
-
-                print(f'ROSeltorg: {z.json()}  {J}')
-                time.sleep(random.randint(1, 5)/10)
+    # сайт не показывает последнюю страницу, но мы можем перейти на нее используя баг
+    # сайт перекинет на ласт страницу, если укажем page больше чем их на самом деле и from=10
+    # уберете фром и скажет, что стр. 500 нет. надо с from
+    def get_last_page(self):
+        soup = self.get_page_soup(self.sale_url.format(500, 10))
+        last_page = soup.find("a", attrs={"class": "pagination__link pagination__link--active"}).getText()
+        last_page = last_page.split(' ')[-1]
+        return int(last_page)
 
 
 if __name__ == '__main__':

@@ -1,10 +1,16 @@
 import random
 import time
 
+from fake_useragent import UserAgent
+from requests.adapters import HTTPAdapter
+from urllib3 import Retry
+
 from ENGINE import Parser
 import requests
 from bs4 import BeautifulSoup
 import datetime
+
+from mixins import proxy_data, get_proxy
 
 
 class ParserTender(Parser):
@@ -13,23 +19,37 @@ class ParserTender(Parser):
         self.url = "http://www.tender.pro/view_tenders_list.shtml?sid=&lim=25&companyid=0&tendertype=92&tenderstate=1&country=0&basis=0&tender_name=&tender_id=&company_name=&good_name=&dateb=&datee=&dateb2=&datee2="
         self.page_links = []
         self.page_links2 = []
+        self.proxy_mode = False
 
     def parse(self):
+        # self.response = requests.get(self.url.format(0), headers={'User-Agent': "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Mobile Safari/537.36"})
+        # self.response.encoding = 'utf-8'
+        # self.soup = BeautifulSoup(self.response.content, 'html.parser')
+        successful = 0
+        while not successful:
+            try:
+                self.soup = self.get_page_soup(self.url.format(0))
+                pages = self.soup.find("div", attrs={"class": "pager"}).find_all('a')
+                pages_num = pages[len(pages)-2].getText()
+                successful = 1
+                print(f'[tenderpro] pages count {pages_num}')
+            except:
+                self.change_proxy()
 
-        print("Tenderpro")
-
-        self.response = requests.get(self.url.format(0), headers={'User-Agent': "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Mobile Safari/537.36"})
-        self.response.encoding = 'utf-8'
-        self.soup = BeautifulSoup(self.response.content, 'html.parser')
-        pages = self.soup.find("div", attrs={"class": "pager"}).find_all('a')
-        pages_num = pages[len(pages)-2].getText()
 
         for i in range(1, int(pages_num)):
-            self.response = requests.get(self.url.format(i*25), headers={'User-Agent': "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Mobile Safari/537.36"})
-            self.response.encoding = 'utf-8'
-            self.soup = BeautifulSoup(self.response.content, 'html.parser')
-            table = self.soup.find('table', attrs={"class": "baseTable"})
-            rows = table.find_all('tr')
+            # self.response = requests.get(self.url.format(i*25), headers={'User-Agent': "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Mobile Safari/537.36"})
+            # self.response.encoding = 'utf-8'
+            # self.soup = BeautifulSoup(self.response.content, 'html.parser')
+            successful = 0
+            while not successful:
+                try:
+                    self.soup = self.get_page_soup(self.url.format(i*25))
+                    table = self.soup.find('table', attrs={"class": "baseTable"})
+                    rows = table.find_all('tr')
+                    successful = 1
+                except:
+                    self.change_proxy()
 
             for row in rows:
                 if row.find('th') is None:
@@ -57,9 +77,55 @@ class ParserTender(Parser):
 
                     # TESTING -------------
 
-                    print(f'Tender-pro: {z.json()}  {J}')
+                    try:
+                        print(f'[tenderpro] {z.json()}\n{J}')
+                    except:
+                        print(f'[tenderpro] {z}\n{J}')
                     time.sleep(random.randint(1, 5) / 10)
                     # ---------------------
+
+    def get_page_soup(self, url):
+        proxy_mode = self.proxy_mode
+        if proxy_mode:
+            proxy = get_proxy(proxy_mode)
+            # proxy_status = check_proxy(proxy)
+            try:
+                session = requests.Session()
+                retry = Retry(connect=3, backoff_factor=0.5)
+                adapter = HTTPAdapter(max_retries=retry)
+                session.mount('http://', adapter)
+                session.mount('https://', adapter)
+                response = session.get(url, headers={
+                    'User-Agent': UserAgent().chrome}, proxies=proxy, timeout=5)#.content.decode("utf8")
+                response.encoding = 'utf-8'
+                response = response.content
+            except Exception as ex:
+                print('get_page_soup: не получилось сделать запрос с прокси. спим, меняем прокси и снова..',
+                      f'\n{url}\n\n{ex}')
+                time.sleep(2)
+                return False
+        else:
+            response = requests.get(url, headers={
+                'User-Agent': UserAgent().chrome}).content.decode("utf8")
+        soup = BeautifulSoup(response, 'html.parser')
+        # print(response)
+        return soup
+
+    def change_proxy(self):
+        print('change_proxy: start')
+        if self.proxy_mode:
+            try:
+                a = proxy_data[self.proxy_mode+1]
+                self.proxy_mode += 1
+                print(f'[tenderpro] new proxy_mode {self.proxy_mode}')
+                time.sleep(random.randint(1, 4))
+                return True
+            except:
+                pass
+        self.proxy_mode = 1
+        print(f'[tenderpro] new proxy_mode {self.proxy_mode}')
+        time.sleep(random.randint(1, 4))
+        return False
 
 
 if __name__ == '__main__':

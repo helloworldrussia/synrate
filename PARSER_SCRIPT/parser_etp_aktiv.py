@@ -126,7 +126,10 @@ class ParserEtpActiv(Parser):
         for offer in data:
             z = requests.post("https://synrate.ru/api/offers/create",
                               json=offer)
-            print(f'etp-activ: {z}\n{offer}')
+            try:
+                print(f'[etp-aktiv] {z.json()}\n{offer}')
+            except:
+                print(f'[etp-aktiv] {z}\n{offer}')
 
 
 if __name__ == '__main__':

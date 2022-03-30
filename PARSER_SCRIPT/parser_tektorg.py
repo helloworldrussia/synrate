@@ -1,26 +1,16 @@
 import random
 import time
 
-import undetected_chromedriver as uc
+import crawler as crawler
 from fake_useragent import UserAgent
 from requests.adapters import HTTPAdapter
-from selenium import webdriver
-from lxml import html
 from urllib3 import Retry
-
 from ENGINE import Parser
 import requests
 from bs4 import BeautifulSoup
 import datetime
-
 from mixins import get_proxy
-
-headers = {
-    "content-type": "text/plain",
-    "content-lenght": "2144",
-    "accept-language": "ru,en;q=0.9",
-    'User-Agent': UserAgent().opera
-}
+# from TorCrawler import TorCrawler
 
 
 class ParserTektorg(Parser):
@@ -29,11 +19,13 @@ class ParserTektorg(Parser):
         self.list_url = "https://www.tektorg.ru/sale/procedures?lang=ru&q="
         self.item_urls = []
         self.proxy_mode = 1
+        self.crawler = None#TorCrawler()
+        self.soups_count = 0
 
     def parse(self):
         last_page = self.get_last_page()
         for i in range(1, 30):
-
+            self.soup = self.get_page_soup(self.list_url)
             urls = (self.soup.find_all("a", attrs={"class": "section-procurement__item-title"}))
             for url in urls:
                 self.item_urls.append(url["href"])
@@ -54,6 +46,7 @@ class ParserTektorg(Parser):
 
             # self.soup = BeautifulSoup(content,#self.response,
             #                           'html.parser')
+            self.soup = self.get_page_soup("https://www.tektorg.ru"+url)
             try:
                 name = self.soup.find("span", attrs={"class": "procedure__item-name"}).getText()
             except AttributeError:
@@ -136,28 +129,18 @@ class ParserTektorg(Parser):
             # ---------------------
 
     def get_last_page(self):
-        soup = self.get_page_soup(self.list_url+'&page=1', self.proxy_mode)
+        soup = self.get_page_soup(self.list_url+'&page=1')
         last_page = soup.find("ul", attrs={"class": "pagination"}).find_all("li")[-2].find("a").getText()
         print(last_page)
 
-    def get_page_soup(self, url, proxy):
-        if proxy:
-            proxy = get_proxy(proxy)
-            # proxy_status = check_proxy(proxy)
-            try:
-                session = requests.Session()
-                retry = Retry(connect=3, backoff_factor=0.5)
-                adapter = HTTPAdapter(max_retries=retry)
-                session.mount('http://', adapter)
-                session.mount('https://', adapter)
-                response = session.get(url, headers=headers, proxies=proxy, timeout=5).content.decode("utf8")
-                soup = BeautifulSoup(response, 'html.parser')
-            except:
-                print('get_page_soup: не получилось сделать запрос с прокси. спим, меняем прокси и снова..')
-                return False
-        else:
-            response = requests.get(url, headers=headers).content.decode("utf8")
-            soup = BeautifulSoup(response, 'html.parser')
+    def get_page_soup(self, url):
+        self.soups_count += 1
+        if self.soups_count == 10:
+            self.crawler.rotate()
+            time.sleep(3)
+
+        response = self.crawler.get(url).content.decode("utf8")
+        soup = BeautifulSoup(response, 'html.parser')
         print(response)
         return soup
 

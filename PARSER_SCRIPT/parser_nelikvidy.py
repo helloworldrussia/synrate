@@ -266,9 +266,9 @@ class ParserNelikvidy(Parser):
                                   json=offer)
                 # ---------------------------- TESTING
                 try:
-                    print('[nelikvidy]:', z.json(), offer)
+                    print('[nelikvidy]', z.json(), offer)
                 except:
-                    print('[nelikvidy]:', z)
+                    print('[nelikvidy]', z, offer)
                 # ------------------------------------
             self.post_links = []
 

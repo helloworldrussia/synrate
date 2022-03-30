@@ -65,7 +65,10 @@ class ParserFabrikant(Parser):
             for offer in offers:
                 z = requests.post("https://synrate.ru/api/offers/create",
                                   json=offer)
-                print(f'fabrikant {z}')
+                try:
+                    print(f'[fabrikant] {z.json()}\n{offer}')
+                except:
+                    print(f'[fabrikant] {z}\n{offer}')
 
     def get_last_page(self):
         successful = 0

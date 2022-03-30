@@ -81,9 +81,9 @@ class ParserSource(Parser):
                                   json=J)
                 # TESTING -----------------
                 try:
-                    print(f'[isource]: {z.json()}  {J}')
+                    print(f'[isource] {z.json()}  {J}')
                 except:
-                    print(f'[isource] !!!!: {z}  {J}')
+                    print(f'[isource] {z}  {J}')
                 # time.sleep(random.randint(1, 5) / 10)
                 # --------------------
 

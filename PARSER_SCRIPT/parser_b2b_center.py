@@ -178,7 +178,10 @@ class ParserCenter(Parser):
         for offer in data:
             z = requests.post("https://synrate.ru/api/offers/create",
                               json=offer)
-            print(f'b2b-center: {z}\n{offer}')
+            try:
+                print(f'[b2b-center] {z.json()}\n{offer}')
+            except:
+                print(f'[b2b-center] {z}\n{offer}')
 
 
 if __name__ == '__main__':

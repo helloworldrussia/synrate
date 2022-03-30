@@ -23,21 +23,26 @@ def get_proxy(proxy_id):
 def check_proxy(proxy):
     url = 'https://httpbin.org/ip'
     r = requests.get(url, proxies=proxy, timeout=5)
-    # print(r.json(), r.status_code)
+    print(r.json(), r.status_code)
 
-    try:
-        ip = r.json()['origin']
-        https_ip = proxy['https'].replace('https://', '')
-        https_ip = https_ip.split(':')[0]
+    # try:
+    #     ip = r.json()['origin']
+    #     https_ip = proxy['https'].replace('https://', '')
+    #     https_ip = https_ip.split(':')[0]
+    #
+    #     # http_ip = proxy['http'].replace('http://', '')
+    #     # http_ip = http_ip.split(':')[0]
+    #
+    #     if ip == https_ip:
+    #         return True
+    #     else:
+    #         return False
+    #
+    # except Exception as error:
+    #     print(error)
+    #     return False
 
-        http_ip = proxy['http'].replace('http://', '')
-        http_ip = http_ip.split(':')[0]
 
-        if ip == http_ip or ip == https_ip:
-            return True
-        else:
-            return False
-
-    except Exception as error:
-        print(error)
-        return False
+# for key in proxy_data:
+#     proxy = get_proxy(key)
+#     print(check_proxy(proxy))

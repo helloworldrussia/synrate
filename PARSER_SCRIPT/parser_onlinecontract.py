@@ -16,88 +16,79 @@ from mixins import get_proxy, proxy_data
 class ParserOnlineContract(Parser):
     def __init__(self):
         super.__init__
-        self.url = "https://onlinecontract.ru/sale?limit=100&page={}"
+        self.url = "https://onlinecontract.ru/sale?page={}"
         self.procedure_id = None
         self.response_item = None
-        self.proxy_mode = 3
+        self.proxy_mode = False
+        self.core = 'https://onlinecontract.ru'
 
     def parse(self):
-        for i in range(1, 50):
-            print(i)
-            # self.response = requests.get(self.url.format(i), headers={'User-Agent': "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Mobile Safari/537.36"}, verify=False).content. \
-            #     decode("utf8")
-            # self.soup = BeautifulSoup(self.response, 'html.parser')
+        successful = 0
+        while not successful:
+            try:
+                last_page = self.get_last_page()
+                successful = 1
+            except:
+                self.change_proxy()
+
+        for i in range(1, last_page+1):
             successful = 0
             while not successful:
-                print(333)
                 try:
-                    self.soup = self.get_page_soup(self.url.format(i))
-                    print(111)
-                    self.post_links = self.soup.find_all("a", attrs={"class": "g-color-black"})
-                    print(222)
-                    test = self.post_links[0]
-                    self.post_links = list(set(self.post_links))
-                    successful = 1
+                    soup = self.get_page_soup(self.url.format(i))
+                    result = self.get_offers_from_page(soup)
+                    if result:
+                        self.send_result(result)
+                        successful = 1
                 except:
                     self.change_proxy()
-                    print(f'[online] new proxy_mode {self.proxy_mode}')
 
-            self.post_links.reverse()
-            print('[online] перевернули post_links')
-            for post in self.post_links:
-                print(f'[online] {post}')
-                self.procedure_id = post["href"].split("/")[2].split("?")[0]
-                successful = 0
-                while not successful:
-                    try:
-                        if self.proxy_mode:
-                            proxy = get_proxy(self.proxy_mode)
-                            self.response_item = requests.get(
-                                "https://api.onlc.ru/purchases/v1/public/procedures/{}/positions".format(self.procedure_id),
-                                headers={'User-Agent': "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Mobile Safari/537.36"},
-                            proxies=proxy, timeout=5).json()["data"][0]
-                            successful = 1
-                        else:
-                            self.response_item = requests.get(
-                                "https://api.onlc.ru/purchases/v1/public/procedures/{}/positions".format(self.procedure_id),
-                                headers={
-                                    'User-Agent': "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Mobile Safari/537.36"},
-                                proxies=proxy, timeout=5).json()["data"][0]
-                            successful = 1
-                    except:
-                        self.change_proxy()
-                        print(f'[online] new proxy_mode {self.proxy_mode}')
+    def get_last_page(self):
+        soup = self.get_page_soup(self.url.format(1))
+        last_page = soup.find("li", attrs={"class": "pagination-last page-item"}).find("a").attrs["href"]
+        last_page = last_page.split('=')[-1]
+        return int(last_page)
 
-                try:
-                    date = self.response_item["OwnerSklad"].split(".")[2] + "-" + self.response_item["OwnerSklad"].split(".")[1] + "-" + self.response_item["OwnerSklad"].split(".")[0]
+    def send_result(self, data):
+        for offer in data:
+            z = requests.post("https://synrate.ru/api/offers/create",
+                              json=offer)
+            try:
+                print(f'[online] {z.json()}\n{offer}')
+            except:
+                print(f'[online] {z}\n{offer}')
 
-                    datetime.strptime(date, "%Y-%m-%d")
-                except:
-                    date = None
-                null = None
-                J = {"name": self.response_item["Name"].replace('"', ''),
-                                        "location": "",
-                                        "home_name": "onlinecontract",
-                                        "offer_type": "Продажа",
-                                        "offer_start_date": null,
-                                        "offer_end_date": date,
-                                        "owner": "",
-                                        "ownercontact": "",
-                                        "offer_price": int(float(self.response_item["Price"])),
-                                        "additional_data": self.response_item["OwnerCondi"],
-                                        "organisation": "",
-                                        "url": f"https://onlinecontract.ru/tenders/{self.response_item['IDA']}"
-                                        #"category": "Не определена", "subcategory": "не определена"
-                                        }
-                z = requests.post("https://synrate.ru/api/offers/create",
-                                  json=J)
-                # TESTING -------------
-                try:
-                  print(f'[online] {z.json()}  {J}')
-                except Exception as ex:
-                  print(f'[online] {z}  {J}')
-                time.sleep(random.randint(1, 5) / 10)
-                # ---------------------
+    def get_offers_from_page(self, soup):
+        try:
+            offers = soup.find("tbody").find_all("tr")
+            test = offers[1]
+        except:
+            return False
+        answer = []
+        for offer in offers:
+            parameters = offer.find_all("td")
+            company = parameters[1].find("span").getText().replace('"', '')
+            link_obj = parameters[2].find("a")
+            link = self.core+link_obj.attrs['href']
+            name = link_obj.find("span").getText().replace('"', '')
+            end_date = parameters[3].getText()
+
+            end_date = self.make_date_good(end_date)
+
+            offer_obj = {"name": name, "home_name": "onlinecontract",
+                                        "offer_end_date": end_date,
+                                        "additional_data": name, "organisation": company, "url": link
+                         }
+            answer.append(offer_obj)
+        return answer
+
+    def make_date_good(self, date):
+        by_points = date.split(".")
+        year = '20' + by_points[-1].replace(' ', '')
+        month = by_points[-2]
+        day = by_points[-3].split(" ")[-1]
+        date = f'{year}-{month}-{day}'
+        return date
 
     def change_proxy(self):
         print('[online] change_proxy: start')
@@ -130,7 +121,7 @@ class ParserOnlineContract(Parser):
         else:
             response = requests.get(url, headers={
                 'User-Agent': UserAgent().chrome}).content.decode("utf8")
-        print(response)
+        # print(response)
         soup = BeautifulSoup(response, 'html.parser')
         return soup
 

@@ -88,16 +88,16 @@ def server_listener():
     #check_thread_1 = CheckThread('parser_roseltorg')
     #check_thread_1.start()
 
-#    parser_roseltorg.start()
-#    parser_nelikvidy.start()
-#    parser_tender.start()
-#    parser_isource.start()
-#    parser_tectorg.start()
-#    parser_onlinecontract.start()
-#    parser_etpgpb.start()
-#    parser_fabrikant.start()
-#    parser_b2b_center.start()
-    parser_etp_aktiv.start()
+#     parser_roseltorg.start()
+#     parser_nelikvidy.start()
+#     parser_tender.start()
+#     parser_isource.start()
+#     parser_tectorg.start()
+#     parser_onlinecontract.start()
+#     parser_etpgpb.start()
+#     parser_fabrikant.start()
+#     parser_b2b_center.start()
+#     parser_etp_aktiv.start()
 
     status = True
 

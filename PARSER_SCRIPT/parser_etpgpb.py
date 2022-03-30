@@ -180,7 +180,10 @@ class ParserEtpgpb(Parser):
         for offer in data:
             z = requests.post("https://synrate.ru/api/offers/create",
                               json=offer)
-            print(f'SEND {z}\n{offer}')
+            try:
+                print(f'[GPB] {z.json()}\n{offer}')
+            except:
+                print(f'[GPB] {z}\n{offer}')
 
     def get_last_page(self):
         successful = 0
