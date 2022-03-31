@@ -20,7 +20,7 @@ class ParserTender(Parser):
         self.page_links = []
         self.page_links2 = []
         self.proxy_mode = False
-        self.start_page = 25
+        self.start_page = 1
 
     def parse(self):
         # self.response = requests.get(self.url.format(0), headers={'User-Agent': "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Mobile Safari/537.36"})

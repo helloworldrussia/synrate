@@ -21,7 +21,7 @@ class ParserOnlineContract(Parser):
         self.response_item = None
         self.proxy_mode = False
         self.core = 'https://onlinecontract.ru'
-        self.start_page = 533
+        self.start_page = 534
 
     # def get_start_page(self):
     #     onlinecontract = Info.objects.get(name='onlinecontract')

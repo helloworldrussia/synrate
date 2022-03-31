@@ -1,6 +1,16 @@
 {% extends 'admin/base.html' %}
-
+{% block content %}
+<form action="" method="post">
+  {% csrf_token %}
+  <input type="submit" value="Отправить"/>
+</form>
+{% endblock %}
 {% block extrahead %}{{ block.super }}
+<br>
+<br>
+<br>
+<a href="{% url 'Users:cabinet_stat' %}">Статистика</a>
+
 <style>
 /* VARIABLE DEFINITIONS */
 :root {
