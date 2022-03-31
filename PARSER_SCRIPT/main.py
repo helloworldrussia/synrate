@@ -1,4 +1,6 @@
 import requests
+from django.conf import settings
+
 from parser_etp_aktiv import ParserEtpActiv
 from parser_b2b_center import ParserCenter
 from parser_fabrikant import ParserFabrikant
@@ -14,6 +16,7 @@ import time
 import sys
 import urllib3
 from json.decoder import JSONDecodeError
+
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
@@ -89,11 +92,11 @@ def server_listener():
     #check_thread_1.start()
 
 #     parser_roseltorg.start()
-#     parser_nelikvidy.start()
+    parser_nelikvidy.start()
 #     parser_tender.start()
 #     parser_isource.start()
 #     parser_tectorg.start()
-#     parser_onlinecontract.start()
+    parser_onlinecontract.start()
 #     parser_etpgpb.start()
 #     parser_fabrikant.start()
 #     parser_b2b_center.start()

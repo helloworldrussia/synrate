@@ -4,7 +4,6 @@ from django.db import models
 
 
 class Parser(models.Model):
-
     name = models.CharField(max_length=300, unique=True, verbose_name="Название")
     text = models.TextField(null=True, blank=True, verbose_name="Описание")
     source = models.CharField(max_length=150, null=True, blank=True, verbose_name="Источник")
@@ -46,3 +45,8 @@ class ENGINE(models.Model):
     class Meta:
         verbose_name = "Движок"
         verbose_name_plural = "Движки"
+
+
+class Info(models.Model):
+    name = models.CharField(max_length=100, unique=True, verbose_name="Парсер")
+    start_page = models.IntegerField(null=True, default=1, blank=True)

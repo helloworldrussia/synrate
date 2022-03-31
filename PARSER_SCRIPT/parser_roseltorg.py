@@ -18,6 +18,7 @@ class RoseltorgParser(Parser):
         self.url = "https://www.roseltorg.ru"
         self.sale_url = self.url+"/search/sale?status%5B%5D=0&category%5B%5D=273&category%5B%5D=274&category%5B%5D=275&category%5B%5D=276&category%5B%5D=277&category%5B%5D=278&category%5B%5D=279&category%5B%5D=280&category%5B%5D=281&category%5B%5D=282&category%5B%5D=283&category%5B%5D=284&category%5B%5D=285&category%5B%5D=286&category%5B%5D=287&category%5B%5D=288&category%5B%5D=289&category%5B%5D=290&category%5B%5D=291&category%5B%5D=292&category%5B%5D=293&category%5B%5D=294&category%5B%5D=295&category%5B%5D=296&category%5B%5D=297&category%5B%5D=298&category%5B%5D=299&category%5B%5D=300&category%5B%5D=301&category%5B%5D=302&category%5B%5D=303&category%5B%5D=304&category%5B%5D=305&category%5B%5D=306&category%5B%5D=307&category%5B%5D=308&category%5B%5D=309&category%5B%5D=310&category%5B%5D=311&category%5B%5D=312&category%5B%5D=313&category%5B%5D=314&category%5B%5D=315&category%5B%5D=316&category%5B%5D=317&category%5B%5D=318&category%5B%5D=319&category%5B%5D=320&category%5B%5D=321&category%5B%5D=322&category%5B%5D=323&category%5B%5D=324&category%5B%5D=325&category%5B%5D=326&category%5B%5D=327&category%5B%5D=329&category%5B%5D=330&currency=all&page={}&from={}"
         self.proxy_mode = False
+        self.start_page = 12
 
     def parse(self):
         successful = 0
@@ -25,10 +26,11 @@ class RoseltorgParser(Parser):
             try:
                 last_page = self.get_last_page()
                 successful = 1
-            except:
+            except Exception as ex:
+                print(ex)
                 self.change_proxy()
 
-        for i in range(1, last_page + 1):
+        for i in range(self.start_page, last_page + 1):
             print(i)
             successful = 0
             while not successful:
@@ -41,7 +43,8 @@ class RoseltorgParser(Parser):
                         successful = 1
                     else:
                         self.change_proxy()
-                except:
+                except Exception as ex:
+                    print(ex)
                     self.change_proxy()
 
     def send_result(self, data):
@@ -51,24 +54,25 @@ class RoseltorgParser(Parser):
             today = datetime.datetime.today().strftime('%d-%m %H:%M')
             try:
                 print(f'[roseltorg] {z.json()}\n{offer}')
-                with open('/var/www/synrate_dir/roseltorg.txt', 'r+') as f:
-                    # ...
-                    f.seek(0, 2)
-                    f.write(f'[{today}] {z.json()}\n{offer}')
-                    f.close()
+                # with open('/var/www/synrate_dir/roseltorg.txt', 'r+') as f:
+                #     # ...
+                #     f.seek(0, 2)
+                #     f.write(f'[{today}] {z.json()}\n{offer}')
+                #     f.close()
             except:
                 print(f'[roseltorg] {z}\n{offer}')
-                with open('/var/www/synrate_dir/roseltorg.txt', 'r+') as f:
-                    # ...
-                    f.seek(0, 2)
-                    f.write(f'[{today}] {z}\n{offer}')
-                    f.close()
+                # with open('/var/www/synrate_dir/roseltorg.txt', 'r+') as f:
+                #     # ...
+                #     f.seek(0, 2)
+                #     f.write(f'[{today}] {z}\n{offer}')
+                #     f.close()
 
     def get_offers_from_page(self, soup):
         try:
             offers = self.soup.find_all("div", {"class": "search-results__item"})
             test = offers[0]
-        except:
+        except Exception as ex:
+            print(ex)
             return False
         answer = []
         for offer in offers:
@@ -145,6 +149,7 @@ class RoseltorgParser(Parser):
                 response.encoding = 'utf-8'
                 response = response.content
             except Exception as ex:
+                print(ex)
                 print('get_page_soup: не получилось сделать запрос с прокси. спим, меняем прокси и снова..',
                       f'\n{url}\n\n{ex}')
                 time.sleep(2)
@@ -169,7 +174,8 @@ class RoseltorgParser(Parser):
                 pass
         self.proxy_mode = 1
         if self.proxy_mode > 1:
-            time.sleep(300)
+            # time.sleep(300)
+            pass
         print(f'[roseltorg] new proxy_mode {self.proxy_mode}')
         time.sleep(random.randint(1, 4))
         return False

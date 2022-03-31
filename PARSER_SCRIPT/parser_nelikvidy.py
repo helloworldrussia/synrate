@@ -1,12 +1,11 @@
 import random
 import time
-
 import requests
 from bs4 import BeautifulSoup
+from django.conf import settings
 from fake_useragent import UserAgent
 import unicodedata
 import datetime
-
 from requests.adapters import HTTPAdapter
 from urllib3 import Retry
 
@@ -58,21 +57,28 @@ class ParserNelikvidy(Parser):
             "дека": 12,
             "декаб": 12,
         }
+        self.start_page = 50
+
+    # def get_start_page(self):
+    #     nelikvidy = Info.objects.get(name='nelikvidy')
+    #     self.start_page = nelikvidy.start_page
 
     def parse(self):
+        # self.get_start_page() # чтобы начать с места, где остановились
         successful = 0
         while not successful:
-            time.sleep(random.randint(1, 7))
+            time.sleep(random.randint(1, 15))
             try:
                 last_page = self.get_last_page()
                 successful = 1
             except Exception as ex:
                 print(ex)
                 self.change_proxy()
-        for i in range(1, last_page+1):
+        for i in range(self.start_page, last_page+1):
+            print(f'[onlinecontract] page = {i}')
             successful = 0
             while not successful:
-                time.sleep(random.randint(1, 7))
+                time.sleep(random.randint(1, 15))
                 try:
                     soup = self.get_page_soup(self.url+f'?page={i}')
                     result = self.get_offers_from_page(soup)
@@ -90,18 +96,18 @@ class ParserNelikvidy(Parser):
             today = datetime.datetime.today().strftime('%d-%m %H:%M')
             try:
                 print(f'[nelikvid] {z.json()}\n{offer}')
-                with open('/var/www/synrate_dir/nelikvid.txt', 'r+') as f:
-                    # ...
-                    f.seek(0, 2)
-                    f.write(f'[{today}] {z.json()}\n{offer}')
-                    f.close()
+                # with open('/var/www/synrate_dir/nelikvid.txt', 'r+') as f:
+                #     # ...
+                #     f.seek(0, 2)
+                #     f.write(f'[{today}] {z.json()}\n{offer}')
+                #     f.close()
             except:
                 print(f'[nelikvid] {z}\n{offer}')
-                with open('/var/www/synrate_dir/nelikvid.txt', 'r+') as f:
-                    # ...
-                    f.seek(0, 2)
-                    f.write(f'[{today}] {z}\n{offer}')
-                    f.close()
+                # with open('/var/www/synrate_dir/nelikvid.txt', 'r+') as f:
+                #     # ...
+                #     f.seek(0, 2)
+                #     f.write(f'[{today}] {z}\n{offer}')
+                #     f.close()
 
     def get_offers_from_page(self, soup):
         try:
