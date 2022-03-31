@@ -20,7 +20,7 @@ class ParserTender(Parser):
         self.page_links = []
         self.page_links2 = []
         self.proxy_mode = False
-        self.start_page = 3
+        self.start_page = 25
 
     def parse(self):
         # self.response = requests.get(self.url.format(0), headers={'User-Agent': "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Mobile Safari/537.36"})
@@ -37,11 +37,15 @@ class ParserTender(Parser):
                 print(f'[tenderpro] pages count {pages_num}')
             except:
                 self.change_proxy()
-
+        pause_signal = 0
         for i in range(self.start_page, int(pages_num)):
             # self.response = requests.get(self.url.format(i*25), headers={'User-Agent': "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Mobile Safari/537.36"})
             # self.response.encoding = 'utf-8'
             # self.soup = BeautifulSoup(self.response.content, 'html.parser')
+            pause_signal += 1
+            if pause_signal == 30:
+                time.sleep(300)
+                pause_signal = 0
             print(f"PAGE {i}")
             successful = 0
             while not successful:

@@ -124,40 +124,50 @@ def stat_view(request):
                                                          'tenderpro_all': tenderpro_all,
                                                          "tenderpro_day": tenderpro_day,
                                                          "tenderpro_month": tenderpro_month,
+                                                         "tenderpro_status": "В работе",
 
                                                          "tektorg_day": tektorg_day,
                                                          "tektorg_month": tektorg_month,
                                                          "tektorg_all": tektorg_all,
+                                                         "tektorg_status": "Выкл",
 
                                                          "roseltorg_all": roseltorg_all,
                                                          "roseltorg_month": roseltorg_month,
                                                          "roseltorg_day": roseltorg_day,
+                                                         "roseltorg_status": "Выкл",
 
                                                          "onlinecontract_all": onlinecontract_all,
                                                          "onlinecontract_month": onlinecontract_month,
                                                          "onlinecontract_day": onlinecontract_day,
+                                                         "onlinecontract_status": "В работе",
 
                                                          "nelikvidy_all": nelikvidy_all,
                                                          "nelikvidy_month": nelikvidy_month,
                                                          "nelikvidy_day": nelikvidy_day,
+                                                         "nelikvidy_status": "В работе",
 
                                                          "isource_all": isource_all,
                                                          "isource_month": isource_month,
                                                          "isource_day": isource_day,
+                                                         "isource_status": "Выкл",
 
                                                          "fabrikant_all": fabrikant_all,
                                                          "fabrikant_month": fabrikant_month,
                                                          "fabrikant_day": fabrikant_day,
+                                                         "fabrikant_status": "Выкл",
 
                                                          "etpgpb_all": etpgpb_all,
                                                          "etpgpb_month": etpgpb_month,
                                                          "etpgpb_day": etpgpb_day,
+                                                         "etpgpb_status": "Выкл",
 
                                                          "etp_aktiv_all": etp_aktiv_all,
                                                          "etp_aktiv_month": etp_aktiv_month,
                                                          "etp_aktiv_day": etp_aktiv_day,
+                                                         "etp_aktiv_status": "Выкл",
 
                                                          "b2b_center_all": b2b_center_all,
                                                          "b2b_center_month": b2b_center_month,
-                                                         "b2b_center_day": b2b_center_day})
+                                                         "b2b_center_day": b2b_center_day,
+                                                         "b2b_center_status": "Выкл",})
 
