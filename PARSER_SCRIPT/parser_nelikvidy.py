@@ -57,7 +57,7 @@ class ParserNelikvidy(Parser):
             "дека": 12,
             "декаб": 12,
         }
-        self.start_page = 50
+        self.start_page = 191
 
     # def get_start_page(self):
     #     nelikvidy = Info.objects.get(name='nelikvidy')
@@ -137,6 +137,7 @@ class ParserNelikvidy(Parser):
                 date = None
             if price:
                 price = price.getText()
+                price = price.split(',')[0]
                 price = price.replace(' ', '')
                 price = int(price)
             if region:

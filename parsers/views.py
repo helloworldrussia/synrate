@@ -32,6 +32,7 @@ class OfferCreateView(CreateAPIView):
     model = Offer
     serializer_class = OfferSerializer
 
+
     # def post(self, request, *args, **kwargs):
     #     # try:
     #     #     x = OfferSubcategory.objects.get(name=request.data["subcategory"])

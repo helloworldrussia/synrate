@@ -43,7 +43,6 @@ def index(request):
 
 def parser_admin(request):
     if request.user.is_staff:
-
         parsers = Parser.objects.all()
         enigines = ENGINE.objects.all()
         form = ParserForm()

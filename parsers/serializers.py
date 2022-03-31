@@ -5,6 +5,7 @@ from .models import ENGINE, Parser
 
 
 class OfferSerializer(serializers.ModelSerializer):
+
     def update(self, instance, validated_data):
         instance.error = validated_data.get('message', instance.error)
         instance.message = validated_data.get('error', instance.message)
@@ -15,6 +16,7 @@ class OfferSerializer(serializers.ModelSerializer):
 
         instance.save()
         return instance
+
 
     class Meta:
         model = Offer
@@ -34,6 +36,10 @@ class OfferSerializer(serializers.ModelSerializer):
                   'organisation')
 
     def validate(self, attrs):
+        group = Offer.objects.filter(url=attrs['url'])
+        for offer in group:
+            if offer.name == attrs['name']:
+                raise ValidationError({"answer": "not uniq offer"})
         if attrs["name"] is None or attrs["name"] == "":
             raise ValidationError("Поле name обязательно должно быть заполнено")
 

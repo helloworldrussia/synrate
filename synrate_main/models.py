@@ -1,5 +1,3 @@
-import datetime
-
 from django.db import models
 from cms.models import CMSPlugin
 
@@ -31,8 +29,8 @@ class OfferSubcategory(models.Model):
 class Offer(models.Model):
     name = models.CharField(max_length=1500, null=True, blank=True, default=None, verbose_name="Название")
     home_name = models.CharField(max_length=200, null=True, blank=True, default=None, verbose_name="Источник")
-    url = models.CharField(max_length=599, unique=True, null=True, blank=True, default=None,
-                           verbose_name="Ссылка на источник")
+    url = models.CharField(max_length=599, null=True, blank=True, default=None,
+                           verbose_name="Ссылка на источник", db_index=True)
     location = models.CharField(max_length=250, null=True, blank=True, default="РФ", verbose_name="Регион")
     offer_type = models.CharField(max_length=100, null=True, blank=True, default="Продажа",
                                   verbose_name="Тип объявления")
