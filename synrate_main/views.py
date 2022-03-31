@@ -40,6 +40,8 @@ def index(request):
                                           "month_count": month_count,
                                           "today_count": today_count})
 
+def dd(request):
+    all = Offer.objects.filter(home_name='tenderpro')
 
 def parser_admin(request):
     if request.user.is_staff:

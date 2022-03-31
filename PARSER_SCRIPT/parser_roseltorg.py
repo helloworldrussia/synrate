@@ -18,6 +18,7 @@ class RoseltorgParser(Parser):
         self.url = "https://www.roseltorg.ru"
         self.sale_url = self.url+"/search/sale?status%5B%5D=0&category%5B%5D=273&category%5B%5D=274&category%5B%5D=275&category%5B%5D=276&category%5B%5D=277&category%5B%5D=278&category%5B%5D=279&category%5B%5D=280&category%5B%5D=281&category%5B%5D=282&category%5B%5D=283&category%5B%5D=284&category%5B%5D=285&category%5B%5D=286&category%5B%5D=287&category%5B%5D=288&category%5B%5D=289&category%5B%5D=290&category%5B%5D=291&category%5B%5D=292&category%5B%5D=293&category%5B%5D=294&category%5B%5D=295&category%5B%5D=296&category%5B%5D=297&category%5B%5D=298&category%5B%5D=299&category%5B%5D=300&category%5B%5D=301&category%5B%5D=302&category%5B%5D=303&category%5B%5D=304&category%5B%5D=305&category%5B%5D=306&category%5B%5D=307&category%5B%5D=308&category%5B%5D=309&category%5B%5D=310&category%5B%5D=311&category%5B%5D=312&category%5B%5D=313&category%5B%5D=314&category%5B%5D=315&category%5B%5D=316&category%5B%5D=317&category%5B%5D=318&category%5B%5D=319&category%5B%5D=320&category%5B%5D=321&category%5B%5D=322&category%5B%5D=323&category%5B%5D=324&category%5B%5D=325&category%5B%5D=326&category%5B%5D=327&category%5B%5D=329&category%5B%5D=330&currency=all&page={}&from={}"
         self.proxy_mode = False
+        self.start_page = 43
 
     def parse(self):
         successful = 0
@@ -30,7 +31,7 @@ class RoseltorgParser(Parser):
                 print(ex)
                 self.change_proxy()
 
-        for i in range(30, last_page + 1):
+        for i in range(self.start_page, last_page + 1):
             print(i)
             successful = 0
             while not successful:

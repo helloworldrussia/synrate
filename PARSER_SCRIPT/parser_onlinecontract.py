@@ -21,7 +21,7 @@ class ParserOnlineContract(Parser):
         self.response_item = None
         self.proxy_mode = False
         self.core = 'https://onlinecontract.ru'
-        self.start_page = 50
+        self.start_page = 533
 
     # def get_start_page(self):
     #     onlinecontract = Info.objects.get(name='onlinecontract')
@@ -38,8 +38,12 @@ class ParserOnlineContract(Parser):
             except Exception as ex:
                 print(ex)
                 self.change_proxy()
-
+        pause_signal = 1
         for i in range(self.start_page, last_page+1):
+            pause_signal += 1
+            if pause_signal == 60:
+                time.sleep(300)
+                pause_signal = 0
             print(f'[onlinecontract] page = {i}')
             successful = 0
             while not successful:
@@ -147,7 +151,7 @@ class ParserOnlineContract(Parser):
         else:
             response = requests.get(url, headers={
                 'User-Agent': UserAgent().chrome}).content.decode("utf8")
-        print(response)
+        # print(response)
         soup = BeautifulSoup(response, 'html.parser')
         return soup
 

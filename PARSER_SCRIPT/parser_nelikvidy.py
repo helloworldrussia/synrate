@@ -57,7 +57,7 @@ class ParserNelikvidy(Parser):
             "дека": 12,
             "декаб": 12,
         }
-        self.start_page = 191
+        self.start_page = 733
 
     # def get_start_page(self):
     #     nelikvidy = Info.objects.get(name='nelikvidy')
@@ -75,7 +75,7 @@ class ParserNelikvidy(Parser):
                 print(ex)
                 self.change_proxy()
         for i in range(self.start_page, last_page+1):
-            print(f'[onlinecontract] page = {i}')
+            print(f'[nelikvidy] page = {i}')
             successful = 0
             while not successful:
                 time.sleep(random.randint(1, 15))

@@ -20,6 +20,7 @@ class ParserTender(Parser):
         self.page_links = []
         self.page_links2 = []
         self.proxy_mode = False
+        self.start_page = 3
 
     def parse(self):
         # self.response = requests.get(self.url.format(0), headers={'User-Agent': "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Mobile Safari/537.36"})
@@ -37,10 +38,11 @@ class ParserTender(Parser):
             except:
                 self.change_proxy()
 
-        for i in range(1, int(pages_num)):
+        for i in range(self.start_page, int(pages_num)):
             # self.response = requests.get(self.url.format(i*25), headers={'User-Agent': "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Mobile Safari/537.36"})
             # self.response.encoding = 'utf-8'
             # self.soup = BeautifulSoup(self.response.content, 'html.parser')
+            print(f"PAGE {i}")
             successful = 0
             while not successful:
                 time.sleep(random.randint(1, 7))
@@ -55,8 +57,10 @@ class ParserTender(Parser):
             for row in rows:
                 if row.find('th') is None:
                     cols = row.find_all('td')
-                    name = cols[1].find_all('a')[1].getText()
-                    url = "http://www.tender.pro/"+(cols[1].find_all('a')[1]["href"])
+                    name_obj = cols[1].find_all('a')[1]
+                    name = name_obj.getText()
+                    url = "http://www.tender.pro/"+name_obj.attrs['href']
+                    #url = "http://www.tender.pro/"+(cols[1].find_all('a')[1]["href"])
 
                     created = cols[2].getText()
                     finishes = cols[3].getText()
@@ -81,18 +85,18 @@ class ParserTender(Parser):
                     today = datetime.datetime.today().strftime('%d-%m %H:%M')
                     try:
                         print(f'[tenderpro] {z.json()}\n{offer}')
-                        with open('/var/www/synrate_dir/tenderpro.txt', 'r+') as f:
-                            # ...
-                            f.seek(0, 2)
-                            f.write(f'[{today}] {z.json()}\n{offer}')
-                            f.close()
+                        # with open('/var/www/synrate_dir/tenderpro.txt', 'r+') as f:
+                        #     # ...
+                        #     f.seek(0, 2)
+                        #     f.write(f'[{today}] {z.json()}\n{offer}')
+                        #     f.close()
                     except:
                         print(f'[tenderpro] {z}\n{offer}')
-                        with open('/var/www/synrate_dir/tenderpro.txt', 'r+') as f:
-                            # ...
-                            f.seek(0, 2)
-                            f.write(f'[{today}] {z}\n{offer}')
-                            f.close()
+                        # with open('/var/www/synrate_dir/tenderpro.txt', 'r+') as f:
+                        #     # ...
+                        #     f.seek(0, 2)
+                        #     f.write(f'[{today}] {z}\n{offer}')
+                        #     f.close()
                     time.sleep(random.randint(1, 5) / 10)
                     # ---------------------
 
