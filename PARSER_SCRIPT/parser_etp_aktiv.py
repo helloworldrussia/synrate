@@ -5,16 +5,17 @@ from datetime import datetime
 from fake_useragent import UserAgent
 from requests.adapters import HTTPAdapter, Retry
 
-from ENGINE import Parser
+from .connector import change_parser_status
+from .ENGINE import Parser
 import requests
 from bs4 import BeautifulSoup
 
-from mixins import get_proxy, proxy_data
+from .mixins import get_proxy, proxy_data
 
 
 class ParserEtpActiv(Parser):
 
-    def __init__(self, verify):
+    def __init__(self, verify, end):
         super.__init__
         self.verify = verify
         self.url = "https://etp-aktiv.ru/catalog/"
@@ -23,9 +24,12 @@ class ParserEtpActiv(Parser):
         self.core = 'https://etp-aktiv.ru'
         self.core_www = 'https://www.etp-aktiv.ru'
         self.proxy_mode = False
+        self.last_page = end
 
     def parse(self):
         last_page = self.get_last_page()
+        if self.last_page:
+            last_page = int(self.last_page)
         for page in range(1, int(last_page)+1):
             time.sleep(random.randint(1, 7))
             successful = 0
@@ -38,6 +42,7 @@ class ParserEtpActiv(Parser):
                 self.post_result(result)
                 print(f'etp-activ: Обрабатываем страницу - {page_url}\nproxy_mode: {self.proxy_mode}')
             # time.sleep(random.randint(1, 3))
+        change_parser_status('etp_aktiv', 'Выкл')
 
     def get_page_soup(self, url, proxy_mode):
         if proxy_mode:
@@ -133,18 +138,18 @@ class ParserEtpActiv(Parser):
             today = datetime.today().strftime('%d-%m %H:%M')
             try:
                 print(f'[etp-aktiv] {z.json()}\n{offer}')
-                with open('/var/www/synrate_dir/etp-aktiv.txt', 'r+') as f:
-                    # ...
-                    f.seek(0, 2)
-                    f.write(f'[{today}] {z.json()}\n{offer}')
-                    f.close()
+                # with open('/var/www/synrate_dir/etp-aktiv.txt', 'r+') as f:
+                #     # ...
+                #     f.seek(0, 2)
+                #     f.write(f'[{today}] {z.json()}\n{offer}')
+                #     f.close()
             except:
                 print(f'[etp-aktiv] {z}\n{offer}')
-                with open('/var/www/synrate_dir/etp-aktiv.txt', 'r+') as f:
-                    # ...
-                    f.seek(0, 2)
-                    f.write(f'[{today}] {z}\n{offer}')
-                    f.close()
+                # with open('/var/www/synrate_dir/etp-aktiv.txt', 'r+') as f:
+                #     # ...
+                #     f.seek(0, 2)
+                #     f.write(f'[{today}] {z}\n{offer}')
+                #     f.close()
 
 
 if __name__ == '__main__':

@@ -26,6 +26,12 @@ class OfferSubcategory(models.Model):
         verbose_name_plural = "Подкатегории"
 
 
+class ParserDetail(models.Model):
+    name = models.CharField(max_length=100, null=True, blank=True, default=None)
+    status = models.TextField(null=True, blank=True, default=None)
+    last_process_page = models.IntegerField(null=True, blank=True, default=1)
+
+
 class Offer(models.Model):
     name = models.CharField(max_length=1500, null=True, blank=True, default=None, verbose_name="Название")
     home_name = models.CharField(max_length=200, null=True, blank=True, default=None, verbose_name="Источник")
@@ -117,3 +123,4 @@ class CONTACT(CMSPlugin):
 
     def __str__(self):
         return self.get_title()
+

@@ -5,28 +5,31 @@ from fake_useragent import UserAgent
 from requests.adapters import HTTPAdapter
 from urllib3 import Retry
 
-from ENGINE import Parser
+from PARSER_SCRIPT.connector import change_parser_status
+from .ENGINE import Parser
 import requests
 from bs4 import BeautifulSoup
 import datetime
 
-from mixins import proxy_data, get_proxy
+from .mixins import proxy_data, get_proxy
 
 
 class ParserTender(Parser):
-    def __init__(self):
+    def __init__(self, end):
         super().__init__()
         self.url = "http://www.tender.pro/view_tenders_list.shtml?sid=&lim=25&companyid=0&tendertype=92&tenderstate=1&country=0&basis=0&tender_name=&tender_id=&company_name=&good_name=&dateb=&datee=&dateb2=&datee2="
         self.page_links = []
         self.page_links2 = []
         self.proxy_mode = False
         self.start_page = 1
+        self.last_page = end
 
     def parse(self):
         # self.response = requests.get(self.url.format(0), headers={'User-Agent': "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Mobile Safari/537.36"})
         # self.response.encoding = 'utf-8'
         # self.soup = BeautifulSoup(self.response.content, 'html.parser')
         successful = 0
+
         while not successful:
             time.sleep(random.randint(1, 7))
             try:
@@ -37,6 +40,8 @@ class ParserTender(Parser):
                 print(f'[tenderpro] pages count {pages_num}')
             except:
                 self.change_proxy()
+        if self.last_page:
+            pages_num = int(self.last_page)
         pause_signal = 0
         for i in range(self.start_page, int(pages_num)):
             # self.response = requests.get(self.url.format(i*25), headers={'User-Agent': "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Mobile Safari/537.36"})
@@ -103,6 +108,7 @@ class ParserTender(Parser):
                         #     f.close()
                     time.sleep(random.randint(1, 5) / 10)
                     # ---------------------
+        change_parser_status('tenderpro', 'Выкл')
 
     def get_page_soup(self, url):
         proxy_mode = self.proxy_mode

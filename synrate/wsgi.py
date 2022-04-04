@@ -1,16 +1,10 @@
-"""
-WSGI config for synrate project.
-
-It exposes the WSGI callable as a module-level variable named ``application``.
-
-For more information on this file, see
-https://docs.djangoproject.com/en/3.2/howto/deployment/wsgi/
-"""
-
 import os
-
+import threading
 from django.core.wsgi import get_wsgi_application
+from synrate.timer import timer
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'synrate.settings')
 
 application = get_wsgi_application()
+t1 = threading.Thread(target=timer)
+t1.start()

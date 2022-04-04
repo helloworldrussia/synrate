@@ -6,22 +6,24 @@ from django.conf import settings
 from fake_useragent import UserAgent
 from requests.adapters import HTTPAdapter
 from urllib3 import Retry
-from ENGINE import Parser
+
+from .connector import change_parser_status
+from .ENGINE import Parser
 import requests
 from bs4 import BeautifulSoup
-from mixins import get_proxy, proxy_data
-
+from .mixins import get_proxy, proxy_data
 
 
 class ParserOnlineContract(Parser):
-    def __init__(self):
+    def __init__(self, end):
         super.__init__
         self.url = "https://onlinecontract.ru/sale?page={}"
         self.procedure_id = None
         self.response_item = None
         self.proxy_mode = False
         self.core = 'https://onlinecontract.ru'
-        self.start_page = 1110
+        self.start_page = 1
+        self.last_page = end
 
     # def get_start_page(self):
     #     onlinecontract = Info.objects.get(name='onlinecontract')
@@ -38,10 +40,13 @@ class ParserOnlineContract(Parser):
             except Exception as ex:
                 print(ex)
                 self.change_proxy()
+        if self.last_page:
+            last_page = int(self.last_page)
         pause_signal = 1
         for i in range(self.start_page, last_page+1):
+            time.sleep(random.randint(5, 10))
             pause_signal += 1
-            if pause_signal == 50:
+            if pause_signal == 40:
                 time.sleep(random.randint(300, 400))
                 pause_signal = 0
             print(f'[onlinecontract] page = {i}')
@@ -57,7 +62,7 @@ class ParserOnlineContract(Parser):
                 except Exception as ex:
                     print(ex)
                     self.change_proxy()
-
+        change_parser_status('onlinecontract', 'Выкл')
     def get_last_page(self):
         soup = self.get_page_soup(self.url.format(1))
         last_page = soup.find("li", attrs={"class": "pagination-last page-item"}).find("a").attrs["href"]

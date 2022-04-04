@@ -5,16 +5,17 @@ from datetime import datetime
 from fake_useragent import UserAgent
 from requests.adapters import HTTPAdapter, Retry
 
-from ENGINE import Parser
+from .connector import change_parser_status
+from .ENGINE import Parser
 import requests
 from bs4 import BeautifulSoup
 
-from mixins import proxy_data, get_proxy, check_proxy
+from .mixins import proxy_data, get_proxy, check_proxy
 
 
 class ParserCenter(Parser):
 
-    def __init__(self, verify):
+    def __init__(self, verify, end):
         super.__init__
         self.url = "https://www.b2b-center.ru/market/?searching=1&company_type=2&price_currency=0&date=1&trade=sell&lot_type=0"
         self.procedure_id = None
@@ -24,15 +25,19 @@ class ParserCenter(Parser):
         self.verify = verify
         # значение либо int (соотвествующее желаемому прокси из mixins.proxy_data), либо False - прокси не используем
         self.proxy_mode = False
+        self.last_page = end
 
     def parse(self):
         # делаем запрос, получаем суп и отдаем функции, получающей номер последней страницы
         last_page = self.get_last_page()
         print(last_page)
+        if self.last_page:
+            last_page = int(self.last_page)
         # time.sleep(random.randint(1, 3))
         i = 1
         # for page in range(1, 2):
         for page in range(1, int(last_page)+1):
+            time.sleep(random.randint(5, 10))
             page_url = self.url + f'&page={page}&from={10 * int(page)}'
             # проходим страницу пока не получим результат.
             # если результат Flase - нас задетектили, повторяем.
@@ -54,6 +59,7 @@ class ParserCenter(Parser):
                 i = 0
             i += 1
             self.post_result(result)
+        change_parser_status('b2b_center', 'Выкл')
 
     def make_template(self, file_name):
         content = requests.get(self.url).text
@@ -184,18 +190,18 @@ class ParserCenter(Parser):
             today = datetime.today().strftime('%d-%m %H:%M')
             try:
                 print(f'[b2b-center] {z.json()}\n{offer}')
-                with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
-                    # ...
-                    f.seek(0, 2)
-                    f.write(f'[{today}] {z.json()}\n{offer}')
-                    f.close()
+                # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
+                #     # ...
+                #     f.seek(0, 2)
+                #     f.write(f'[{today}] {z.json()}\n{offer}')
+                #     f.close()
             except:
                 print(f'[b2b-center] {z}\n{offer}')
-                with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
-                    # ...
-                    f.seek(0, 2)
-                    f.write(f'[{today}] {z}\n{offer}')
-                    f.close()
+                # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
+                #     # ...
+                #     f.seek(0, 2)
+                #     f.write(f'[{today}] {z}\n{offer}')
+                #     f.close()
 
 
 if __name__ == '__main__':

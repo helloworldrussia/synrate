@@ -1,16 +1,14 @@
 import requests
-from django.conf import settings
-
-from parser_etp_aktiv import ParserEtpActiv
-from parser_b2b_center import ParserCenter
-from parser_fabrikant import ParserFabrikant
-from parser_etpgpb import ParserEtpgpb
-from parser_nelikvidy import ParserNelikvidy
-from parser_tenderpro import ParserTender
-from parser_roseltorg import RoseltorgParser
-from parser_isource import ParserSource
-from parser_tektorg import ParserTektorg
-from parser_onlinecontract import ParserOnlineContract
+from .parser_etp_aktiv import ParserEtpActiv
+from .parser_b2b_center import ParserCenter
+from .parser_fabrikant import ParserFabrikant
+from .parser_etpgpb import ParserEtpgpb
+from .parser_nelikvidy import ParserNelikvidy
+from .parser_tenderpro import ParserTender
+from .parser_roseltorg import RoseltorgParser
+from .parser_isource import ParserSource
+from .parser_tektorg import ParserTektorg
+from .parser_onlinecontract import ParserOnlineContract
 from threading import Thread
 import time
 import sys
@@ -63,18 +61,31 @@ class CheckThread(Thread):
                     time.sleep(1)
 
 
-def server_listener():
-    print('server listener: Hello, im fine...')
-    nelikvidy_obj = ParserNelikvidy(False)
-    tender_obj = ParserTender()
-    roseltorg_obj = RoseltorgParser()
-    isource_obj = ParserSource()
-    tectorg_obj = ParserTektorg()
-    onlinecontract_obj = ParserOnlineContract()
-    etpgpb_obj = ParserEtpgpb()
-    fabrikant_obj = ParserFabrikant(True)
-    b2b_center_obj = ParserCenter(True)
-    etp_activ_obj = ParserEtpActiv(True)
+def server_listener(mode):
+    if mode == 'short':
+        print('server listener: Start.. Parsing mode - short')
+        nelikvidy_obj = ParserNelikvidy(False, 500)
+        tender_obj = ParserTender(12)
+        roseltorg_obj = RoseltorgParser(10)
+        isource_obj = ParserSource(50)
+        tectorg_obj = ParserTektorg()
+        onlinecontract_obj = ParserOnlineContract(150)
+        etpgpb_obj = ParserEtpgpb(10)
+        fabrikant_obj = ParserFabrikant(True, 10)
+        b2b_center_obj = ParserCenter(True, 10)
+        etp_activ_obj = ParserEtpActiv(True, 150)
+    else:
+        print('server listener: Start.. Parsing mode - long')
+        nelikvidy_obj = ParserNelikvidy(False, False)
+        tender_obj = ParserTender(False)
+        roseltorg_obj = RoseltorgParser(False)
+        isource_obj = ParserSource(False)
+        tectorg_obj = ParserTektorg()
+        onlinecontract_obj = ParserOnlineContract(False)
+        etpgpb_obj = ParserEtpgpb(False)
+        fabrikant_obj = ParserFabrikant(True, False)
+        b2b_center_obj = ParserCenter(True, False)
+        etp_activ_obj = ParserEtpActiv(True, False)
 
     parser_roseltorg = ParserThread("parser_roseltorg", roseltorg_obj)
     parser_tender = ParserThread("parser_tender", tender_obj)
@@ -92,15 +103,15 @@ def server_listener():
     #check_thread_1.start()
 
     parser_roseltorg.start()
-#    parser_nelikvidy.start()
-#     parser_tender.start()
-#     parser_isource.start()
-#     parser_tectorg.start()
-#    parser_onlinecontract.start()
-#     parser_etpgpb.start()
-#     parser_fabrikant.start()
-#     parser_b2b_center.start()
-#     parser_etp_aktiv.start()
+    # parser_nelikvidy.start()
+    parser_tender.start()
+    # parser_isource.start()
+    # parser_tectorg.start()
+    # parser_onlinecontract.start()
+    parser_etpgpb.start()
+    parser_fabrikant.start()
+    parser_b2b_center.start()
+    # parser_etp_aktiv.start()
 
     status = True
 
@@ -171,4 +182,4 @@ def server_listener():
 
 
 if __name__ == '__main__':
-    server_listener()
+    server_listener('long')

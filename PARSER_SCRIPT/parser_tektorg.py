@@ -5,11 +5,11 @@ import time
 from fake_useragent import UserAgent
 from requests.adapters import HTTPAdapter
 from urllib3 import Retry
-from ENGINE import Parser
+from .ENGINE import Parser
 import requests
 from bs4 import BeautifulSoup
 import datetime
-from mixins import get_proxy
+from .mixins import get_proxy
 # from TorCrawler import TorCrawler
 
 

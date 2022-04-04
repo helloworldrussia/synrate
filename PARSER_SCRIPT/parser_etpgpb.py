@@ -5,21 +5,23 @@ from datetime import datetime
 from fake_useragent import UserAgent
 from requests.adapters import HTTPAdapter, Retry
 
-from ENGINE import Parser
+from .connector import change_parser_status
+from .ENGINE import Parser
 import requests
 from bs4 import BeautifulSoup
 
-from mixins import get_proxy, proxy_data
+from .mixins import get_proxy, proxy_data
 
 
 class ParserEtpgpb(Parser):
-    def __init__(self):
+    def __init__(self, end):
         super.__init__
         self.url = "https://etpgpb.ru/procedures/?procedure%5Bcategory%5D=actual&procedure%5Bsection%5D%5B2%5D=nelikvid"
         self.procedure_id = None
         self.response_item = None
         self.core = 'https://etpgpb.ru'
         self.proxy_mode = False
+        self.last_page = end
 
     def parse(self):
         # делаем запрос, получаем суп и отдаем функции, получающей номер последней страницы
@@ -28,6 +30,8 @@ class ParserEtpgpb(Parser):
         # self.response.encoding = 'utf-8'
         # self.soup = BeautifulSoup(self.response.content, 'html.parser')
         last_page = self.get_last_page()
+        if self.last_page:
+            last_page = int(self.last_page)
         # запускаем цикл сбора информации с каждой страницы
         results = 0
         for page in range(1, int(last_page)+1):
@@ -40,7 +44,7 @@ class ParserEtpgpb(Parser):
                 if result:
                     successful = 1
                     self.send_result(result)
-
+        change_parser_status('etpgpb', 'Выкл')
         print(f'Закончили len = {results}')
 
     def get_page_soup(self, url, proxy_mode):
@@ -186,18 +190,18 @@ class ParserEtpgpb(Parser):
             today = datetime.today().strftime('%d-%m %H:%M')
             try:
                 print(f'[etpgpb] {z.json()}\n{offer}')
-                with open('/var/www/synrate_dir/etpgpb.txt', 'r+') as f:
-                    # ...
-                    f.seek(0, 2)
-                    f.write(f'[{today}] {z.json()}\n{offer}')
-                    f.close()
+                # with open('/var/www/synrate_dir/etpgpb.txt', 'r+') as f:
+                #     # ...
+                #     f.seek(0, 2)
+                #     f.write(f'[{today}] {z.json()}\n{offer}')
+                #     f.close()
             except:
                 print(f'[etpgpb] {z}\n{offer}')
-                with open('/var/www/synrate_dir/etpgpb.txt', 'r+') as f:
-                    # ...
-                    f.seek(0, 2)
-                    f.write(f'[{today}] {z}\n{offer}')
-                    f.close()
+                # with open('/var/www/synrate_dir/etpgpb.txt', 'r+') as f:
+                #     # ...
+                #     f.seek(0, 2)
+                #     f.write(f'[{today}] {z}\n{offer}')
+                #     f.close()
 
     def get_last_page(self):
         successful = 0

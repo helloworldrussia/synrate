@@ -5,16 +5,17 @@ from datetime import datetime
 from fake_useragent import UserAgent
 from requests.adapters import HTTPAdapter, Retry
 
-from ENGINE import Parser
+from .connector import change_parser_status
+from .ENGINE import Parser
 import requests
 from bs4 import BeautifulSoup
 
-from mixins import proxy_data, get_proxy
+from .mixins import proxy_data, get_proxy
 
 
 class ParserFabrikant(Parser):
 
-    def __init__(self, verify):
+    def __init__(self, verify, end):
         super.__init__
         self.verify = verify
         self.url = "https://www.fabrikant.ru/trades/procedure/search/?type=1&org_type=org&currency=0&date_type=date_publication&ensure=all&filter_id=8&okpd2_embedded=1&okdp_embedded=1&count_on_page=10&order_direction=1&type_hash=1561441166"
@@ -23,6 +24,7 @@ class ParserFabrikant(Parser):
         self.core = 'https://fabrikant.ru'
         self.core_www = 'https://www.fabrikant.ru'
         self.proxy_mode = False
+        self.last_page = end
         self.monthlist = {
             "янв": 1,
             "фев": 2,
@@ -53,7 +55,10 @@ class ParserFabrikant(Parser):
 
     def parse(self):
         last_page = self.get_last_page()
+        if self.last_page:
+            last_page = int(self.last_page)
         for page in range(1, int(last_page)+1):
+            time.sleep(random.randint(5, 10))
             successful = 0
             while not successful:
                 time.sleep(random.randint(1, 7))
@@ -69,18 +74,20 @@ class ParserFabrikant(Parser):
                 today = datetime.today().strftime('%d-%m %H:%M')
                 try:
                     print(f'[fabrikant] {z.json()}\n{offer}')
-                    with open('/var/www/synrate_dir/fabrikant.txt', 'r+') as f:
-                        # ...
-                        f.seek(0, 2)
-                        f.write(f'[{today}] {z.json()}\n{offer}')
-                        f.close()
+                    # with open('/var/www/synrate_dir/fabrikant.txt', 'r+') as f:
+                    #     # ...
+                    #     f.seek(0, 2)
+                    #     f.write(f'[{today}] {z.json()}\n{offer}')
+                    #     f.close()
                 except:
                     print(f'[fabrikant] {z}\n{offer}')
-                    with open('/var/www/synrate_dir/fabrikant.txt', 'r+') as f:
-                        # ...
-                        f.seek(0, 2)
-                        f.write(f'[{today}] {z}\n{offer}')
-                        f.close()
+                    # with open('/var/www/synrate_dir/fabrikant.txt', 'r+') as f:
+                    #     # ...
+                    #     f.seek(0, 2)
+                    #     f.write(f'[{today}] {z}\n{offer}')
+                    #     f.close()
+        change_parser_status('fabrikant', 'Выкл')
+
 
     def get_last_page(self):
         successful = 0

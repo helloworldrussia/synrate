@@ -2,15 +2,14 @@ import random
 import time
 import requests
 from bs4 import BeautifulSoup
-from django.conf import settings
 from fake_useragent import UserAgent
-import unicodedata
 import datetime
 from requests.adapters import HTTPAdapter
 from urllib3 import Retry
 
-from ENGINE import Parser
-from mixins import get_proxy, proxy_data
+from .connector import change_parser_status
+from .ENGINE import Parser
+from .mixins import get_proxy, proxy_data
 
 
 class ParserNelikvidy(Parser):
@@ -19,7 +18,7 @@ class ParserNelikvidy(Parser):
         Главный класс парсера сайта nelikvidi.com .
     """
 
-    def __init__(self, verify):
+    def __init__(self, verify, end):
         """
             Наследованный класс парсера. Добавленное поле verify нужно потому что у сайта сертификат протух,
              поэтому verify нужно поставить на False. Потом при необходимости не проблема вернуть обратно.
@@ -27,7 +26,8 @@ class ParserNelikvidy(Parser):
         """
         super().__init__()
         self.verify = verify
-        self.url = "https://nelikvidi.com/sell"
+        self.last_page = end
+        self.url = "https://nelikvidi.com/sell?sort=-date"
         self.core = 'https://nelikvidi.com'
         self.proxy_mode = False
         self.monthlist = {
@@ -57,7 +57,7 @@ class ParserNelikvidy(Parser):
             "дека": 12,
             "декаб": 12,
         }
-        self.start_page = 2165
+        self.start_page = 1
 
     # def get_start_page(self):
     #     nelikvidy = Info.objects.get(name='nelikvidy')
@@ -74,13 +74,15 @@ class ParserNelikvidy(Parser):
             except Exception as ex:
                 print(ex)
                 self.change_proxy()
+        if self.last_page:
+            last_page = int(self.last_page)
         for i in range(self.start_page, last_page+1):
             print(f'[nelikvidy] page = {i}')
             successful = 0
             while not successful:
                 time.sleep(random.randint(1, 15))
                 try:
-                    soup = self.get_page_soup(self.url+f'?page={i}')
+                    soup = self.get_page_soup(self.url+f'&page={i}')
                     result = self.get_offers_from_page(soup)
                     if result:
                         self.send_result(result)
@@ -88,6 +90,7 @@ class ParserNelikvidy(Parser):
                 except Exception as ex:
                     print(ex)
                     self.change_proxy()
+        change_parser_status('nelikvidy', 'Выкл')
 
     def send_result(self, result):
         for offer in result:
