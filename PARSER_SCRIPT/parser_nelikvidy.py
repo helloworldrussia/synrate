@@ -57,7 +57,7 @@ class ParserNelikvidy(Parser):
             "дека": 12,
             "декаб": 12,
         }
-        self.start_page = 819
+        self.start_page = 2165
 
     # def get_start_page(self):
     #     nelikvidy = Info.objects.get(name='nelikvidy')

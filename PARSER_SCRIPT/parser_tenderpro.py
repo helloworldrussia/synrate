@@ -51,7 +51,7 @@ class ParserTender(Parser):
             while not successful:
                 time.sleep(random.randint(1, 7))
                 try:
-                    self.soup = self.get_page_soup(self.url.format(i*25))
+                    self.soup = self.get_page_soup(self.url+f'&page{i}')
                     table = self.soup.find('table', attrs={"class": "baseTable"})
                     rows = table.find_all('tr')
                     successful = 1

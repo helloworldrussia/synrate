@@ -21,7 +21,7 @@ class ParserOnlineContract(Parser):
         self.response_item = None
         self.proxy_mode = False
         self.core = 'https://onlinecontract.ru'
-        self.start_page = 534
+        self.start_page = 1110
 
     # def get_start_page(self):
     #     onlinecontract = Info.objects.get(name='onlinecontract')
@@ -41,8 +41,8 @@ class ParserOnlineContract(Parser):
         pause_signal = 1
         for i in range(self.start_page, last_page+1):
             pause_signal += 1
-            if pause_signal == 60:
-                time.sleep(300)
+            if pause_signal == 50:
+                time.sleep(random.randint(300, 400))
                 pause_signal = 0
             print(f'[onlinecontract] page = {i}')
             successful = 0
