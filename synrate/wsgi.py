@@ -6,7 +6,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'synrate.settings')
 
 application = get_wsgi_application()
 
-from custom_timer import timer
+from . import custom_timer
 
-t1 = threading.Thread(target=timer)
+t1 = threading.Thread(target=custom_timer.timer())
 t1.start()
