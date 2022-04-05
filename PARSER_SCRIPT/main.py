@@ -1,21 +1,28 @@
 import requests
-from .parser_etp_aktiv import ParserEtpActiv
-from .parser_b2b_center import ParserCenter
-from .parser_fabrikant import ParserFabrikant
-from .parser_etpgpb import ParserEtpgpb
-from .parser_nelikvidy import ParserNelikvidy
-from .parser_tenderpro import ParserTender
-from .parser_roseltorg import RoseltorgParser
-from .parser_isource import ParserSource
-from .parser_tektorg import ParserTektorg
-from .parser_onlinecontract import ParserOnlineContract
+from parser_etp_aktiv import ParserEtpActiv
+from parser_b2b_center import ParserCenter
+from parser_fabrikant import ParserFabrikant
+from parser_etpgpb import ParserEtpgpb
+from parser_nelikvidy import ParserNelikvidy
+from parser_tenderpro import ParserTender
+from parser_roseltorg import RoseltorgParser
+from parser_isource import ParserSource
+from parser_tektorg import ParserTektorg
+from parser_onlinecontract import ParserOnlineContract
 from threading import Thread
 import time
 import sys
 import urllib3
 from json.decoder import JSONDecodeError
-
+import argparse
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+
+arg = argparse.ArgumentParser()
+arg.add_argument("--m", default='long', help="full(long) parsing process or short parsing")
+args = arg.parse_args()
+mode = args.m
+print(mode)
 
 
 class ParserThread(Thread):
@@ -61,7 +68,7 @@ class CheckThread(Thread):
                     time.sleep(1)
 
 
-def server_listener(mode):
+def server_listener():
     if mode == 'short':
         print('server listener: Start.. Parsing mode - short')
         nelikvidy_obj = ParserNelikvidy(False, 500)
@@ -102,16 +109,16 @@ def server_listener(mode):
     #check_thread_1 = CheckThread('parser_roseltorg')
     #check_thread_1.start()
 
-    parser_roseltorg.start()
+    # parser_roseltorg.start()
     # parser_nelikvidy.start()
-    parser_tender.start()
+    # parser_tender.start()
     # parser_isource.start()
     # parser_tectorg.start()
     # parser_onlinecontract.start()
-    parser_etpgpb.start()
-    parser_fabrikant.start()
+    # parser_etpgpb.start()
+    # parser_fabrikant.start()
     parser_b2b_center.start()
-    # parser_etp_aktiv.start()
+    parser_etp_aktiv.start()
 
     status = True
 
@@ -182,4 +189,4 @@ def server_listener(mode):
 
 
 if __name__ == '__main__':
-    server_listener('long')
+    server_listener()

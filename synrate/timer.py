@@ -1,4 +1,5 @@
 import datetime
+import os
 import threading
 import time
 
@@ -17,11 +18,11 @@ def timer():
             if time_now == "24" or time_now == "01":
             # if time_now == "00" or time_now == "01":
                 change_status_for_all()
-                server_listener('short')
+                os.system(f"python3 /var/www/synrate_dir/synrate/PARSER_SCRIPT/main.py --m short")
                 time.sleep(120)
             elif datetime.datetime.today().weekday() == 5:
                 change_status_for_all()
-                server_listener('long')
+                os.system(f"python3 /var/www/synrate_dir/synrate/PARSER_SCRIPT/main.py")
             else:
                 time.sleep(2)
 

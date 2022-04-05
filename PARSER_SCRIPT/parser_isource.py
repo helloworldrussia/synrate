@@ -3,8 +3,8 @@ from datetime import datetime
 
 import requests
 
-from .connector import change_parser_status
-from .ENGINE import Parser
+from connector import change_parser_status
+from ENGINE import Parser
 
 
 class ParserSource(Parser):

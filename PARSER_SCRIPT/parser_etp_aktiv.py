@@ -5,12 +5,12 @@ from datetime import datetime
 from fake_useragent import UserAgent
 from requests.adapters import HTTPAdapter, Retry
 
-from .connector import change_parser_status
-from .ENGINE import Parser
+from connector import change_parser_status
+from ENGINE import Parser
 import requests
 from bs4 import BeautifulSoup
 
-from .mixins import get_proxy, proxy_data
+from mixins import get_proxy, proxy_data
 
 
 class ParserEtpActiv(Parser):

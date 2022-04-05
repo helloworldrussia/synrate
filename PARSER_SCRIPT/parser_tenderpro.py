@@ -5,13 +5,13 @@ from fake_useragent import UserAgent
 from requests.adapters import HTTPAdapter
 from urllib3 import Retry
 
-from PARSER_SCRIPT.connector import change_parser_status
-from .ENGINE import Parser
+from connector import change_parser_status
+from ENGINE import Parser
 import requests
 from bs4 import BeautifulSoup
 import datetime
 
-from .mixins import proxy_data, get_proxy
+from mixins import proxy_data, get_proxy
 
 
 class ParserTender(Parser):

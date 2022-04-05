@@ -4,13 +4,12 @@ from fake_useragent import UserAgent
 from requests.adapters import HTTPAdapter
 from urllib3 import Retry
 
-from .connector import change_parser_status
-from .ENGINE import Parser
+from connector import change_parser_status
+from ENGINE import Parser
 import time
 import random
 import datetime
-
-from .mixins import proxy_data, get_proxy
+from mixins import proxy_data, get_proxy
 
 
 class RoseltorgParser(Parser):
