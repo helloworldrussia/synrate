@@ -6,7 +6,6 @@ from fake_useragent import UserAgent
 import datetime
 from requests.adapters import HTTPAdapter
 from urllib3 import Retry
-
 from connector import change_parser_status
 from ENGINE import Parser
 from mixins import get_proxy, proxy_data

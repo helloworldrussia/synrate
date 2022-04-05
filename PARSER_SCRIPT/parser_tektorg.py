@@ -1,6 +1,5 @@
 import random
 import time
-
 #import crawler as crawler
 from fake_useragent import UserAgent
 from requests.adapters import HTTPAdapter

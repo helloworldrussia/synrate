@@ -1,12 +1,9 @@
 import random
 import time
 from datetime import datetime
-
-from django.conf import settings
 from fake_useragent import UserAgent
 from requests.adapters import HTTPAdapter
 from urllib3 import Retry
-
 from connector import change_parser_status
 from ENGINE import Parser
 import requests
