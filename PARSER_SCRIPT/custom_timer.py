@@ -2,7 +2,8 @@ import datetime
 import os
 import threading
 import time
-from synrate_main.models import ParserDetail
+
+from connector import conn
 
 
 def timer():
@@ -26,10 +27,16 @@ def timer():
 
 
 def change_status_for_all():
-    qs = ParserDetail.objects.all()
-    for parser in qs:
-        parser.status = 'В работе'
-        parser.save()
+    # меняет статусы всех парсеров на "В работе". При включении.
+    # Смена статуса на "Выкл" происходит каждым парсером самостоятельно из файла с парсером.
+    cursor = conn.cursor()
+    cursor.execute("SELECT name FROM synrate_main_parserdetail")
+    names = cursor.fetchall()
+    for name in names:
+        name = name[0]
+        cursor.execute(f"UPDATE synrate_main_parserdetail SET status = 'В работе' WHERE name = '{name}'")
+        conn.commit()
 
 
 timer()
+# change_status_for_all()
