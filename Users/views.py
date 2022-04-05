@@ -14,10 +14,6 @@ from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse
 
 
-# Sign Up View
-from .mixins import get_time_stat
-
-
 class SignUpView(CreateView):
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated:
