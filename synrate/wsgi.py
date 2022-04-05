@@ -1,7 +1,8 @@
 import os
 import threading
 from django.core.wsgi import get_wsgi_application
-from .timer import timer
+
+from synrate.timer import timer
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'synrate.settings')
 

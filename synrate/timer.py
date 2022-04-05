@@ -2,8 +2,6 @@ import datetime
 import os
 import threading
 import time
-
-from PARSER_SCRIPT.main import server_listener
 from synrate_main.models import ParserDetail
 
 
