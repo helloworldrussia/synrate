@@ -30,3 +30,6 @@ def change_status_for_all():
     for parser in qs:
         parser.status = 'В работе'
         parser.save()
+
+
+timer()
