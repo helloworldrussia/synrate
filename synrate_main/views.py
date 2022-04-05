@@ -40,8 +40,6 @@ def index(request):
                                           "month_count": month_count,
                                           "today_count": today_count})
 
-def dd(request):
-    all = Offer.objects.filter(home_name='tenderpro')
 
 def parser_admin(request):
     if request.user.is_staff:
@@ -246,7 +244,6 @@ def listing(request):
         page_number = 1
 
     page_obj = paginator.page(page_number)
-
     if filtering:
         return render(request, 'filtr.html', {'offers': page_obj, "all_count": all_count,
                                           "month_count": month_count, "today_count": today_count,

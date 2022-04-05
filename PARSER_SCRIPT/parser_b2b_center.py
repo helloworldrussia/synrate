@@ -202,5 +202,5 @@ class ParserCenter(Parser):
 
 
 if __name__ == '__main__':
-    Parser = ParserCenter(False)
+    Parser = ParserCenter(False, False)
     Parser.parse()

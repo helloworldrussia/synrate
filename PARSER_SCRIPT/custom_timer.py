@@ -37,6 +37,5 @@ def change_status_for_all():
         cursor.execute(f"UPDATE synrate_main_parserdetail SET status = 'В работе' WHERE name = '{name}'")
         conn.commit()
 
-
 timer()
 # change_status_for_all()
