@@ -33,7 +33,8 @@ class OfferSerializer(serializers.ModelSerializer):
                   'offer_price',
                   'additional_data',
                   'category',
-                  'organisation')
+                  'organisation',
+                  'from_id')
 
     def validate(self, attrs):
         group = Offer.objects.filter(url=attrs['url'])

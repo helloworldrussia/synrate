@@ -97,8 +97,8 @@ class ParserEtpgpb(Parser):
         company = None
         text = None
         for offer in offers_list:
-
             # вытаскиваем нужные данные в переменные
+            from_id = offer.find("div", attrs={"class": "procedure__info"}).find("a", attrs={"itemprop": "name"}).getText()
             link = core+offer.find("a", attrs={"class": "procedure__link"}).attrs['href']
             company = offer.find("div", attrs={"class": "procedure__companyName"}).getText()
             name = offer.find("div", attrs={"class": "procedure__infoDescriptionFull"}).getText() # ниже посмотри !!!
@@ -110,7 +110,10 @@ class ParserEtpgpb(Parser):
             else:
                 price = None
             offer_type = offer.find("div", attrs={"class": "procedure__infoAuctionType"}).getText()
-
+            try:
+                price = int(price)
+            except:
+                price = None
             divs_texts = []
             for x in divs:
                 divs_texts.append(x.getText())
@@ -132,15 +135,14 @@ class ParserEtpgpb(Parser):
             price = self.make_price_good(price)
             start_date = self.make_date_good(start_date)
             end_date = self.make_date_good(end_date)
-
+            from_id = from_id.split('№')[-1].replace(' ', '')
             # формируем словарь из полученных данных и добавляем в список
             data_dict = {"name": name, "location": region, "home_name": "etpgpb",
                                         "offer_type": offer_type, "offer_start_date": start_date, "offer_end_date": end_date,
                                         #"owner": None, "ownercontact": None,
                                         "offer_price": price,
-                                        "additional_data": text, "organisation": company, "url": link
-                                        #"category": "Не определена", "subcategory": "не определена"
-                                        }
+                                        "additional_data": text, "organisation": company, "url": link,
+                                        "from_id": from_id}
 
             cleaned_data.append(data_dict)
         # передаем список из словарей с информацией о заявках обратно
@@ -183,6 +185,7 @@ class ParserEtpgpb(Parser):
 
     def send_result(self, data):
         for offer in data:
+            # print(offer)
             z = requests.post("https://synrate.ru/api/offers/create",
                               json=offer)
             today = datetime.today().strftime('%d-%m %H:%M')
@@ -215,5 +218,5 @@ class ParserEtpgpb(Parser):
 
 
 if __name__ == '__main__':
-    Parser = ParserEtpgpb()
+    Parser = ParserEtpgpb(False)
     Parser.parse()
