@@ -78,31 +78,30 @@ class ParserCenter(Parser):
             if i == 3:
                 main = x
             i += 1
-        # print(main)
-        # print(main.table)
         main = main.table.tbody.find_all("tr")
         offers = main
-        print('Обнаружено заявок:', len(main))
-        print('ALL')
         answer = []
         for offer in offers:
             dates = offer.find_all("td", attrs={"class": "nowrap"})
-            link = offer.find("a", attrs={"class": "search-results-title visited"}).attrs['href']
+            link_obj = offer.find("td").find("a")
+            from_id = link_obj.getText()
             name = offer.find("div", attrs={"class": "search-results-title-desc"}).getText().replace('"', '')
             company = offer.find_all("a", attrs={"class": "visited"})[1].getText().replace('"', '')
 
             start_date, end_date = self.get_dates(dates)
+            link = link_obj.attrs['href']
             link = self.core_www+link.replace(self.core, '').replace(self.core_www, '')
             text = name
+            from_id = from_id.split('№')[1].split(" ")[1]
 
             offer_obj = {"name": name,
                          "home_name": "b2b-center",
                          "offer_start_date": start_date, "offer_end_date": end_date,
                          "additional_data": text, "organisation": company,
-                         "url": link
+                         "url": link, "from_id": from_id
                          }
-            answer.append(offer_obj)
-
+            # answer.append(offer_obj)
+            print(offer_obj)
         return answer
 
     def get_dates(self, data):
@@ -182,23 +181,24 @@ class ParserCenter(Parser):
 
     def post_result(self, data):
         for offer in data:
-            z = requests.post("https://synrate.ru/api/offers/create",
-                              json=offer)
-            today = datetime.today().strftime('%d-%m %H:%M')
-            try:
-                print(f'[b2b-center] {z.json()}\n{offer}')
-                # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
-                #     # ...
-                #     f.seek(0, 2)
-                #     f.write(f'[{today}] {z.json()}\n{offer}')
-                #     f.close()
-            except:
-                print(f'[b2b-center] {z}\n{offer}')
-                # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
-                #     # ...
-                #     f.seek(0, 2)
-                #     f.write(f'[{today}] {z}\n{offer}')
-                #     f.close()
+            print(offer)
+            # z = requests.post("https://synrate.ru/api/offers/create",
+            #                   json=offer)
+            # today = datetime.today().strftime('%d-%m %H:%M')
+            # try:
+            #     print(f'[b2b-center] {z.json()}\n{offer}')
+            #     # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
+            #     #     # ...
+            #     #     f.seek(0, 2)
+            #     #     f.write(f'[{today}] {z.json()}\n{offer}')
+            #     #     f.close()
+            # except:
+            #     print(f'[b2b-center] {z}\n{offer}')
+            #     # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
+            #     #     # ...
+            #     #     f.seek(0, 2)
+            #     #     f.write(f'[{today}] {z}\n{offer}')
+            #     #     f.close()
 
 
 if __name__ == '__main__':
