@@ -113,6 +113,7 @@ class ParserEtpActiv(Parser):
             name = link_obj.find("img").attrs['alt'].replace('"', '')
             text = name
             link = self.core+link_obj.attrs['href']
+            from_id = link.split('/')[-1]
 
             offer_obj = {"name": name,
                  "home_name": "etp-activ",

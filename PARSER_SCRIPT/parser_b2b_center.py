@@ -100,8 +100,7 @@ class ParserCenter(Parser):
                          "additional_data": text, "organisation": company,
                          "url": link, "from_id": from_id
                          }
-            # answer.append(offer_obj)
-            print(offer_obj)
+            answer.append(offer_obj)
         return answer
 
     def get_dates(self, data):
@@ -181,24 +180,23 @@ class ParserCenter(Parser):
 
     def post_result(self, data):
         for offer in data:
-            print(offer)
-            # z = requests.post("https://synrate.ru/api/offers/create",
-            #                   json=offer)
-            # today = datetime.today().strftime('%d-%m %H:%M')
-            # try:
-            #     print(f'[b2b-center] {z.json()}\n{offer}')
-            #     # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
-            #     #     # ...
-            #     #     f.seek(0, 2)
-            #     #     f.write(f'[{today}] {z.json()}\n{offer}')
-            #     #     f.close()
-            # except:
-            #     print(f'[b2b-center] {z}\n{offer}')
-            #     # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
-            #     #     # ...
-            #     #     f.seek(0, 2)
-            #     #     f.write(f'[{today}] {z}\n{offer}')
-            #     #     f.close()
+            z = requests.post("https://synrate.ru/api/offers/create",
+                              json=offer)
+            today = datetime.today().strftime('%d-%m %H:%M')
+            try:
+                print(f'[b2b-center] {z.json()}\n{offer}')
+                # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
+                #     # ...
+                #     f.seek(0, 2)
+                #     f.write(f'[{today}] {z.json()}\n{offer}')
+                #     f.close()
+            except:
+                print(f'[b2b-center] {z}\n{offer}')
+                # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
+                #     # ...
+                #     f.seek(0, 2)
+                #     f.write(f'[{today}] {z}\n{offer}')
+                #     f.close()
 
 
 if __name__ == '__main__':
