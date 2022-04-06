@@ -41,7 +41,8 @@ class ParserEtpActiv(Parser):
             # time.sleep(random.randint(1, 3))
         change_parser_status('etp_aktiv', 'Выкл')
 
-    def get_page_soup(self, url, proxy_mode):
+    def get_page_soup(self, url):
+        proxy_mode = self.proxy_mode
         if proxy_mode:
             proxy = get_proxy(proxy_mode)
             # proxy_status = check_proxy(proxy)
@@ -69,7 +70,7 @@ class ParserEtpActiv(Parser):
         successful = 0
         while not successful:
             try:
-                soup = self.get_page_soup(self.url, self.proxy_mode)
+                soup = self.get_page_soup(self.url)
                 last_page = soup.find("nav", attrs={"class": "nav nav--pager"}).find("ul")
                 last_page = last_page.find_all("li", attrs={"class": "nav__item"})[-2].find("a").getText()
                 last_page.replace('\n', '').replace(' ', '')
@@ -96,7 +97,7 @@ class ParserEtpActiv(Parser):
 
     def get_page_offers(self, url):
 
-        soup = self.get_page_soup(url, self.proxy_mode)
+        soup = self.get_page_soup(url)
         try:
             offers = soup.find("div", attrs={"class": "products-cards"}).find_all("div", attrs={"class": "products-cards__item"})
         except:
@@ -125,7 +126,49 @@ class ParserEtpActiv(Parser):
             else:
                 region = None
 
+            detail = self.get_detail_info(link)
+            for key, value in detail.items():
+                offer_obj[f'{key}'] = value
             answer.append(offer_obj)
+        return answer
+
+    def get_detail_info(self, url):
+        company, region, category = None, None, None
+        soup = self.get_page_soup(url)
+        p = soup.find("div", attrs={"class": "detail-product__content"}).find_all("p")
+        name = soup.find("h1", attrs={"class": "detail-product__title"}).getText()
+        params = soup.find("div", attrs={"class": "detail-product__header-content-info"}).find_all("dl")
+        try:
+            price = soup.find("div", attrs={"class": "detail-product__header-buy-price-value"}).getText()
+            price = price.replace(' ', '').replace('\n', '')
+        except:
+            price = None
+        for param in params:
+            title = param.find("dt").getText()
+            if title == "Продавец":
+                company = param.find("dd").getText().replace('"', '')
+            if title == "Регион":
+                region = param.find("dd").getText()
+            if title == "Категория":
+                category = param.find("dd").getText()
+
+        a_data = ''
+        for x in p:
+            try:
+                a_data = a_data+x.getText()
+                a_data = a_data+x.find('strong').getText()
+            except:
+                pass
+        answer = {
+            # "home": url,
+            "name": name, "price": price, "owner": company,
+            "location": region
+        }
+        if category:
+            answer['additional_data'] = a_data+f'\n\nКатегория: {category}'
+        else:
+            answer['additional_data'] = a_data
+        # print('ANSWER:', answer)
         return answer
 
     def post_result(self, data):
