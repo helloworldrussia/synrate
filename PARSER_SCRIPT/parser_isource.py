@@ -44,10 +44,8 @@ class ParserSource(Parser):
 
                                                 }).json()
             for z in self.response_items["data"]:
-                print('next item')
                 self.response_item = requests.post(self.api_get_info_url, headers={'User-Agent': "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Mobile Safari/537.36"},
                                                    data={"auction_transliteration_name": z["auction_transliteration_name"]}).json()["data"]
-
                 offer = {"name": self.response_item["name"],
                                         "location": self.response_item["region"][0]["name"],
                                         "home_name": "isource",
@@ -56,13 +54,13 @@ class ParserSource(Parser):
                                         "offer_end_date": self.response_item["date_end"].split(" ")[0],
                                         "owner": self.response_item["author_full_name"],
                                         "ownercontact": self.response_item["author_phone"],
-                                        "offer_price": round(float(self.response_item["current_fix_price_without_nds"]))
-                                      , "additional_data": "не указано",
+                                        "offer_price": round(float(self.response_item["current_fix_price_without_nds"])),
+                                        "additional_data": "не указано",
                                         "organisation": self.response_item["contragent_host_name"],
                                         "url": "https://reserve.isource.ru/trades/item/"
-                                               + self.response_item["auction_transliteration_name"]
+                                               + self.response_item["auction_transliteration_name"],
+                                        "from_id": self.response_item['auction_transliteration_name'].split("-")[-1]
                                         }
-
                 z = requests.post("https://synrate.ru/api/offers/create",
                                   json=offer)
                 today = datetime.today().strftime('%d-%m %H:%M')
@@ -93,5 +91,5 @@ class ParserSource(Parser):
 
 
 if __name__ == '__main__':
-    parser = ParserSource()
+    parser = ParserSource(False)
     parser.parse()
