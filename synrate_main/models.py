@@ -53,6 +53,7 @@ class Offer(models.Model):
                                  null=True, default=None, blank=True, related_name="subcategory")
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     from_id = models.TextField(blank=True, null=True, default='', verbose_name='ID от источника')
+    short_cat = models.TextField(blank=True, null=True, default=None)
 
     def __str__(self):
         return self.name

@@ -162,12 +162,9 @@ class ParserEtpActiv(Parser):
         answer = {
             # "home": url,
             "name": name, "price": price, "owner": company,
-            "location": region
+            "location": region, "short_cat": category
         }
-        if category:
-            answer['additional_data'] = a_data+f'\n\nКатегория: {category}'
-        else:
-            answer['additional_data'] = a_data
+
         # print('ANSWER:', answer)
         return answer
 
