@@ -51,18 +51,54 @@ class OfferUpdateSerializer(serializers.ModelSerializer):
     id = serializers.ReadOnlyField()
 
     def update(self, instance, validated_data):
-        instance.offer_price = validated_data['offer_price']
-        instance.owner = validated_data['owner']
-        instance.additional_data = validated_data['additional_data']
-        instance.location = validated_data['location']
-        instance.offer_type = validated_data['offer_type']
-        instance.offer_start_date = validated_data['offer_start_date']
-        instance.offer_end_date = validated_data['offer_end_date']
-        instance.ownercontact = validated_data['ownercontact']
-        instance.organisation = validated_data['organisation']
-        instance.from_id = validated_data['from_id']
-        instance.short_cat = validated_data['short_cat']
-        instance.save()
+        try:
+            instance.offer_price = validated_data['offer_price']
+        except:
+            pass
+        try:
+            instance.owner = validated_data['owner']
+        except:
+            pass
+        try:
+            instance.additional_data = validated_data['additional_data']
+        except:
+            pass
+        try:
+            instance.location = validated_data['location']
+        except:
+            pass
+        try:
+            instance.offer_type = validated_data['offer_type']
+        except:
+            pass
+        try:
+            instance.offer_start_date = validated_data['offer_start_date']
+        except:
+            pass
+        try:
+            instance.offer_end_date = validated_data['offer_end_date']
+        except:
+            pass
+        try:
+            instance.ownercontact = validated_data['ownercontact']
+        except:
+            pass
+        try:
+            instance.organisation = validated_data['organisation']
+        except:
+            pass
+        try:
+            instance.from_id = validated_data['from_id']
+        except:
+            pass
+        try:
+            instance.short_cat = validated_data['short_cat']
+        except:
+            pass
+        try:
+            instance.save()
+        except:
+            pass
         return instance
 
     class Meta:

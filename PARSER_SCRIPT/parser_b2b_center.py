@@ -193,7 +193,7 @@ class ParserCenter(Parser):
                 print(f'[b2b-center] {z}\n{offer}')
             #
             try:
-                id = z.json()['unique_error']
+                id = z.json()['unique_error'][0]
                 z = requests.post(f"https://synrate.ru/api/offer/update/{id}/",
                                   json=offer)
             except:
