@@ -11,6 +11,7 @@ def timer():
     print("TIMER: parsers autorun is ON")
     while True:
         while True:
+            print(f"TIMER: Im alive")
             dt_now = datetime.datetime.now()
             time_now = dt_now.strftime("%M")
             # print(time_now)
