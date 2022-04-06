@@ -1,3 +1,4 @@
+import sys
 import time
 from datetime import datetime
 import requests
@@ -79,15 +80,7 @@ class ParserSource(Parser):
                     #     f.write(f'[{today}] {z}\n{offer}')
                     #     f.close()
         change_parser_status('isource', 'Выкл')
-                # try:
-                #     if z.json()["name"][0].find("already exists") != -1:
-                #         counter += 1
-                #
-                #         if counter == 150:
-                #             break
-                # except:
-                #     counter = 0
-                #     z = None
+        sys.exit()
 
 
 if __name__ == '__main__':

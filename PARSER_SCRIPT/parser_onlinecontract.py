@@ -9,6 +9,7 @@ from ENGINE import Parser
 import requests
 from bs4 import BeautifulSoup
 from mixins import get_proxy, proxy_data
+import sys
 
 
 class ParserOnlineContract(Parser):
@@ -60,6 +61,7 @@ class ParserOnlineContract(Parser):
                     print(ex)
                     self.change_proxy()
         change_parser_status('onlinecontract', 'Выкл')
+        sys.exit()
 
     def get_last_page(self):
         soup = self.get_page_soup(self.url.format(1))

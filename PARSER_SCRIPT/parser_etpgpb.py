@@ -1,7 +1,7 @@
 import random
 import time
 from datetime import datetime
-
+import sys
 from fake_useragent import UserAgent
 from requests.adapters import HTTPAdapter, Retry
 from connector import change_parser_status
@@ -44,6 +44,7 @@ class ParserEtpgpb(Parser):
                     self.send_result(result)
         change_parser_status('etpgpb', 'Выкл')
         print(f'Закончили len = {results}')
+        sys.exit()
 
     def get_page_soup(self, url, proxy_mode):
         if proxy_mode:

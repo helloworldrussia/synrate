@@ -14,7 +14,7 @@ def timer():
             dt_now = datetime.datetime.now()
             time_now = dt_now.strftime("%M")
             # print(time_now)
-            if time_now == "24" or time_now == "01":
+            if time_now == "51" or time_now == "52":
             # if time_now == "00" or time_now == "01":
                 change_status_for_all()
                 os.system(f"python3 /var/www/synrate_dir/synrate/PARSER_SCRIPT/main.py --m short")

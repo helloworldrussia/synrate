@@ -8,6 +8,7 @@ from ENGINE import Parser
 import requests
 from bs4 import BeautifulSoup
 from mixins import proxy_data, get_proxy
+import sys
 
 
 class ParserFabrikant(Parser):
@@ -84,6 +85,7 @@ class ParserFabrikant(Parser):
                     #     f.write(f'[{today}] {z}\n{offer}')
                     #     f.close()
         change_parser_status('fabrikant', 'Выкл')
+        sys.exit()
 
     def get_last_page(self):
         successful = 0

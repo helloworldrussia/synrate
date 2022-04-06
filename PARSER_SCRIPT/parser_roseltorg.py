@@ -1,3 +1,4 @@
+import sys
 import requests
 from bs4 import BeautifulSoup
 from fake_useragent import UserAgent
@@ -51,6 +52,7 @@ class RoseltorgParser(Parser):
                     print(ex)
                     self.change_proxy()
         change_parser_status('roseltorg', 'Выкл')
+        sys.exit()
 
     def send_result(self, data):
         for offer in data:

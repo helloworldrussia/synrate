@@ -8,6 +8,7 @@ from ENGINE import Parser
 import requests
 from bs4 import BeautifulSoup
 from mixins import get_proxy, proxy_data
+import sys
 
 
 class ParserEtpActiv(Parser):
@@ -40,6 +41,7 @@ class ParserEtpActiv(Parser):
                 print(f'etp-activ: Обрабатываем страницу - {page_url}\nproxy_mode: {self.proxy_mode}')
             # time.sleep(random.randint(1, 3))
         change_parser_status('etp_aktiv', 'Выкл')
+        sys.exit()
 
     def get_page_soup(self, url):
         proxy_mode = self.proxy_mode
@@ -150,19 +152,15 @@ class ParserEtpActiv(Parser):
             if title == "Регион":
                 region = param.find("dd").getText()
             if title == "Категория":
-                category = param.find("dd").getText()
+                category = param.find("dd").getText().replace('"', '')
 
         a_data = ''
         for x in p:
-            try:
-                a_data = a_data+x.getText()
-                a_data = a_data+x.find('strong').getText()
-            except:
-                pass
+            a_data = a_data+x.getText().replace('"', '')
         answer = {
             # "home": url,
             "name": name, "price": price, "owner": company,
-            "location": region, "short_cat": category
+            "location": region, "additional_data": a_data, "short_cat": category
         }
 
         # print('ANSWER:', answer)

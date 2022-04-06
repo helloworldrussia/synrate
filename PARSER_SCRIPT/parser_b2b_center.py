@@ -1,4 +1,5 @@
 import random
+import sys
 import time
 from datetime import datetime
 from fake_useragent import UserAgent
@@ -57,6 +58,7 @@ class ParserCenter(Parser):
             i += 1
             self.post_result(result)
         change_parser_status('b2b_center', 'Выкл')
+        sys.exit()
 
     def make_template(self, file_name):
         content = requests.get(self.url).text

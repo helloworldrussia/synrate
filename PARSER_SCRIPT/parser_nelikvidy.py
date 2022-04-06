@@ -1,4 +1,5 @@
 import random
+import sys
 import time
 import requests
 from bs4 import BeautifulSoup
@@ -91,6 +92,7 @@ class ParserNelikvidy(Parser):
                     print(ex)
                     self.change_proxy()
         change_parser_status('nelikvidy', 'Выкл')
+        sys.exit()
 
     def send_result(self, result):
         for offer in result:

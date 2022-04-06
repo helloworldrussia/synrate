@@ -1,10 +1,9 @@
 import random
+import sys
 import time
-
 from fake_useragent import UserAgent
 from requests.adapters import HTTPAdapter
 from urllib3 import Retry
-
 from connector import change_parser_status
 from ENGINE import Parser
 import requests
@@ -110,6 +109,7 @@ class ParserTender(Parser):
                     time.sleep(random.randint(1, 5) / 10)
                     # ---------------------
         change_parser_status('tenderpro', 'Выкл')
+        sys.exit()
 
     def get_page_soup(self, url):
         proxy_mode = self.proxy_mode
