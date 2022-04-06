@@ -17,7 +17,6 @@ class OfferSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
-
     class Meta:
         model = Offer
         fields = ('pk',
@@ -41,11 +40,36 @@ class OfferSerializer(serializers.ModelSerializer):
         group = Offer.objects.filter(url=attrs['url'])
         for offer in group:
             if offer.name == attrs['name']:
-                raise ValidationError({"answer": "not uniq offer"})
+                raise ValidationError({"unique_error": f"{offer.pk}"})
         if attrs["name"] is None or attrs["name"] == "":
             raise ValidationError("Поле name обязательно должно быть заполнено")
 
         return attrs
+
+
+class OfferUpdateSerializer(serializers.ModelSerializer):
+    id = serializers.ReadOnlyField()
+
+    def update(self, instance, validated_data):
+        instance.offer_price = validated_data['offer_price']
+        instance.owner = validated_data['owner']
+        instance.additional_data = validated_data['additional_data']
+        instance.location = validated_data['location']
+        instance.offer_type = validated_data['offer_type']
+        instance.offer_start_date = validated_data['offer_start_date']
+        instance.offer_end_date = validated_data['offer_end_date']
+        instance.ownercontact = validated_data['ownercontact']
+        instance.organisation = validated_data['organisation']
+        instance.from_id = validated_data['from_id']
+        instance.short_cat = validated_data['short_cat']
+        instance.save()
+        return instance
+
+    class Meta:
+        model = Offer
+        fields = ("id", 'offer_price', 'owner', 'additional_data', 'location', 'offer_type',
+                  "offer_start_date", "offer_end_date", 'ownercontact', 'organisation', 'from_id',
+                  "short_cat",)
 
 
 class ParserSerializer(serializers.ModelSerializer):

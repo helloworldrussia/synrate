@@ -185,6 +185,19 @@ class ParserCenter(Parser):
             z = requests.post("https://synrate.ru/api/offers/create",
                               json=offer)
             today = datetime.today().strftime('%d-%m %H:%M')
+            #
+            try:
+                print(f'[b2b-center] {z.json()}\n{offer}')
+
+            except:
+                print(f'[b2b-center] {z}\n{offer}')
+            #
+            try:
+                id = z.json()['unique_error']
+                z = requests.post(f"https://synrate.ru/api/offer/update/{id}/",
+                                  json=offer)
+            except:
+                pass
             try:
                 print(f'[b2b-center] {z.json()}\n{offer}')
                 # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:

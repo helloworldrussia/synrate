@@ -8,5 +8,6 @@ urlpatterns = [
     path('parser/list', views.ParserListView.as_view(), name='parser-list'),
     path('parser/update/<int:pk>/', views.ParserUpdateView.as_view(), name='parser-update'),
     path('ENGINE/list', views.EngineListView.as_view(), name='engine-list'),
-    path('ENGINE/update/<int:pk>/', views.EngineUpdateView.as_view(), name='engine-update')
+    path('ENGINE/update/<int:pk>/', views.EngineUpdateView.as_view(), name='engine-update'),
+    path('offer/update/<int:pk>/', views.OfferUpdateView.as_view(), name='offer-update'),
 ]

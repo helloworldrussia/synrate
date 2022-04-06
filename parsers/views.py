@@ -10,10 +10,17 @@ from django.db import IntegrityError
 from rest_framework.generics import ListAPIView, CreateAPIView, UpdateAPIView
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .serializers import OfferSerializer, ParserSerializer, EngineSerializer
+from .serializers import OfferSerializer, ParserSerializer, EngineSerializer, OfferUpdateSerializer
 from .models import Parser, ENGINE
 from synrate_main.models import OfferCategory, OfferSubcategory
+from rest_framework import viewsets
+
 Offer = apps.get_model('synrate_main', 'Offer')
+
+
+class OfferUpdateView(UpdateAPIView):
+    queryset = Offer.objects.all()
+    serializer_class = OfferUpdateSerializer
 
 
 class OfferListView(ListAPIView):
