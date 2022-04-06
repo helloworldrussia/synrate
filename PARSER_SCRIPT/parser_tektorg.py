@@ -104,7 +104,7 @@ class ParserTektorg(Parser):
             if name is None:
                 continue
             print(start_date, fin_date)
-            J = {"name": name.replace('"', ''), "location": "РФ", "home_name": "tektorg",
+            offer = {"name": name.replace('"', ''), "location": "РФ", "home_name": "tektorg",
                                     "offer_type": "Продажа",
                                     #"offer_start_date": str(start_date),
                                     #"offer_end_date": str(fin_date),
@@ -115,13 +115,46 @@ class ParserTektorg(Parser):
                       }
 
             if start_date is not None:
-                J["offer_start_date"] = str(start_date)
+                offer["offer_start_date"] = str(start_date)
             if fin_date is not None:
-                J["offer_end_date"] = str(fin_date)
+                offer["offer_end_date"] = str(fin_date)
 
             z = requests.post("https://synrate.ru/api/offers/create",
-                              json=J)
-
+                              json=offer)
+            try:
+                print(f'[b2b-center] {z.json()}\n{offer}')
+                # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
+                #     # ...
+                #     f.seek(0, 2)
+                #     f.write(f'[{today}] {z.json()}\n{offer}')
+                #     f.close()
+            except:
+                print(f'[b2b-center] {z}\n{offer}')
+                # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
+                #     # ...
+                #     f.seek(0, 2)
+                #     f.write(f'[{today}] {z}\n{offer}')
+                #     f.close()
+            try:
+                id = z.json()['unique_error'][0]
+                z = requests.put(f"https://synrate.ru/api/offer/update/{id}/",
+                                  json=offer)
+            except:
+                pass
+            try:
+                print(f'[b2b-center] {z.json()}\n{offer}')
+                # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
+                #     # ...
+                #     f.seek(0, 2)
+                #     f.write(f'[{today}] {z.json()}\n{offer}')
+                #     f.close()
+            except:
+                print(f'[b2b-center] {z}\n{offer}')
+                # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
+                #     # ...
+                #     f.seek(0, 2)
+                #     f.write(f'[{today}] {z}\n{offer}')
+                #     f.close()
             # TESTING -------------
             print(f'TECH: {z.json()}  {J}')
             time.sleep(random.randint(1, 5) / 10)

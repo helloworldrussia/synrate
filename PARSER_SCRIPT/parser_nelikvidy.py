@@ -100,15 +100,35 @@ class ParserNelikvidy(Parser):
                               json=offer)
             today = datetime.datetime.today().strftime('%d-%m %H:%M')
             try:
-                print(f'[nelikvid] {z.json()}\n{offer}')
-                # with open('/var/www/synrate_dir/nelikvid.txt', 'r+') as f:
+                print(f'[nelikvidy] {z.json()}\n{offer}')
+                # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
                 #     # ...
                 #     f.seek(0, 2)
                 #     f.write(f'[{today}] {z.json()}\n{offer}')
                 #     f.close()
             except:
-                print(f'[nelikvid] {z}\n{offer}')
-                # with open('/var/www/synrate_dir/nelikvid.txt', 'r+') as f:
+                print(f'[nelikvidy] {z}\n{offer}')
+                # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
+                #     # ...
+                #     f.seek(0, 2)
+                #     f.write(f'[{today}] {z}\n{offer}')
+                #     f.close()
+            try:
+                id = z.json()['unique_error'][0]
+                z = requests.put(f"https://synrate.ru/api/offer/update/{id}/",
+                                 json=offer)
+            except:
+                pass
+            try:
+                print(f'[nelikvidy] {z.json()}\n{offer}')
+                # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
+                #     # ...
+                #     f.seek(0, 2)
+                #     f.write(f'[{today}] {z.json()}\n{offer}')
+                #     f.close()
+            except:
+                print(f'[nelikvidy] {z}\n{offer}')
+                # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
                 #     # ...
                 #     f.seek(0, 2)
                 #     f.write(f'[{today}] {z}\n{offer}')
