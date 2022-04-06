@@ -117,7 +117,7 @@ def server_listener():
     # parser_onlinecontract.start()
     # parser_etpgpb.start()
     # parser_fabrikant.start()
-    parser_b2b_center.start()
+    # parser_b2b_center.start()
     # parser_etp_aktiv.start()
 
     # status = True

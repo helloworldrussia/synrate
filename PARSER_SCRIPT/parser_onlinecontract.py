@@ -60,6 +60,7 @@ class ParserOnlineContract(Parser):
                     print(ex)
                     self.change_proxy()
         change_parser_status('onlinecontract', 'Выкл')
+
     def get_last_page(self):
         soup = self.get_page_soup(self.url.format(1))
         last_page = soup.find("li", attrs={"class": "pagination-last page-item"}).find("a").attrs["href"]
@@ -101,12 +102,13 @@ class ParserOnlineContract(Parser):
             link = self.core+link_obj.attrs['href']
             name = link_obj.find("span").getText().replace('"', '')
             end_date = parameters[3].getText()
-
+            from_id = link.split('/')[-1].split("?")[0]
             end_date = self.make_date_good(end_date)
 
             offer_obj = {"name": name, "home_name": "onlinecontract",
-                                        "offer_end_date": end_date,
-                                        "additional_data": name, "organisation": company, "url": link
+                         "offer_end_date": end_date, "additional_data": name,
+                         "organisation": company, "url": link,
+                         "from_id": from_id
                          }
             answer.append(offer_obj)
         return answer
@@ -159,5 +161,5 @@ class ParserOnlineContract(Parser):
 
 
 if __name__ == '__main__':
-    Parser = ParserOnlineContract()
+    Parser = ParserOnlineContract(False)
     Parser.parse()
