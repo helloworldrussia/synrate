@@ -66,6 +66,7 @@ class ParserTender(Parser):
             for row in rows:
                 if row.find('th') is None:
                     cols = row.find_all('td')
+                    from_id = cols[0].getText()
                     name_obj = cols[1].find_all('a')[1]
                     name = name_obj.getText()
                     url = "http://www.tender.pro/"+name_obj.attrs['href']
@@ -83,9 +84,9 @@ class ParserTender(Parser):
                                             "offer_end_date": str(fin_date),
                                             "owner": company.replace('"', ''), "ownercontact": "временно недоступно", "offer_price": 0,
                                             "additional_data": "не указано", "organisation": company.replace('"', ''),
-                                            "url": url
-                                            #"category": "Не определена", "subcategory": "не определена"
+                                            "url": url, "from_id": from_id
                                             }
+
                     z = requests.post("https://synrate.ru/api/offers/create",
                                       json=offer)
 
@@ -157,5 +158,5 @@ class ParserTender(Parser):
 
 
 if __name__ == '__main__':
-    parser = ParserTender()
+    parser = ParserTender(False)
     parser.parse()
