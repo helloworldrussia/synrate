@@ -85,7 +85,6 @@ class ParserFabrikant(Parser):
                     #     f.close()
         change_parser_status('fabrikant', 'Выкл')
 
-
     def get_last_page(self):
         successful = 0
         while not successful:
@@ -145,12 +144,15 @@ class ParserFabrikant(Parser):
         offers = []
         for div in items_divs:
             # получаем данные из элементов
+            from_id = div.find("div", attrs={"class": "marketplace-unit__info"}).find("div", attrs={"class": "marketplace-unit__info__name"})
             link_element = div.find("h4", attrs={"class": "marketplace-unit__title"}).find("a")
             name, link = link_element.getText(), link_element.attrs['href']
             price = div.find("div", attrs={"class": "marketplace-unit__price"}).find("span").find("strong")
             date_divs = div.find("div", attrs={"class": "marketplace-unit__state__wrap"}).find_all("div", attrs={"class": "marketplace-unit__state"})
             company = div.find("div", attrs={"class": "marketplace-unit__organizer"}).find("a").find_all("span")[1].getText()
             company = company.replace('"', '')
+            from_id = from_id.find("span").getText()
+            from_id = from_id.split('№')[-1].replace(' ', '').replace('\n', '')
             # отправляем данные в вспомогательные функции и приводим их в надлежащий вид
             answer = self.make_name_good(name)
             region = answer['region']
@@ -167,7 +169,7 @@ class ParserFabrikant(Parser):
                          #"offer_type": offer_type,
                          "offer_start_date": start_date, "offer_end_date": end_date,
                          "additional_data": text, "offer_price": price, "organisation": company,
-                         "url": link#, "category": "Не определена", "subcategory": "не определена"
+                         "url": link, "from_id": from_id
                          }
             offers.append(offer_obj)
 
@@ -237,5 +239,5 @@ class ParserFabrikant(Parser):
 
 
 if __name__ == '__main__':
-    Parser = ParserFabrikant(True)
+    Parser = ParserFabrikant(True, False)
     Parser.parse()
