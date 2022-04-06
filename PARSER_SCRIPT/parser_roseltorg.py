@@ -88,7 +88,7 @@ class RoseltorgParser(Parser):
             price = offer.find("div", attrs={"class": "search-results__sum"})
             region = offer.find("div", attrs={"class": "search-results__region"})
             end_date = offer.find("time", attrs={"class": "search-results__time"})
-
+            from_id = link.split('/')[-1]
             if region:
                 region = region.find("p").getText()
                 region = self.make_region_good(region)
@@ -110,15 +110,13 @@ class RoseltorgParser(Parser):
                 company = None
 
             offer_obj = {"name": name, "location": region, "home_name": "roseltorg",
-             "offer_type": "Продажа",# "offer_start_date": str(publish_date),
-             "offer_end_date": end_date,
-             "owner": "недоступно", "ownercontact": "временно недоступно",
-             "offer_price": price,
-             # "subcategory": "Не определена",
-             # "category": "Не определена",
-             "additional_data": name, "organisation": company,
-             "url": link
-             }
+                         "offer_type": "Продажа",# "offer_start_date": str(publish_date),
+                         "offer_end_date": end_date,
+                         "owner": "недоступно", "ownercontact": "временно недоступно",
+                         "offer_price": price,
+                         "additional_data": name, "organisation": company,
+                         "url": link, "from_id": from_id
+                         }
             answer.append(offer_obj)
 
         return answer
@@ -194,5 +192,5 @@ class RoseltorgParser(Parser):
 
 
 if __name__ == '__main__':
-    parser = RoseltorgParser()
+    parser = RoseltorgParser(False)
     parser.parse()
