@@ -113,14 +113,13 @@ class ParserEtpActiv(Parser):
             name = link_obj.find("img").attrs['alt'].replace('"', '')
             text = name
             link = self.core+link_obj.attrs['href']
-            from_id = link.split('/')[-1]
+            from_id = link.split('/')[-2]
 
             offer_obj = {"name": name,
                  "home_name": "etp-activ",
                  #"offer_start_date": start_date, "offer_end_date": end_date,
                  "additional_data": text,# "organisation": company,
-                 "url": link
-                         }
+                 "url": link, "from_id": from_id}
             if region is not None:
                 offer_obj['location'] = region.getText().replace('\n', '').replace(' ', '')
             else:
@@ -131,25 +130,26 @@ class ParserEtpActiv(Parser):
 
     def post_result(self, data):
         for offer in data:
-            z = requests.post("https://synrate.ru/api/offers/create",
-                              json=offer)
-            today = datetime.today().strftime('%d-%m %H:%M')
-            try:
-                print(f'[etp-aktiv] {z.json()}\n{offer}')
-                # with open('/var/www/synrate_dir/etp-aktiv.txt', 'r+') as f:
-                #     # ...
-                #     f.seek(0, 2)
-                #     f.write(f'[{today}] {z.json()}\n{offer}')
-                #     f.close()
-            except:
-                print(f'[etp-aktiv] {z}\n{offer}')
-                # with open('/var/www/synrate_dir/etp-aktiv.txt', 'r+') as f:
-                #     # ...
-                #     f.seek(0, 2)
-                #     f.write(f'[{today}] {z}\n{offer}')
-                #     f.close()
+            print(offer)
+            # z = requests.post("https://synrate.ru/api/offers/create",
+            #                   json=offer)
+            # today = datetime.today().strftime('%d-%m %H:%M')
+            # try:
+            #     print(f'[etp-aktiv] {z.json()}\n{offer}')
+            #     # with open('/var/www/synrate_dir/etp-aktiv.txt', 'r+') as f:
+            #     #     # ...
+            #     #     f.seek(0, 2)
+            #     #     f.write(f'[{today}] {z.json()}\n{offer}')
+            #     #     f.close()
+            # except:
+            #     print(f'[etp-aktiv] {z}\n{offer}')
+            #     # with open('/var/www/synrate_dir/etp-aktiv.txt', 'r+') as f:
+            #     #     # ...
+            #     #     f.seek(0, 2)
+            #     #     f.write(f'[{today}] {z}\n{offer}')
+            #     #     f.close()
 
 
 if __name__ == '__main__':
-    Parser = ParserEtpActiv(True)
+    Parser = ParserEtpActiv(True, False)
     Parser.parse()
