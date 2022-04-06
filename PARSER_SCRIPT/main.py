@@ -71,16 +71,16 @@ class CheckThread(Thread):
 def server_listener():
     if mode == 'short':
         print('server listener: Start.. Parsing mode - short')
-        nelikvidy_obj = ParserNelikvidy(False, 500)
+        nelikvidy_obj = ParserNelikvidy(False, 150)
         tender_obj = ParserTender(12)
         roseltorg_obj = RoseltorgParser(10)
-        isource_obj = ParserSource(50)
+        isource_obj = ParserSource(10)
         tectorg_obj = ParserTektorg()
-        onlinecontract_obj = ParserOnlineContract(150)
+        onlinecontract_obj = ParserOnlineContract(125)
         etpgpb_obj = ParserEtpgpb(10)
         fabrikant_obj = ParserFabrikant(True, 10)
         b2b_center_obj = ParserCenter(True, 10)
-        etp_activ_obj = ParserEtpActiv(True, 150)
+        etp_activ_obj = ParserEtpActiv(True, 120)
     else:
         print('server listener: Start.. Parsing mode - long')
         nelikvidy_obj = ParserNelikvidy(False, False)

@@ -9,7 +9,7 @@ def get_counts(queryset):
     month_count = queryset.filter(created_at__month__gte=today.month).count()
     day_count = queryset.filter(created_at__day__gte=today.day).count()
     # print(all_count, month_count, day_count)
-    return all_count, month_count, day_count
+    return all_count, day_count, month_count
 
 
 # функция для распаковки request.POST из filter/
@@ -31,12 +31,12 @@ def get_filter_qs(data):
         filtering = 1
 
     if data.get('search_filter') is not None and data.get('search_filter') != '':
-        or_dict['name__contains'] = data.get('search_filter')
-        or_dict['location__contains'] = data.get('search_filter')
-        or_dict['owner__contains'] = data.get('search_filter')
-        or_dict['ownercontact__contains'] = data.get('search_filter')
-        or_dict['additional_data__contains'] = data.get('search_filter')
-        or_dict['organisation__contains'] = data.get('search_filter')
+        or_dict['name__icontains'] = data.get('search_filter')
+        or_dict['location__icontains'] = data.get('search_filter')
+        or_dict['owner__icontains'] = data.get('search_filter')
+        or_dict['ownercontact__icontains'] = data.get('search_filter')
+        or_dict['additional_data__icontains'] = data.get('search_filter')
+        or_dict['organisation__icontains'] = data.get('search_filter')
         filtering = 1
 
     if filtering:
