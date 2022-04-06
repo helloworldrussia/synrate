@@ -75,6 +75,7 @@ class ParserNelikvidy(Parser):
                 self.change_proxy()
         if self.last_page:
             last_page = int(self.last_page)
+        print(f'LAST PAGE {last_page}')
         for i in range(self.start_page, last_page+1):
             print(f'[nelikvidy] page = {i}')
             successful = 0
@@ -127,6 +128,7 @@ class ParserNelikvidy(Parser):
             date = offer.find("div", attrs={"class": "action-left"}).find_all("span", attrs={"class": "doit"})[1]
             date = date.find("span", attrs={"class": "btn-icon"}).find("small")
             price = offer.find("p", attrs={"class": "formated_price"})
+            from_id = link.split('-')[-1].replace('.html', '')
 
             try:
                 company = region.find("a").getText().replace('"', '')
@@ -150,7 +152,8 @@ class ParserNelikvidy(Parser):
             offer_obj = {"name": name.replace('"', ''), "location": region, "home_name": "nelikvidi",
                                         "offer_start_date": str(date),
                                         "offer_price": price,
-                                        "additional_data": name.replace('"', ''), "organisation": company, "url": link
+                                        "additional_data": name.replace('"', ''), "organisation": company, "url": link,
+                                        "from_id": from_id
                                         }
             answer.append(offer_obj)
 
@@ -171,7 +174,7 @@ class ParserNelikvidy(Parser):
         return date
 
     def get_last_page(self):
-        soup = self.get_page_soup(self.url+'?page=5000')
+        soup = self.get_page_soup(self.url+'&page=5000')
         last_page = soup.find("ul", attrs={"class": "pagination"}).find("li", attrs={"class": "active"}).getText()
         return int(last_page)
 
@@ -215,5 +218,5 @@ class ParserNelikvidy(Parser):
 
 
 if __name__ == '__main__':
-    parser = ParserNelikvidy(False)
+    parser = ParserNelikvidy(False, False)
     parser.parse()
