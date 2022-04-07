@@ -62,7 +62,7 @@
                       <tr>
                         <td>
                             <div class="product-offer">
-                                <p class="product-additional_data">{{ offer.name }}<br>{{ offer.additional_data }}</p>
+                                <p class="product-additional_data">{{ offer.name }} {{ offer.additional_data }}</p>
                             </div>
                         </td>
                       </tr>
@@ -79,7 +79,7 @@
                         <td>
                             {% if offer.short_cat != None and offer.short_cat != '' %}
                             <div class="product-organization">
-                                <p class="product-organization-name"><span>Категория:</span> {{ offer.short_cat }}</p>
+                                <p class="product-organization-name"><span>{% if offer.home_name == 'vk.com' %}Группа VK:{% else %}Категория:{% endif %}</span> {{ offer.short_cat }}</p>
                             </div>
                             {% endif %}
                         </td>

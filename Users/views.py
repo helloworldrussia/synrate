@@ -112,11 +112,11 @@ def stat_view(request):
     tenderpro_all, tenderpro_month, tenderpro_day = get_counts(tenderpro)
     all = Offer.objects.all().count()
 
-    # a = {"tenderpro": tenderpro, "tektorg": tektorg, "roseltorg": roseltorg, "onlinecontract": onlinecontract,
-    #            "nelikvidy": nelikvidy, "isource": isource, "fabrikant": fabrikant, "etpgpb": etpgpb, "etp_aktiv": etp_aktiv,
-    #            "b2b": b2b}
-    # answer = get_time_stat(a)
+    vk = Offer.objects.filter(home_name='vk.com')
+    vk_all, vk_month, vk_day = get_counts(vk)
+
     content = {"all": all,
+             "vk_all": vk_all, "vk_month": vk_month, "vk_day": vk_day,
              'tenderpro_all': tenderpro_all,
              "tenderpro_day": tenderpro_day,
              "tenderpro_month": tenderpro_month,
