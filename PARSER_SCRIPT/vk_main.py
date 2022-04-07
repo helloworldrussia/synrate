@@ -1,7 +1,7 @@
 from threading import Thread
 
-from PARSER_SCRIPT.connector import conn
-from PARSER_SCRIPT.vk.backend import get_api, VkGroup
+from connector import conn
+from backend import get_api, VkGroup
 
 token = 'a77eca1a8ecf84c1ba4af75dbd5e4a500315faba4d777a7bf8c1e02e1faf9f7d396845378d89e4b13fbf7'
 
