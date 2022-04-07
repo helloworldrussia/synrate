@@ -170,7 +170,7 @@ USE_L10N = True
 USE_TZ = False
 
 STATIC_URL = '/static/'
-STATIC_ROOT = '/var/www/static'
+STATIC_ROOT = '/var/www/synrate_dir/static'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
     # '/var/www/static/',

@@ -13,10 +13,10 @@ def get_api(token):
 
 
 class VkGroup:
-    def __init__(self, url, home_name, id, api):
+    def __init__(self, url, id, api):
         self.id = id
         self.api = api
-        self.home_name = home_name
+        self.home_name = 'vk.com'
         self.url = url
 
     def wall_info(self):
