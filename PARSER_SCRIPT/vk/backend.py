@@ -45,18 +45,16 @@ class VkGroup:
             name, text = offer['text'], offer['text']
             name = name[:120]
             start_date = datetime.utcfromtimestamp(int(offer['date'])).strftime('%Y-%m-%d')
-            # time.sleep(1)
-            # owner_name_dict = self.api.users.get(user_ids=[f"{offer['from_id']}"])[0]
-            # owner_name = f'{owner_name_dict["first_name"]} {owner_name_dict["last_name"]}'
             ids.append(offer['from_id'])
+            text = f'Группа VK.COM: {self.name}\n{text}'
+            url = self.url+f'?w=wal{self.id}_{offer["id"]}%2Fall'
             offer_obj = {"name": name,
                          "home_name": f"{self.home_name}",
                          "offer_start_date": start_date, "additional_data": text,
-                         "url": self.url, "from_id": offer['id'], "owner_id": offer['from_id']
+                         "url": url, "from_id": offer['id'], "owner_id": offer['from_id']
                          }
             answer.append(offer_obj)
         return answer
-
 
     def send_result(self, data):
         for offer in data:
