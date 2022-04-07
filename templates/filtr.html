@@ -220,6 +220,7 @@
                               <option {% if from_filter == 'fabrikant' %}selected{% endif%} value="fabrikant">fabrikant.ru</option>
                               <option {% if from_filter == 'etp-activ' %}selected{% endif%} value="etp-activ">etp-activ.ru</option>
                               <option {% if from_filter == 'b2b-center' %}selected{% endif%} value="b2b-center">b2b-center.ru</option>
+                              <option {% if from_filter == 'nelikvidy_buy_sell' %}selected{% endif%} value="nelikvidy_buy_sell">НЕЛИКВИДЫ КУПЛЮ - ПРОДАМ</option>
                             </select>
                        </li>
                         <li>
@@ -297,6 +298,9 @@
                         {% endif %}
                         {% if offer.home_name == "b2b-center" %}
                         <img src="{% static 'img/b2b-center.png' %}" class="offer-block__img" alt="">
+                        {% endif %}
+                        {% if offer.home_name == "nelikvidy_buy_sell" %}
+                        <img src="{% static 'img/nelikvidy_buy_sell.png' %}" class="offer-block__img" alt="">
                         {% endif %}
                     </div>
                     <a href="{% url 'synrate_main:detail_view' id=offer.id %}" class="detailhref">

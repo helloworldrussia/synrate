@@ -37,23 +37,25 @@ class VkGroup:
 
     def get_offers(self, data):
         answer = []
+        ids = []
         for offer in data:
-            img = []
             if offer['text'] is None or offer['text'] == '':
                 continue
             name, text = offer['text'], offer['text']
             name = name[:120]
             start_date = datetime.utcfromtimestamp(int(offer['date'])).strftime('%Y-%m-%d')
-            owner_name_dict = self.api.users.get(user_ids=[f"{offer['from_id']}"])[0]
-            owner_name = f'{owner_name_dict["first_name"]} {owner_name_dict["last_name"]}'
+            # time.sleep(1)
+            # owner_name_dict = self.api.users.get(user_ids=[f"{offer['from_id']}"])[0]
+            # owner_name = f'{owner_name_dict["first_name"]} {owner_name_dict["last_name"]}'
+            ids.append(offer['from_id'])
             offer_obj = {"name": name,
                          "home_name": f"{self.home_name}",
                          "offer_start_date": start_date, "additional_data": text,
-                         "url": self.url, "from_id": offer['id'], "owner_id": offer['from_id'],
-                         "owner": owner_name
+                         "url": self.url, "from_id": offer['id'], "owner_id": offer['from_id']
                          }
             answer.append(offer_obj)
         return answer
+
 
     def send_result(self, data):
         for offer in data:
