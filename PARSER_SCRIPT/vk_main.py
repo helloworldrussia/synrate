@@ -27,7 +27,7 @@ def parse(obj):
 
 def get_vk_group_info():
     cursor = conn.cursor()
-    cursor.execute(f"SELECT * FROM parsers_vkgroupinfo")
+    cursor.execute(f"SELECT * FROM parsers_vkgroupdetail")
     all = cursor.fetchall()
     return all
 
