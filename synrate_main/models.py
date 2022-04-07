@@ -54,6 +54,7 @@ class Offer(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     from_id = models.TextField(blank=True, null=True, default='', verbose_name='ID от источника')
     short_cat = models.TextField(blank=True, null=True, default=None)
+    owner_id = models.IntegerField(blank=True, null=True, default=None, db_index=True)
 
     def __str__(self):
         return self.name

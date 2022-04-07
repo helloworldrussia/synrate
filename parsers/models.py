@@ -50,3 +50,16 @@ class ENGINE(models.Model):
 class Info(models.Model):
     name = models.CharField(max_length=100, unique=True, verbose_name="Парсер")
     start_page = models.IntegerField(null=True, default=1, blank=True)
+
+
+class VkGroupInfo(models.Model):
+    url = models.CharField(max_length=599, verbose_name="Ссылка группу")
+    home_name = models.CharField(max_length=200, unique=True, db_index=True, verbose_name="Кодовое имя парсера группы")
+    vk_id = models.IntegerField(verbose_name='id группы ВК. С минусом. "-11111111"')
+
+    def __str__(self):
+        return self.home_name
+
+    class Meta:
+        verbose_name = "Группа ВК"
+        verbose_name_plural = "Группы ВК"

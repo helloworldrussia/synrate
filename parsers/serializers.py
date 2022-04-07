@@ -36,13 +36,21 @@ class OfferSerializer(serializers.ModelSerializer):
                   'from_id',
                   'short_cat')
 
+    # owner_id передают только парсеры вк. поэтому заявки с ним проверяем по методу для вк заявок
     def validate(self, attrs):
-        group = Offer.objects.filter(url=attrs['url'])
-        for offer in group:
-            if offer.name == attrs['name']:
-                raise ValidationError({"unique_error": f"{offer.pk}"})
-        if attrs["name"] is None or attrs["name"] == "":
-            raise ValidationError("Поле name обязательно должно быть заполнено")
+        try:
+            owner_id = attrs['owner_id']
+            group = Offer.objects.filter(owner_id=owner_id)
+            for offer in group:
+                if offer.additional_data == attrs['additional_data']:
+                    raise ValidationError({"vk_validation": "Описание заявки не уникально"})
+        except:
+            group = Offer.objects.filter(url=attrs['url'])
+            for offer in group:
+                if offer.name == attrs['name']:
+                    raise ValidationError({"unique_error": f"{offer.pk}"})
+            if attrs["name"] is None or attrs["name"] == "":
+                raise ValidationError("Поле name обязательно должно быть заполнено")
 
         return attrs
 
