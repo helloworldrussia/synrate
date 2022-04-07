@@ -34,7 +34,7 @@ class OfferSerializer(serializers.ModelSerializer):
                   'category',
                   'organisation',
                   'from_id',
-                  'short_cat')
+                  'short_cat', "owner_id",)
 
     # owner_id передают только парсеры вк. поэтому заявки с ним проверяем по методу для вк заявок
     def validate(self, attrs):
