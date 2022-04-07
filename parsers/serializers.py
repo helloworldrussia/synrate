@@ -38,13 +38,18 @@ class OfferSerializer(serializers.ModelSerializer):
 
     # owner_id передают только парсеры вк. поэтому заявки с ним проверяем по методу для вк заявок
     def validate(self, attrs):
+        vk = False
         try:
             owner_id = attrs['owner_id']
+            vk = True
+        except Exception as ex:
+            print(ex)
+        if vk:
             group = Offer.objects.filter(owner_id=owner_id)
             for offer in group:
                 if offer.additional_data == attrs['additional_data']:
-                    raise ValidationError({"vk_validation": "Описание заявки не уникально"})
-        except:
+                    raise ValidationError({"vk_validation_mode": "Описание заявки не уникально"})
+        else:
             group = Offer.objects.filter(url=attrs['url'])
             for offer in group:
                 if offer.name == attrs['name']:
