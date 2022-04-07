@@ -52,13 +52,13 @@ class Info(models.Model):
     start_page = models.IntegerField(null=True, default=1, blank=True)
 
 
-class VkGroupInfo(models.Model):
-    url = models.CharField(max_length=599, verbose_name="Ссылка группу")
-    #home_name = models.CharField(max_length=200, unique=True, db_index=True, verbose_name="Кодовое имя парсера группы")
-    vk_id = models.IntegerField(verbose_name='id группы ВК. С минусом. "-11111111"')
+class VkGroupDetail(models.Model):
+    url = models.CharField(max_length=599, unique=True, verbose_name="Ссылка группу")
+    vk_id = models.IntegerField(unique=True, verbose_name='id группы ВК. С минусом. "-11111111"')
+    name = models.CharField(max_length=255, unique=True, verbose_name='Название группы')
 
     def __str__(self):
-        return self.url
+        return self.name
 
     class Meta:
         verbose_name = "Группа ВК"
