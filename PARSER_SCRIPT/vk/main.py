@@ -36,8 +36,8 @@ def start_vk_parsing():
     api = get_api(token)
     all = get_vk_group_info()
     for parser in all:
-        print(f'VkGroup: {parser[1]} {parser[2]}')
-        parser_obj = VkGroup(parser[1], parser[2], api)
+        print(f'VkGroup: {parser[1]} {parser[2]} {parser[3]}')
+        parser_obj = VkGroup(parser[1], parser[2], parser[3], api)
         th = Thread(target=parse, args=(parser_obj,))
         th.start()
 
