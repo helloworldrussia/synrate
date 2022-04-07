@@ -48,8 +48,8 @@
                         {% if offer.home_name == "b2b-center" %}
                         <a href="{{ offer.url }}" target="_blank"><img src="{% static 'img/b2b-center.png' %}" class="offer-block__img" alt=""></a>
                         {% endif %}
-                        {% if offer.home_name == "nelikvidy_buy_sell" %}
-                        <a href="{{ offer.url }}" target="_blank"><img src="{% static 'img/nelikvidy_buy_sell.png' %}" class="offer-block__img" alt=""></a>
+                        {% if offer.home_name == "vk.com" %}
+                        <a href="{{ offer.url }}" target="_blank"><img src="{% static 'img/vk.png' %}" class="offer-block__img" alt=""></a>
                         {% endif %}
                     </div>
                     <a href="{{ offer.url }}" target="_blank">Перейти на источник</a>
@@ -181,8 +181,8 @@
                             {% if offer.home_name == "b2b-center" %}
                             <img src="{% static 'img/b2b-center.png' %}" class="offer-block__img" alt="">
                             {% endif %}
-                            {% if offer.home_name == "nelikvidy_buy_sell" %}
-                            <img src="{% static 'img/nelikvidy_buy_sell.png' %}" class="offer-block__img" alt="">
+                            {% if offer.home_name == "vk.com" %}
+                            <img src="{% static 'img/vk.png' %}" class="offer-block__img" alt="">
                             {% endif %}
                         </div>
                         <a href="{% url 'synrate_main:detail_view' id=offer.id %}" class="detailhref">
