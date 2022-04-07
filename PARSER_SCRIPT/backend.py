@@ -47,7 +47,7 @@ class VkGroup:
             start_date = datetime.utcfromtimestamp(int(offer['date'])).strftime('%Y-%m-%d')
             ids.append(offer['from_id'])
             text = f'Группа VK.COM: {self.name}\n{text}'
-            url = self.url+f'?w=wal{self.id}_{offer["id"]}%2Fall'
+            url = self.url+f'?w=wall{self.id}_{offer["id"]}%2Fall'
             offer_obj = {"name": name,
                          "home_name": f"{self.home_name}",
                          "offer_start_date": start_date, "additional_data": text,
