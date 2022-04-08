@@ -5,11 +5,12 @@ from synrate_main.models import Offer
 # принимаем кверисет, возвращает три переменные с количеством созданных объяв за все время, текущ. мес., день
 def get_counts(queryset):
     today = datetime.today().date()
+    print(today)
     all_count = queryset.count()
-    month_count = queryset.filter(created_at__month__gte=today.month).count()
-    day_count = queryset.filter(created_at__day__gte=today.day).count()
+    month_count = queryset.filter(created_at__month=today.month).count()
+    day_count = queryset.filter(created_at__day=today.day).count()
     # print(all_count, month_count, day_count)
-    return all_count, day_count, month_count
+    return all_count, month_count, day_count
 
 
 # функция для распаковки request.POST из filter/
