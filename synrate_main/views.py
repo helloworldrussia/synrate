@@ -246,7 +246,7 @@ def listing(request):
                     search_query = search_query & SearchQuery(x)
                 i += 1
             search_rank = SearchRank(search_vector, search_query)
-            queryset = Offer.objects.annotate(search=search_vector).filter(search=search_query)
+            queryset = Offer.objects.annotate(search=search_vector).filter(search=search_query).order_by('-offer_start_date')
             # rank = Offer.objects.annotate(rank=search_rank).order_by('-rank')#.order_by('-offer_start_date')
             # queryset = rank.filter(rank__gte=0)
         else:
