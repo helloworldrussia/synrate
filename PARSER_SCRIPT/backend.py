@@ -28,7 +28,7 @@ class VkGroup:
                 wall = self.api.wall.get(owner_id=self.id, count=1)
                 successful = 1
             except:
-                time.sleep(1)
+                time.sleep(random.randint(1, 3))
         count = wall['count']
         print(count)
         i = int(count) / 90
@@ -44,7 +44,7 @@ class VkGroup:
                 wall = self.api.wall.get(owner_id=self.id, count=90, offset=offset)
                 successful = 1
             except:
-                time.sleep(1)
+                time.sleep(random.randint(1, 3))
         wall_items = wall['items']
         return wall_items
 
