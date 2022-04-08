@@ -54,7 +54,7 @@ class Info(models.Model):
 
 class VkGroupDetail(models.Model):
     url = models.CharField(max_length=599, unique=True, verbose_name="Ссылка группу")
-    vk_id = models.IntegerField(unique=True, verbose_name='id группы ВК. С минусом. "-11111111"')
+    vk_id = models.IntegerField(unique=True, verbose_name='ID ГРУППЫ ВК')
     name = models.CharField(max_length=255, unique=True, verbose_name='Название группы')
 
     def __str__(self):
