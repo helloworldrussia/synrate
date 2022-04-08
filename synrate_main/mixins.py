@@ -1,7 +1,5 @@
 from datetime import datetime, timedelta
 
-import wordlist as wordlist
-
 from synrate_main.models import Offer
 
 
