@@ -56,7 +56,11 @@ class VkGroup:
         return answer
 
     def send_result(self, data):
+        i = 0
         for offer in data:
+            if i == 5:
+                time.sleep(1)
+                i = 0
             z = requests.post("https://synrate.ru/api/offers/create",
                               json=offer)
             today = datetime.today().strftime('%d-%m %H:%M')
