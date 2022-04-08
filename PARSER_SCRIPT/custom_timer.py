@@ -6,6 +6,14 @@ import time
 from connector import conn
 
 
+def start_default(mode):
+    os.system(f"python3 /var/www/synrate_dir/synrate/PARSER_SCRIPT/main.py{mode}")
+
+
+def start_vk():
+    os.system(f"python3 /var/www/synrate_dir/synrate/PARSER_SCRIPT/vk_main.py")
+
+
 def timer():
     # time.sleep(5)
     print("TIMER: parsers autorun is ON")
@@ -18,11 +26,16 @@ def timer():
             if time_now == "51" or time_now == "52":
             # if time_now == "00" or time_now == "01":
                 change_status_for_all()
-                os.system(f"python3 /var/www/synrate_dir/synrate/PARSER_SCRIPT/main.py --m short")
-                time.sleep(120)
+                th = threading.Thread(target=start_default, args=(' --m short',))
+                th.start()
+                th_second = threading.Thread(target=start_vk)
+                th_second.start()
             elif datetime.datetime.today().weekday() == 5:
                 change_status_for_all()
-                os.system(f"python3 /var/www/synrate_dir/synrate/PARSER_SCRIPT/main.py")
+                th = threading.Thread(target=start_default, args=('',))
+                th.start()
+                th_second = threading.Thread(target=start_vk)
+                th_second.start()
             else:
                 time.sleep(2)
 

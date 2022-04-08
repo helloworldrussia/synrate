@@ -1,6 +1,7 @@
+import sys
 from threading import Thread
 
-from connector import conn
+from connector import conn, change_parser_status
 from backend import get_api, VkGroup
 
 token = 'a77eca1a8ecf84c1ba4af75dbd5e4a500315faba4d777a7bf8c1e02e1faf9f7d396845378d89e4b13fbf7'
@@ -23,6 +24,8 @@ def parse(obj):
             items = obj.wall_items(i*90)
         offers = obj.get_offers(items)
         obj.send_result(offers)
+    change_parser_status('vk.com', 'Выкл')
+    sys.exit()
 
 
 def get_vk_group_info():

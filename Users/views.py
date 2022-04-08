@@ -160,5 +160,6 @@ def stat_view(request):
     qs = ParserDetail.objects.all()
     for parser in qs:
         content[f'{parser.name}_status'] = parser.status
+    print(content)
     return render(request, 'cabinet/cabinet_stat.html', content)
 
