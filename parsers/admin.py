@@ -6,10 +6,10 @@ from .models import Parser, ENGINE, VkGroupDetail
 
 class VkGroupDetailAdmin(admin.ModelAdmin):
 
-    list_display = ('name', 'vk_id', 'show_url',)
+    list_display = ('name', 'vk_id', 'link',)
     search_fields = ['name', 'vk_id', 'url', ]
 
-    def show_url(self, obj):
+    def link(self, obj):
         return format_html(f"<a href='{obj.url}' target='_blank'>{obj.url}</a>", url=obj.url)
 
 
