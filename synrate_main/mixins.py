@@ -1,11 +1,13 @@
 from datetime import datetime, timedelta
+
+import wordlist as wordlist
+
 from synrate_main.models import Offer
 
 
 # принимаем кверисет, возвращает три переменные с количеством созданных объяв за все время, текущ. мес., день
 def get_counts(queryset):
     today = datetime.today().date()
-    print(today)
     all_count = queryset.count()
     month_count = queryset.filter(created_at__month=today.month).count()
     day_count = queryset.filter(created_at__day=today.day).count()
@@ -19,6 +21,7 @@ def get_filter_qs(data):
     today = datetime.today()
     and_dict = {}
     or_dict = {}
+    word_list = []
     filtering = 0
     if data.get('time_filter'):
         if data.get('time_filter') != 'all':
@@ -38,6 +41,8 @@ def get_filter_qs(data):
         or_dict['ownercontact__icontains'] = data.get('search_filter')
         or_dict['additional_data__icontains'] = data.get('search_filter')
         or_dict['organisation__icontains'] = data.get('search_filter')
+        # word_list = data.get('search_filter').replace('.', '').replace(',', '').split(' ')
+        # word_list.append(data.get('search_filter'))
         filtering = 1
 
     if filtering:

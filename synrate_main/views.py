@@ -238,6 +238,7 @@ def listing(request):
     all_count, month_count, today_count = get_counts(queryset)
     paginator = Paginator(queryset, 30)
 
+
     if request.GET.get('page'):
         page_number = request.GET.get('page')
     else:
