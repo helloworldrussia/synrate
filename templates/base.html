@@ -51,8 +51,11 @@
                 </div>
                 <div class="nav">
                     <ul class="nav__list">
-                        <li class="nav__item ">
-                            <a href="#" class="nav__link nav__link_list" id="nav__link_list">Категории</a>
+                        <!--<li class="nav__item ">
+                            <a href="#" class="nav__link nav__link_mobile" id="nav__link_list">Категории</a>
+                        </li>-->
+                        <li class="nav__item">
+                            <a href="{% url 'synrate_main:filtration' %}" class="nav__link">Остатки</a>
                         </li>
                         <li class="nav__item">
                             <a href="https://synrate.ru/info/tarify" class="nav__link">Тарифы</a>
@@ -125,8 +128,11 @@
                 {% endif %}
                 <div class="mobile-menu-block">
                     <ul class="nav__list">
-                        <li class="nav__item ">
+                        <!--<li class="nav__item ">
                             <a href="#" class="nav__link nav__link_mobile" id="nav__link_list">Категории</a>
+                        </li>-->
+                        <li class="nav__item">
+                            <a href="{% url 'synrate_main:filtration' %}" class="nav__link">Складские остатки  предприятий</a>
                         </li>
                         <li class="nav__item">
                             <a href="https://synrate.ru/info/tarify" class="nav__link">Тарифы</a>
