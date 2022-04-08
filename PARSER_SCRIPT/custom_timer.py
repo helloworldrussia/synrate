@@ -30,12 +30,16 @@ def timer():
                 th.start()
                 th_second = threading.Thread(target=start_vk)
                 th_second.start()
+                th.join()
+                th_second.join()
             elif datetime.datetime.today().weekday() == 5:
                 change_status_for_all()
                 th = threading.Thread(target=start_default, args=('',))
                 th.start()
                 th_second = threading.Thread(target=start_vk)
                 th_second.start()
+                th.join()
+                th_second.join()
             else:
                 time.sleep(2)
 
