@@ -22,7 +22,13 @@ class VkGroup:
 
     def wall_info(self):
         answer = {}
-        wall = self.api.wall.get(owner_id=self.id, count=1)
+        successful = 0
+        while not successful:
+            try:
+                wall = self.api.wall.get(owner_id=self.id, count=1)
+                successful = 1
+            except:
+                time.sleep(1)
         count = wall['count']
         print(count)
         i = int(count) / 90
@@ -32,7 +38,13 @@ class VkGroup:
         return answer
 
     def wall_items(self, offset):
-        wall = self.api.wall.get(owner_id=self.id, count=90, offset=offset)
+        successful = 0
+        while not successful:
+            try:
+                wall = self.api.wall.get(owner_id=self.id, count=90, offset=offset)
+                successful = 1
+            except:
+                time.sleep(1)
         wall_items = wall['items']
         return wall_items
 
