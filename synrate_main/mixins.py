@@ -15,7 +15,6 @@ def get_counts(queryset):
 
 # функция для распаковки request.POST из filter/
 def get_filter_qs(data):
-    print(data)
     today = datetime.today()
     and_dict = {}
     or_dict = {}
@@ -40,12 +39,10 @@ def get_filter_qs(data):
         or_dict['additional_data__icontains'] = data.get('search_filter')
         or_dict['organisation__icontains'] = data.get('search_filter')
         word_list = []
-        word_list.append(data.get('search_filter'))
         word_list = word_list+data.get('search_filter').replace('.', '').replace(',', '').split(' ')
         filtering = 1
 
     if filtering:
-        print(and_dict, or_dict)
         return and_dict, or_dict, word_list
     else:
         return 0, 0, 0
