@@ -39,15 +39,15 @@ def get_filter_qs(data):
         or_dict['ownercontact__icontains'] = data.get('search_filter')
         or_dict['additional_data__icontains'] = data.get('search_filter')
         or_dict['organisation__icontains'] = data.get('search_filter')
-        # word_list = data.get('search_filter').replace('.', '').replace(',', '').split(' ')
-        # word_list.append(data.get('search_filter'))
+        word_list = data.get('search_filter').replace('.', '').replace(',', '').split(' ')
+        word_list.append(data.get('search_filter'))
         filtering = 1
 
     if filtering:
         print(and_dict, or_dict)
-        return and_dict, or_dict
+        return and_dict, or_dict, word_list
     else:
-        return 0, 0
+        return 0, 0, 0
 
 
 def get_filters(data):

@@ -1,6 +1,7 @@
 import operator
 from functools import reduce
 
+from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
 from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.core.paginator import Paginator
@@ -214,7 +215,7 @@ def category(request):
 
 
 def listing(request):
-    and_dict, or_dict = get_filter_qs(request.GET)
+    and_dict, or_dict, word_list = get_filter_qs(request.GET)
     filtering = 0
     try:
         from_filter, search_filter, time_filter = get_filters(request.GET)
@@ -230,14 +231,26 @@ def listing(request):
         queryset = Offer.objects.all().order_by('-offer_start_date')
     else:
         if len(or_dict):
-            queryset = Offer.objects.filter(**and_dict).filter(reduce(operator.or_,
-                                    (Q(**d) for d in [dict([i]) for i in or_dict.items()]))).order_by('-offer_start_date')
+            # queryset = Offer.objects.filter(**and_dict).filter(reduce(operator.or_,
+            #                         (Q(**d) for d in [dict([i]) for i in or_dict.items()]))).order_by('-offer_start_date')
+            search_vector = SearchVector('name', 'location', 'owner',
+                                         'ownercontact', 'additional_data',
+                                         'organisation')
+            # получаем search_query
+            i = 1
+            for x in word_list:
+                if i == 1:
+                    search_query = SearchQuery(x)
+                else:
+                    search_query = search_query | SearchQuery(x)
+                i += 1
+            search_rank = SearchRank(search_vector, search_query)
+            queryset = Offer.objects.annotate(rank=search_rank).order_by('-rank')#.order_by('-offer_start_date')
         else:
             queryset = Offer.objects.filter(**and_dict).order_by('-offer_start_date')
 
     all_count, month_count, today_count = get_counts(queryset)
     paginator = Paginator(queryset, 30)
-
 
     if request.GET.get('page'):
         page_number = request.GET.get('page')
