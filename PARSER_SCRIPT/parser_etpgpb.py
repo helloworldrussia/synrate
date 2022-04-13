@@ -43,7 +43,7 @@ class ParserEtpgpb(Parser):
         print(f'Закончили len = {results}')
         sys.exit()
 
-    def get_page_soup(self, url, proxy_mode):
+    def get_page_soup(self, url):
         if self.current_proxy_ip:
             # proxy_status = check_proxy(proxy)
             try:
@@ -214,7 +214,7 @@ class ParserEtpgpb(Parser):
     def get_last_page(self):
         successful = 0
         while not successful:
-            soup = self.get_page_soup(self.url, self.proxy_mode)
+            soup = self.get_page_soup(self.url)
             try:
                 pag_items = soup.find("div", attrs={"class": "pagination"}).find_all("a", attrs={"class": "pagination__item"})
                 last_page = pag_items[-1].getText()

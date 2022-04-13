@@ -112,7 +112,7 @@ def server_listener():
 
     parser_roseltorg.start()
     parser_nelikvidy.start()
-    parser_tender.start()
+    # parser_tender.start()
     parser_isource.start()
     # parser_tectorg.start()
     parser_onlinecontract.start()
