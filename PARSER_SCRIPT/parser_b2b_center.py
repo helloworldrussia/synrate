@@ -8,7 +8,7 @@ from connector import change_parser_status
 from ENGINE import Parser
 import requests
 from bs4 import BeautifulSoup
-from mixins import proxy_data, get_proxy, check_proxy
+from mixins import get_proxy
 
 
 class ParserCenter(Parser):
@@ -22,8 +22,9 @@ class ParserCenter(Parser):
         self.core_www = 'https://www.b2b-center.ru'
         self.verify = verify
         # значение либо int (соотвествующее желаемому прокси из mixins.proxy_data), либо False - прокси не используем
-        self.proxy_mode = False
+        self.proxy = False
         self.last_page = end
+        self.current_proxy_ip = 0
 
     def parse(self):
         # делаем запрос, получаем суп и отдаем функции, получающей номер последней страницы
@@ -44,11 +45,11 @@ class ParserCenter(Parser):
             while not successful:
                 time.sleep(random.randint(1, 7))
                 print('Обработка:', page_url)
-                soup = self.get_page_soup(page_url, proxy=self.proxy_mode)
+                soup = self.get_page_soup(page_url)
                 result = self.get_offers_from_page(soup)
                 if result:
                     successful = 1
-                print(f'\nproxy_mode: {self.proxy_mode}')
+                print(f'\nproxy_mode: {self.current_proxy_ip}')
                 # time.sleep(random.randint(1, 5))
             # счетчик успешно пройденных страниц
             if i == 20:
@@ -60,20 +61,14 @@ class ParserCenter(Parser):
         change_parser_status('b2b_center', 'Выкл')
         sys.exit()
 
-    def make_template(self, file_name):
-        content = requests.get(self.url).text
-        with open(f'{file_name}', 'w', encoding='utf-8') as template:
-            template.write(content)
-            template.close()
-
     def get_offers_from_page(self, soup):
         # проверяем поймал ли нас анти-парсер сайта.
         try:
             main = soup.find("div", attrs={"id": "page"}).find("main").find("section").find_all("div", attrs={"class": "inner"})
         except:
-            print(self.proxy_mode)
+            print(self.current_proxy_ip)
             print(self.change_proxy())
-            print(self.proxy_mode)
+            print(self.current_proxy_ip)
             return False
         i = 1
         for x in main:
@@ -125,9 +120,8 @@ class ParserCenter(Parser):
 
         return start_date, end_date
 
-    def get_page_soup(self, url, proxy):
-        if proxy:
-            proxy = get_proxy(proxy)
+    def get_page_soup(self, url):
+        if self.current_proxy_ip:
             # proxy_status = check_proxy(proxy)
             try:
                 session = requests.Session()
@@ -136,7 +130,7 @@ class ParserCenter(Parser):
                 session.mount('http://', adapter)
                 session.mount('https://', adapter)
                 response = session.get(url, headers={
-                    'User-Agent': UserAgent().chrome}, proxies=proxy, timeout=5).content.decode("utf8")
+                    'User-Agent': UserAgent().chrome}, proxies=self.proxy, timeout=5).content.decode("utf8")
                 soup = BeautifulSoup(response, 'html.parser')
             except:
                 print('get_page_soup: не получилось сделать запрос с прокси. спим, меняем прокси и снова..')
@@ -149,24 +143,17 @@ class ParserCenter(Parser):
 
     def change_proxy(self):
         print('change_proxy: start')
-        if self.proxy_mode:
-            try:
-                a = proxy_data[self.proxy_mode+1]
-                self.proxy_mode += 1
-                return True
-            except:
-                pass
-        print(f'\nproxy_mode: {self.proxy_mode}')
-        self.proxy_mode = 1
-        if self.proxy_mode > 1:
-            time.sleep(300)
-        return False
+        self.proxy, self.current_proxy_ip = get_proxy(self.current_proxy_ip)
+        time.sleep(30)
 
     def get_last_page(self):
         successful = 0
         while not successful:
             try:
-                soup = self.get_page_soup(self.url + '&page=1&from=10#search-result', proxy=self.proxy_mode)
+                if self.current_proxy_ip:
+                    soup = self.get_page_soup(self.url + '&page=1&from=10#search-result')
+                else:
+                    soup = self.get_page_soup(self.url + '&page=1&from=10#search-result')
                 pagination = soup.find("div", attrs={"class": "pagi"}).find("ul", attrs={"class": "pagi-list"}).find_all("li", attrs={"class": "pagi-item"})
                 last_page = pagination[-1].find("a").getText()
                 successful = 1
@@ -174,9 +161,9 @@ class ParserCenter(Parser):
             except Exception as ex:
                 print(ex)
                 print('get_last_page: Не смогли определить last_page')
-                print('proxy_mode: ', self.proxy_mode)
+                print('proxy_mode: ', self.current_proxy_ip)
                 print(self.change_proxy())
-                print('proxy_mode: ', self.proxy_mode)
+                print('proxy_mode: ', self.current_proxy_ip)
                 time.sleep(random.randint(1, 5))
         return last_page
 

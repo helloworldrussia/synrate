@@ -18,7 +18,8 @@ class ParserOnlineContract(Parser):
         self.url = "https://onlinecontract.ru/sale?page={}"
         self.procedure_id = None
         self.response_item = None
-        self.proxy_mode = False
+        self.proxy = False
+        self.current_proxy_ip = 0
         self.core = 'https://onlinecontract.ru'
         self.start_page = 1
         self.last_page = end
@@ -144,24 +145,13 @@ class ParserOnlineContract(Parser):
         return date
 
     def change_proxy(self):
-        print('[online] change_proxy: start')
-        if self.proxy_mode:
-            try:
-                a = proxy_data[self.proxy_mode+1]
-                self.proxy_mode += 1
-                return True
-            except:
-                pass
-        print(f'\n[online] proxy_mode: {self.proxy_mode}')
-        self.proxy_mode = 1
-        if self.proxy_mode > 1:
-            pass
-            # time.sleep(300)
-        return False
+        print('change_proxy: start')
+        self.proxy, self.current_proxy_ip = get_proxy(self.current_proxy_ip)
+        time.sleep(30)
 
     def get_page_soup(self, url):
-        if self.proxy_mode:
-            proxy = get_proxy(self.proxy_mode)
+        if self.current_proxy_ip:
+            # proxy = get_proxy(self.proxy_mode)
             # proxy_status = check_proxy(proxy)
             try:
                 session = requests.Session()
@@ -170,7 +160,7 @@ class ParserOnlineContract(Parser):
                 session.mount('http://', adapter)
                 session.mount('https://', adapter)
                 response = session.get(url, headers={
-                    'User-Agent': UserAgent().chrome}, proxies=proxy, timeout=5).content.decode("utf8")
+                    'User-Agent': UserAgent().chrome}, proxies=self.proxy, timeout=5).content.decode("utf8")
             except:
                 print('[online] get_page_soup: не получилось сделать запрос с прокси. спим, меняем прокси и снова..')
                 return False

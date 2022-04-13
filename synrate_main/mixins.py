@@ -39,6 +39,7 @@ def get_filter_qs(data):
         or_dict['additional_data__icontains'] = data.get('search_filter')
         or_dict['organisation__icontains'] = data.get('search_filter')
         word_list = []
+        word_list.append(data.get('search_filter'))
         word_list = word_list+data.get('search_filter').replace('.', '').replace(',', '').split(' ')
         filtering = 1
 

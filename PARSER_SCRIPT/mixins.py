@@ -1,3 +1,5 @@
+import random
+
 import requests
 
 
@@ -5,6 +7,7 @@ import requests
 #     "https": "https://169.57.1.85:8123", "http": "http://129.226.128.204:8080"
 #     "http": "http://129.226.128.204:8080"
 # }
+from PARSER_SCRIPT.connector import conn
 
 proxy_data = {
     1: {"https": "https://Selerickmambergermail:R0h0CoX@94.45.164.1:45785"},
@@ -15,9 +18,14 @@ proxy_data = {
 }
 
 
-def get_proxy(proxy_id):
-    proxy = proxy_data[proxy_id]
-    return proxy
+def get_proxy(current):
+    cursor = conn.cursor()
+    cursor.execute(f"SELECT * FROM parsers_proxy WHERE ip != '{current}'")
+    new = cursor.fetchall()
+    new = new[random.randint(0, len(new)-1)]
+    id, login, password, port, ip = new[0], new[1], new[2], new[3], new[4]
+    proxy = {"https": f'https://{login}:{password}@{ip}:{port}'}
+    return proxy, ip
 
 
 def check_proxy(proxy):
@@ -46,3 +54,5 @@ def check_proxy(proxy):
 # for key in proxy_data:
 #     proxy = get_proxy(key)
 #     print(check_proxy(proxy))
+
+get_proxy('93.88.77.246')

@@ -21,7 +21,8 @@ class ParserFabrikant(Parser):
         self.response_item = None
         self.core = 'https://fabrikant.ru'
         self.core_www = 'https://www.fabrikant.ru'
-        self.proxy_mode = False
+        self.proxy = False
+        self.current_proxy_ip = 0
         self.last_page = end
         self.monthlist = {
             "янв": 1,
@@ -60,8 +61,8 @@ class ParserFabrikant(Parser):
             successful = 0
             while not successful:
                 time.sleep(random.randint(1, 7))
-                print(f'fabrikant: Сканируем стр. {page}\nproxy_mode: {self.proxy_mode}')
-                page_soup = self.get_page_soup(self.url + f'&page={page}', self.proxy_mode)
+                print(f'fabrikant: Сканируем стр. {page}\nproxy_mode: {self.current_proxy_ip}')
+                page_soup = self.get_page_soup(self.url + f'&page={page}')
                 offers = self.get_page_items(page_soup)
                 if offers:
                     successful = 1
@@ -110,7 +111,7 @@ class ParserFabrikant(Parser):
     def get_last_page(self):
         successful = 0
         while not successful:
-            soup = self.get_page_soup(self.url, self.proxy_mode)
+            soup = self.get_page_soup(self.url)
             try:
                 pagination = soup.find("ul", attrs={"class": "pagination__lt"}).find_all("li", attrs={
                     "class": "pagination__lt__el"})
@@ -122,24 +123,12 @@ class ParserFabrikant(Parser):
         return last_page
 
     def change_proxy(self):
-        print('[fabrikant] change_proxy: start')
-        if self.proxy_mode:
-            try:
-                a = proxy_data[self.proxy_mode+1]
-                self.proxy_mode += 1
-                return True
-            except:
-                pass
-        print(f'\n[fabrikant] proxy_mode: {self.proxy_mode}')
-        self.proxy_mode = 1
-        if self.proxy_mode > 1:
-            time.sleep(300)
-        return False
+        print('change_proxy: start')
+        self.proxy, self.current_proxy_ip = get_proxy(self.current_proxy_ip)
+        time.sleep(30)
 
-    def get_page_soup(self, url, proxy_mode):
-        if proxy_mode:
-            proxy = get_proxy(proxy_mode)
-            # proxy_status = check_proxy(proxy)
+    def get_page_soup(self, url):
+        if self.current_proxy_ip:
             try:
                 session = requests.Session()
                 retry = Retry(connect=3, backoff_factor=0.5)
@@ -147,7 +136,7 @@ class ParserFabrikant(Parser):
                 session.mount('http://', adapter)
                 session.mount('https://', adapter)
                 response = session.get(url, headers={
-                    'User-Agent': UserAgent().chrome}, proxies=proxy, timeout=5).content.decode("utf8")
+                    'User-Agent': UserAgent().chrome}, proxies=self.proxy, timeout=5).content.decode("utf8")
             except:
                 print('[fabrikant] get_page_soup: не получилось сделать запрос с прокси. спим, меняем прокси и снова..')
                 return False

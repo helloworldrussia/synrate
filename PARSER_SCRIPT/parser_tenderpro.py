@@ -19,14 +19,12 @@ class ParserTender(Parser):
         self.url = "http://www.tender.pro/view_tenders_list.shtml?sid=&lim=25&companyid=0&tendertype=92&tenderstate=1&country=0&basis=0&tender_name=&tender_id=&company_name=&good_name=&dateb=&datee=&dateb2=&datee2="
         self.page_links = []
         self.page_links2 = []
-        self.proxy_mode = False
+        self.proxy = False
+        self.current_proxy_ip = 0
         self.start_page = 1
         self.last_page = end
 
     def parse(self):
-        # self.response = requests.get(self.url.format(0), headers={'User-Agent': "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Mobile Safari/537.36"})
-        # self.response.encoding = 'utf-8'
-        # self.soup = BeautifulSoup(self.response.content, 'html.parser')
         successful = 0
 
         while not successful:
@@ -43,9 +41,6 @@ class ParserTender(Parser):
             pages_num = int(self.last_page)
         pause_signal = 0
         for i in range(self.start_page, int(pages_num)):
-            # self.response = requests.get(self.url.format(i*25), headers={'User-Agent': "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Mobile Safari/537.36"})
-            # self.response.encoding = 'utf-8'
-            # self.soup = BeautifulSoup(self.response.content, 'html.parser')
             pause_signal += 1
             if pause_signal == 30:
                 time.sleep(300)
@@ -132,10 +127,7 @@ class ParserTender(Parser):
         sys.exit()
 
     def get_page_soup(self, url):
-        proxy_mode = self.proxy_mode
-        if proxy_mode:
-            proxy = get_proxy(proxy_mode)
-            # proxy_status = check_proxy(proxy)
+        if self.current_proxy_ip:
             try:
                 session = requests.Session()
                 retry = Retry(connect=3, backoff_factor=0.5)
@@ -143,7 +135,7 @@ class ParserTender(Parser):
                 session.mount('http://', adapter)
                 session.mount('https://', adapter)
                 response = session.get(url, headers={
-                    'User-Agent': UserAgent().chrome}, proxies=proxy, timeout=5)#.content.decode("utf8")
+                    'User-Agent': UserAgent().chrome}, proxies=self.proxy, timeout=5)#.content.decode("utf8")
                 response.encoding = 'utf-8'
                 response = response.content
             except Exception as ex:
@@ -160,21 +152,8 @@ class ParserTender(Parser):
 
     def change_proxy(self):
         print('change_proxy: start')
-        if self.proxy_mode:
-            try:
-                a = proxy_data[self.proxy_mode+1]
-                self.proxy_mode += 1
-                print(f'[tenderpro] new proxy_mode {self.proxy_mode}')
-                time.sleep(random.randint(1, 4))
-                return True
-            except:
-                pass
-        self.proxy_mode = 1
-        if self.proxy_mode > 1:
-            time.sleep(300)
-        print(f'[tenderpro] new proxy_mode {self.proxy_mode}')
-        time.sleep(random.randint(1, 4))
-        return False
+        self.proxy, self.current_proxy_ip = get_proxy(self.current_proxy_ip)
+        time.sleep(30)
 
 
 if __name__ == '__main__':

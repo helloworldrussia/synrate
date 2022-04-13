@@ -63,3 +63,17 @@ class VkGroupDetail(models.Model):
     class Meta:
         verbose_name = "Группа ВК"
         verbose_name_plural = "Группы ВК"
+
+
+class Proxy(models.Model):
+    login = models.CharField(max_length=255, null=False, verbose_name="Логин")
+    password = models.CharField(max_length=255, null=False, verbose_name='Пароль')
+    port = models.IntegerField(null=False, verbose_name='Порт')
+    ip = models.CharField(max_length=255, null=True, unique=True, verbose_name='IP адрес')
+
+    def __str__(self):
+        return self.ip
+
+    class Meta:
+        verbose_name = "Прокси"
+        verbose_name_plural = "Прокси"

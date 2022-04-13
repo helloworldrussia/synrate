@@ -29,7 +29,8 @@ class ParserNelikvidy(Parser):
         self.last_page = end
         self.url = "https://nelikvidi.com/sell?sort=-date"
         self.core = 'https://nelikvidi.com'
-        self.proxy_mode = False
+        self.proxy = False
+        self.current_proxy_ip = 0
         self.monthlist = {
             "янв": 1,
             "фев": 2,
@@ -201,25 +202,12 @@ class ParserNelikvidy(Parser):
         return int(last_page)
 
     def change_proxy(self):
-        print('[nelikvidy] change_proxy: start')
-        if self.proxy_mode:
-            try:
-                a = proxy_data[self.proxy_mode+1]
-                self.proxy_mode += 1
-                return True
-            except:
-                pass
-        print(f'\n[nelikvidy] proxy_mode: {self.proxy_mode}')
-        self.proxy_mode = 1
-        if self.proxy_mode > 1:
-            time.sleep(300)
-        return False
+        print('change_proxy: start')
+        self.proxy, self.current_proxy_ip = get_proxy(self.current_proxy_ip)
+        time.sleep(30)
 
     def get_page_soup(self, url):
-        proxy_mode = self.proxy_mode
-        if proxy_mode:
-            proxy = get_proxy(proxy_mode)
-            # proxy_status = check_proxy(proxy)
+        if self.current_proxy_ip:
             try:
                 session = requests.Session()
                 retry = Retry(connect=3, backoff_factor=0.5)
@@ -227,7 +215,7 @@ class ParserNelikvidy(Parser):
                 session.mount('http://', adapter)
                 session.mount('https://', adapter)
                 response = session.get(url, headers={
-                    'User-Agent': UserAgent().chrome}, proxies=proxy, timeout=5).content.decode("utf8")
+                    'User-Agent': UserAgent().chrome}, proxies=self.proxy, timeout=5).content.decode("utf8")
             except:
                 print('[nelikvidy] get_page_soup: не получилось сделать запрос с прокси. спим, меняем прокси и снова..')
                 return False

@@ -18,7 +18,8 @@ class RoseltorgParser(Parser):
         super().__init__()
         self.url = "https://www.roseltorg.ru"
         self.sale_url = self.url+"/search/sale?status%5B%5D=0&category%5B%5D=273&category%5B%5D=274&category%5B%5D=275&category%5B%5D=276&category%5B%5D=277&category%5B%5D=278&category%5B%5D=279&category%5B%5D=280&category%5B%5D=281&category%5B%5D=282&category%5B%5D=283&category%5B%5D=284&category%5B%5D=285&category%5B%5D=286&category%5B%5D=287&category%5B%5D=288&category%5B%5D=289&category%5B%5D=290&category%5B%5D=291&category%5B%5D=292&category%5B%5D=293&category%5B%5D=294&category%5B%5D=295&category%5B%5D=296&category%5B%5D=297&category%5B%5D=298&category%5B%5D=299&category%5B%5D=300&category%5B%5D=301&category%5B%5D=302&category%5B%5D=303&category%5B%5D=304&category%5B%5D=305&category%5B%5D=306&category%5B%5D=307&category%5B%5D=308&category%5B%5D=309&category%5B%5D=310&category%5B%5D=311&category%5B%5D=312&category%5B%5D=313&category%5B%5D=314&category%5B%5D=315&category%5B%5D=316&category%5B%5D=317&category%5B%5D=318&category%5B%5D=319&category%5B%5D=320&category%5B%5D=321&category%5B%5D=322&category%5B%5D=323&category%5B%5D=324&category%5B%5D=325&category%5B%5D=326&category%5B%5D=327&category%5B%5D=329&category%5B%5D=330&currency=all&page={}&from={}"
-        self.proxy_mode = False
+        self.proxy = False
+        self.current_proxy_ip = 0
         self.start_page = 1
         self.last_page = end
 
@@ -96,7 +97,7 @@ class RoseltorgParser(Parser):
 
     def get_offers_from_page(self, soup):
         try:
-            offers = self.soup.find_all("div", {"class": "search-results__item"})
+            offers = soup.find_all("div", {"class": "search-results__item"})
             test = offers[0]
         except Exception as ex:
             print(ex)
@@ -159,10 +160,7 @@ class RoseltorgParser(Parser):
         return region
 
     def get_page_soup(self, url):
-        proxy_mode = self.proxy_mode
-        if proxy_mode:
-            proxy = get_proxy(proxy_mode)
-            # proxy_status = check_proxy(proxy)
+        if self.current_proxy_ip:
             try:
                 session = requests.Session()
                 retry = Retry(connect=3, backoff_factor=0.5)
@@ -170,7 +168,7 @@ class RoseltorgParser(Parser):
                 session.mount('http://', adapter)
                 session.mount('https://', adapter)
                 response = session.get(url, headers={
-                    'User-Agent': UserAgent().chrome}, proxies=proxy, timeout=5)#.content.decode("utf8")
+                    'User-Agent': UserAgent().chrome}, proxies=self.proxy, timeout=5)#.content.decode("utf8")
                 response.encoding = 'utf-8'
                 response = response.content
             except Exception as ex:
@@ -187,21 +185,8 @@ class RoseltorgParser(Parser):
 
     def change_proxy(self):
         print('change_proxy: start')
-        if self.proxy_mode:
-            try:
-                a = proxy_data[self.proxy_mode+1]
-                self.proxy_mode += 1
-                print(f'[roseltorg] new proxy_mode {self.proxy_mode}')
-                time.sleep(random.randint(1, 4))
-                return True
-            except:
-                pass
-        self.proxy_mode = 1
-        # if self.proxy_mode > 1:
-        #     time.sleep(300)
-        print(f'[roseltorg] new proxy_mode {self.proxy_mode}')
-        time.sleep(random.randint(1, 4))
-        return False
+        self.proxy, self.current_proxy_ip = get_proxy(self.current_proxy_ip)
+        time.sleep(30)
 
     # сайт не показывает последнюю страницу, но мы можем перейти на нее используя баг
     # сайт перекинет на ласт страницу, если укажем page больше чем их на самом деле и from=10

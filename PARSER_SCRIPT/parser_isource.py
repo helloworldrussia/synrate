@@ -15,6 +15,8 @@ class ParserSource(Parser):
         self.response_item = None
         self.response_items = None
         self.response_categories = None
+        self.current_proxy_ip = 0
+        self.proxy = False
         self.count = 0
         self.last_page = end
 

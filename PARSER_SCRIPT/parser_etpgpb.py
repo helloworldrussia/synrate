@@ -18,15 +18,12 @@ class ParserEtpgpb(Parser):
         self.procedure_id = None
         self.response_item = None
         self.core = 'https://etpgpb.ru'
-        self.proxy_mode = False
+        self.proxy = False
         self.last_page = end
+        self.current_proxy_ip = 0
 
     def parse(self):
         # делаем запрос, получаем суп и отдаем функции, получающей номер последней страницы
-        # self.response = requests.get(self.url, headers={
-        #     'User-Agent': "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Mobile Safari/537.36"})
-        # self.response.encoding = 'utf-8'
-        # self.soup = BeautifulSoup(self.response.content, 'html.parser')
         last_page = self.get_last_page()
         if self.last_page:
             last_page = int(self.last_page)
@@ -36,8 +33,8 @@ class ParserEtpgpb(Parser):
             successful = 0
             while not successful:
                 time.sleep(random.randint(1, 7))
-                print(f'etpgpb: Сканируем стр. {page}\nproxy_mode: {self.proxy_mode}')
-                page_soup = self.get_page_soup(self.url+f'&page={page}', self.proxy_mode)
+                print(f'etpgpb: Сканируем стр. {page}\nproxy_mode: {self.current_proxy_ip}')
+                page_soup = self.get_page_soup(self.url+f'&page={page}')
                 result = self.get_offers(page_soup, self.core)
                 if result:
                     successful = 1
@@ -47,8 +44,7 @@ class ParserEtpgpb(Parser):
         sys.exit()
 
     def get_page_soup(self, url, proxy_mode):
-        if proxy_mode:
-            proxy = get_proxy(proxy_mode)
+        if self.current_proxy_ip:
             # proxy_status = check_proxy(proxy)
             try:
                 session = requests.Session()
@@ -57,7 +53,7 @@ class ParserEtpgpb(Parser):
                 session.mount('http://', adapter)
                 session.mount('https://', adapter)
                 response = session.get(url, headers={
-                    'User-Agent': UserAgent().chrome}, proxies=proxy, timeout=5).content.decode("utf8")
+                    'User-Agent': UserAgent().chrome}, proxies=self.proxy, timeout=5).content.decode("utf8")
                 soup = BeautifulSoup(response, 'html.parser')
             except:
                 print('get_page_soup: не получилось сделать запрос с прокси. спим, меняем прокси и снова..')
@@ -71,18 +67,8 @@ class ParserEtpgpb(Parser):
 
     def change_proxy(self):
         print('change_proxy: start')
-        if self.proxy_mode:
-            try:
-                a = proxy_data[self.proxy_mode+1]
-                self.proxy_mode += 1
-                return True
-            except:
-                pass
-        print(f'\nproxy_mode: {self.proxy_mode}')
-        self.proxy_mode = 1
-        if self.proxy_mode > 1:
-            time.sleep(300)
-        return False
+        self.proxy, self.current_proxy_ip = get_proxy(self.current_proxy_ip)
+        time.sleep(30)
 
     def get_offers(self, soup, core):
         # вытаскиваем информацию из дивов заявок в словари, те в список и возвращаем

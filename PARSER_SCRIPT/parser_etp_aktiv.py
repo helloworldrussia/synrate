@@ -21,7 +21,8 @@ class ParserEtpActiv(Parser):
         self.response_item = None
         self.core = 'https://etp-aktiv.ru'
         self.core_www = 'https://www.etp-aktiv.ru'
-        self.proxy_mode = False
+        self.proxy = False
+        self.current_proxy_ip = 0
         self.last_page = end
 
     def parse(self):
@@ -38,15 +39,13 @@ class ParserEtpActiv(Parser):
                 if result:
                     successful = 1
                 self.post_result(result)
-                print(f'etp-activ: Обрабатываем страницу - {page_url}\nproxy_mode: {self.proxy_mode}')
+                print(f'etp-activ: Обрабатываем страницу - {page_url}\nproxy_mode: {self.current_proxy_ip}')
             # time.sleep(random.randint(1, 3))
         change_parser_status('etp_aktiv', 'Выкл')
         sys.exit()
 
     def get_page_soup(self, url):
-        proxy_mode = self.proxy_mode
-        if proxy_mode:
-            proxy = get_proxy(proxy_mode)
+        if self.current_proxy_ip:
             # proxy_status = check_proxy(proxy)
             try:
                 session = requests.Session()
@@ -55,7 +54,7 @@ class ParserEtpActiv(Parser):
                 session.mount('http://', adapter)
                 session.mount('https://', adapter)
                 response = session.get(url, headers={
-                    'User-Agent': UserAgent().chrome}, proxies=proxy, timeout=5).content.decode("utf8")
+                    'User-Agent': UserAgent().chrome}, proxies=self.proxy, timeout=5).content.decode("utf8")
                 soup = BeautifulSoup(response, 'html.parser')
             except:
                 print('get_page_soup: не получилось сделать запрос с прокси. спим, меняем прокси и снова..')
@@ -84,18 +83,8 @@ class ParserEtpActiv(Parser):
 
     def change_proxy(self):
         print('change_proxy: start')
-        if self.proxy_mode:
-            try:
-                a = proxy_data[self.proxy_mode+1]
-                self.proxy_mode += 1
-                return True
-            except:
-                pass
-        print(f'\nproxy_mode: {self.proxy_mode}')
-        self.proxy_mode = 1
-        if self.proxy_mode > 1:
-            time.sleep(300)
-        return False
+        self.proxy, self.current_proxy_ip = get_proxy(self.current_proxy_ip)
+        time.sleep(30)
 
     def get_page_offers(self, url):
 
