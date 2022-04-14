@@ -1,13 +1,7 @@
 import random
 
 import requests
-
-
-# proxy = {
-#     "https": "https://169.57.1.85:8123", "http": "http://129.226.128.204:8080"
-#     "http": "http://129.226.128.204:8080"
-# }
-from PARSER_SCRIPT.connector import conn
+from connector import conn
 
 proxy_data = {
     1: {"https": "https://Selerickmambergermail:R0h0CoX@94.45.164.1:45785"},
