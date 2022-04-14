@@ -77,3 +77,27 @@ class Proxy(models.Model):
     class Meta:
         verbose_name = "Прокси"
         verbose_name_plural = "Прокси"
+
+
+class ProxyUser(models.Model):
+    login = models.CharField(max_length=255, null=False, verbose_name="Логин")
+    password = models.CharField(max_length=255, null=False, verbose_name='Пароль')
+    active = models.BooleanField(default=False, verbose_name="Действующий")
+
+    def __str__(self):
+        return self.login
+
+    def save(self, *args, **kwargs):
+        if self.active:
+            try:
+                temp = ProxyUser.objects.get(active=True)
+                if self != temp:
+                    temp.active = False
+                    temp.save()
+            except ProxyUser.DoesNotExist:
+                pass
+        super(ProxyUser, self).save(*args, **kwargs)
+
+    class Meta:
+        verbose_name = "Аккаунт прокси"
+        verbose_name_plural = "Аккаунты прокси"

@@ -58,7 +58,7 @@ class ParserNelikvidy(Parser):
             "дека": 12,
             "декаб": 12,
         }
-        self.start_page = 1
+        self.start_page = 25
 
     # def get_start_page(self):
     #     nelikvidy = Info.objects.get(name='nelikvidy')
@@ -97,43 +97,44 @@ class ParserNelikvidy(Parser):
 
     def send_result(self, result):
         for offer in result:
-            z = requests.post("https://synrate.ru/api/offers/create",
-                              json=offer)
-            today = datetime.datetime.today().strftime('%d-%m %H:%M')
-            try:
-                print(f'[nelikvidy] {z.json()}\n{offer}')
-                # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
-                #     # ...
-                #     f.seek(0, 2)
-                #     f.write(f'[{today}] {z.json()}\n{offer}')
-                #     f.close()
-            except:
-                print(f'[nelikvidy] {z}\n{offer}')
-                # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
-                #     # ...
-                #     f.seek(0, 2)
-                #     f.write(f'[{today}] {z}\n{offer}')
-                #     f.close()
-            try:
-                id = z.json()['unique_error'][0]
-                z = requests.put(f"https://synrate.ru/api/offer/update/{id}/",
-                                 json=offer)
-            except:
-                pass
-            try:
-                print(f'[nelikvidy] {z.json()}\n{offer}')
-                # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
-                #     # ...
-                #     f.seek(0, 2)
-                #     f.write(f'[{today}] {z.json()}\n{offer}')
-                #     f.close()
-            except:
-                print(f'[nelikvidy] {z}\n{offer}')
-                # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
-                #     # ...
-                #     f.seek(0, 2)
-                #     f.write(f'[{today}] {z}\n{offer}')
-                #     f.close()
+            # z = requests.post("https://synrate.ru/api/offers/create",
+            #                   json=offer)
+            # today = datetime.datetime.today().strftime('%d-%m %H:%M')
+            # try:
+            #     print(f'[nelikvidy] {z.json()}\n{offer}')
+            #     # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
+            #     #     # ...
+            #     #     f.seek(0, 2)
+            #     #     f.write(f'[{today}] {z.json()}\n{offer}')
+            #     #     f.close()
+            # except:
+            #     print(f'[nelikvidy] {z}\n{offer}')
+            #     # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
+            #     #     # ...
+            #     #     f.seek(0, 2)
+            #     #     f.write(f'[{today}] {z}\n{offer}')
+            #     #     f.close()
+            # try:
+            #     id = z.json()['unique_error'][0]
+            #     z = requests.put(f"https://synrate.ru/api/offer/update/{id}/",
+            #                      json=offer)
+            # except:
+            #     pass
+            # try:
+            #     print(f'[nelikvidy] {z.json()}\n{offer}')
+            #     # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
+            #     #     # ...
+            #     #     f.seek(0, 2)
+            #     #     f.write(f'[{today}] {z.json()}\n{offer}')
+            #     #     f.close()
+            # except:
+            #     print(f'[nelikvidy] {z}\n{offer}')
+            #     # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
+            #     #     # ...
+            #     #     f.seek(0, 2)
+            #     #     f.write(f'[{today}] {z}\n{offer}')
+            #     #     f.close()
+            pass
 
     def get_offers_from_page(self, soup):
         try:
@@ -168,8 +169,8 @@ class ParserNelikvidy(Parser):
                 price = price.replace(' ', '')
                 price = int(price)
             if region:
-                region = region.find("span").getText()
-                region = region.split(' ')[-1][:-1]
+                region = self.make_region_good(region)
+                # region = region.split(' ')[-1][:-1]
             else:
                 region = None
             offer_obj = {"name": name.replace('"', ''), "location": region, "home_name": "nelikvidi",
@@ -179,8 +180,46 @@ class ParserNelikvidy(Parser):
                                         "from_id": from_id
                                         }
             answer.append(offer_obj)
-
         return answer
+
+    def make_region_good(self, region):
+        region = region.find("span").getText()
+        region = region.split(' ')
+        if '\xa0во' in region:
+            region.remove('\xa0во')
+        if '\xa0в' in region:
+            region.remove('\xa0в')
+
+        if region[-1][-1:] == 'и':
+            if len(region) == 2:
+                region[0] = region[0][:-2]+'ая'
+                region[1] = region[1][:-1]+'ь'
+            else:
+                region[0] = region[0][:-1]+'ь'
+        if region[-1][-1:] == 'е':
+            if len(region) == 2:
+                if region[1] == 'Крае' or region[1] == 'крае':
+                    region[1] = region[1][:-1]+'й'
+                else:
+                    region[1] = region[1][:-1]
+                region[0] = region[0][:-2]+'ий'
+            else:
+                if region[0] == 'Москве' or region[0] == 'Уфе' or region[0] == 'Йошкар-Оле' or region[0] == 'Вологде' or region[0] == 'Калуге':
+                    region[0] = region[0][:-1]+'а'
+                elif region[0] == 'Симферополе':
+                    region[0] = region[0][:-1] + 'ь'
+                else:
+                    region[0] = region[0][:-1]
+
+        i, good = 1, ''
+        for x in region:
+            if i == 1:
+                good = f'{x}'
+            else:
+                good = good+f' {x}'
+            i += 1
+        print(good)
+        return good
 
     def make_date_good(self, date):
         line = date.split(' ')
