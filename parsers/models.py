@@ -82,6 +82,7 @@ class Proxy(models.Model):
 class ProxyUser(models.Model):
     login = models.CharField(max_length=255, null=False, verbose_name="Логин")
     password = models.CharField(max_length=255, null=False, verbose_name='Пароль')
+    port = models.IntegerField(null=False, verbose_name='Порт')
     active = models.BooleanField(default=False, verbose_name="Действующий")
 
     def __str__(self):

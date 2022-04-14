@@ -22,6 +22,7 @@ class ProxyAdmin(admin.ModelAdmin):
             obj = ProxyUser.objects.get(active=True)
             form_instance = context['adminform'].form
             form_instance.fields['login'].widget.attrs['value'] = obj.login
+            form_instance.fields['port'].widget.attrs['value'] = obj.port
             form_instance.fields['password'].widget.attrs['value'] = obj.password
         except:
             form_instance = context['adminform'].form
@@ -31,8 +32,8 @@ class ProxyAdmin(admin.ModelAdmin):
 
 
 class ProxyUserAdmin(admin.ModelAdmin):
-    list_display = ['login', 'password', 'active']
-    search_fields = ['login', 'password', 'active']
+    list_display = ['login', 'password', 'port', 'active']
+    search_fields = ['login', 'password', 'port', 'active']
 
 
 admin.site.register(Parser)
