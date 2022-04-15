@@ -38,6 +38,12 @@ class OfferSerializer(serializers.ModelSerializer):
 
     # owner_id передают только парсеры вк. поэтому заявки с ним проверяем по методу для вк заявок
     def validate(self, attrs):
+        if attrs['home_name'] == 'tenderpro':
+            group = Offer.objects.filter(home_name='tenderpro')
+            for y in group:
+                if y.name == attrs['name']:
+                    raise ValidationError({"not_unique": "Error in tenderpro validation"})
+            return attrs
         vk = False
         try:
             owner_id = attrs['owner_id']
