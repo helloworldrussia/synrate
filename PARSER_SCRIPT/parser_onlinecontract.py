@@ -15,7 +15,7 @@ import sys
 class ParserOnlineContract(Parser):
     def __init__(self, end):
         super.__init__
-        self.url = "https://onlinecontract.ru/sale?page={}"
+        self.url = "https://onlinecontract.ru/sale?status=1page={}"
         self.procedure_id = None
         self.response_item = None
         self.proxy = False
