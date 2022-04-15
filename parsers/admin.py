@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.html import format_html
 
-from .models import Parser, ENGINE, VkGroupDetail, Proxy, ProxyUser
+from .models import Parser, ENGINE, VkGroupDetail, Proxy, ProxyUser, VkAccount
 
 
 class VkGroupDetailAdmin(admin.ModelAdmin):
@@ -36,9 +36,15 @@ class ProxyUserAdmin(admin.ModelAdmin):
     search_fields = ['login', 'password', 'port', 'active']
 
 
+class VkAccountAdmin(admin.ModelAdmin):
+    list_display = ['name', 'token']
+    search_fields = ['name', 'token']
+
+
 admin.site.register(Parser)
 admin.site.register(ENGINE)
 admin.site.register(VkGroupDetail, VkGroupDetailAdmin)
+admin.site.register(VkAccount, VkAccountAdmin)
 admin.site.register(Proxy, ProxyAdmin)
 admin.site.register(ProxyUser, ProxyUserAdmin)
 

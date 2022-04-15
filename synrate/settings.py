@@ -93,7 +93,7 @@ TEMPLATES = [
                 'sekizai.context_processors.sekizai',
                 'cms.context_processors.cms_settings',
             ],
-            'libraries' : {
+            'libraries': {
                             'staticfiles': 'django.templatetags.static',
             }
         },

@@ -27,7 +27,8 @@ class VkGroup:
             try:
                 wall = self.api.wall.get(owner_id=self.id, count=1)
                 successful = 1
-            except:
+            except Exception as ex:
+                print(ex)
                 time.sleep(random.randint(1, 3))
         count = wall['count']
         print(count)
@@ -110,3 +111,16 @@ class VkGroup:
                 #     f.seek(0, 2)
                 #     f.write(f'[{today}] {z}\n{offer}')
                 #     f.close()
+
+lada = 'd785d6b835c25e6ab39f398b8bc010903a601ceb5f414120b4610536eb84e5856d45fc89fc577123349ac'
+token = 'a77eca1a8ecf84c1ba4af75dbd5e4a500315faba4d777a7bf8c1e02e1faf9f7d396845378d89e4b13fbf7'
+erick = 'c99c3ccf61df1de593411dde502690f9561696c4ce79546216a751b3a118fe94c08fe7d2ec42ba3111f0'
+
+# api = get_api(lada)
+# api_ = get_api(lada)
+#
+# first = VkGroup('https://test.com', -67991189, 'first', api)
+# second = VkGroup('https://test.com', -67991189, 'second', api_)
+#
+# for x in range(1,  100):
+#     print(first.wall_items(x))

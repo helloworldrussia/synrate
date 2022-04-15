@@ -52,6 +52,18 @@ class Info(models.Model):
     start_page = models.IntegerField(null=True, default=1, blank=True)
 
 
+class VkAccount(models.Model):
+    name = models.CharField(max_length=255, unique=True, verbose_name='Имя')
+    token = models.CharField(max_length=400, unique=True, verbose_name='Токен')
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = "Аккаунт ВК"
+        verbose_name_plural = "Аккаунты ВК"
+
+
 class VkGroupDetail(models.Model):
     url = models.CharField(max_length=599, unique=True, verbose_name="Ссылка группу")
     vk_id = models.IntegerField(unique=True, verbose_name='ID ГРУППЫ ВК')
