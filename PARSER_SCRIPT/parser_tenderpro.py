@@ -16,7 +16,7 @@ from mixins import proxy_data, get_proxy
 class ParserTender(Parser):
     def __init__(self, end):
         super().__init__()
-        self.url = "http://www.tender.pro/view_tenders_list.shtml?sid=&lim=25&companyid=0&tendertype=92&tenderstate=1&country=0&basis=0&tender_name=&tender_id=&company_name=&good_name=&dateb=&datee=&dateb2=&datee2="
+        self.url = "http://www.tender.pro/view_tenders_list.shtml?page={}&sid=&lim=25&companyid=0&tendertype=92&tenderstate=1&country=0&basis=0&tender_name=&tender_id=&company_name=&good_name=&dateb=&datee=&dateb2=&datee2="
         self.page_links = []
         self.page_links2 = []
         self.proxy = False
@@ -29,14 +29,22 @@ class ParserTender(Parser):
 
         while not successful:
             time.sleep(random.randint(1, 7))
-            try:
-                self.soup = self.get_page_soup(self.url.format(0))
-                pages = self.soup.find("div", attrs={"class": "pager"}).find_all('a')
-                pages_num = pages[len(pages)-2].getText()
-                successful = 1
-                print(f'[tenderpro] pages count {pages_num}')
-            except:
-                self.change_proxy()
+            # try:
+            #     self.soup = self.get_page_soup(self.url.format(0))
+            #     pages = self.soup.find("div", attrs={"class": "pager"}).find_all('a')
+            #     pages_num = pages[len(pages)-2].getText()
+            #     successful = 1
+            #     print(f'[tenderpro] pages count {pages_num}')
+            # except Exception as ex:
+            #     print(ex)
+            #     self.change_proxy()
+
+            self.soup = self.get_page_soup(self.url.format(0))
+            pages = self.soup.find("div", attrs={"class": "pager"}).find_all('a')
+            pages_num = pages[len(pages)-2].getText()
+            successful = 1
+            print(f'[tenderpro] pages count {pages_num}')
+
         if self.last_page:
             pages_num = int(self.last_page)
         pause_signal = 0
@@ -50,7 +58,7 @@ class ParserTender(Parser):
             while not successful:
                 time.sleep(random.randint(1, 7))
                 try:
-                    self.soup = self.get_page_soup(self.url+f'&page{i}')
+                    self.soup = self.get_page_soup(self.url.format(25*i))
                     table = self.soup.find('table', attrs={"class": "baseTable"})
                     rows = table.find_all('tr')
                     successful = 1
@@ -144,8 +152,7 @@ class ParserTender(Parser):
                 time.sleep(2)
                 return False
         else:
-            response = requests.get(url, headers={
-                'User-Agent': UserAgent().chrome}).content.decode("utf8")
+            response = requests.get(url, headers={'User-Agent': UserAgent().chrome}).content#.decode("utf8")
         soup = BeautifulSoup(response, 'html.parser')
         # print(response)
         return soup
