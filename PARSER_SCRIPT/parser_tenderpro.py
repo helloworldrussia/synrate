@@ -21,7 +21,7 @@ class ParserTender(Parser):
         self.page_links2 = []
         self.proxy = False
         self.current_proxy_ip = 0
-        self.start_page = 1
+        self.start_page = 0
         self.last_page = end
 
     def parse(self):
@@ -48,12 +48,12 @@ class ParserTender(Parser):
         if self.last_page:
             pages_num = int(self.last_page)
         pause_signal = 0
-        for i in range(self.start_page, int(pages_num)):
+        for i in range(self.start_page, int(pages_num)+1):
             pause_signal += 1
             if pause_signal == 30:
                 time.sleep(300)
                 pause_signal = 0
-            print(f"PAGE {i}")
+            print(f"PAGE {i}", i*25)
             successful = 0
             while not successful:
                 time.sleep(random.randint(1, 7))
