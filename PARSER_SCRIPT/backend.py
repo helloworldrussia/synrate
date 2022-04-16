@@ -5,6 +5,8 @@ import time
 import requests
 import vk
 
+from PARSER_SCRIPT.connector import Item
+
 
 def get_api(token):
     session = vk.Session(access_token=token)
@@ -19,6 +21,10 @@ class VkGroup:
         self.home_name = 'vk.com'
         self.url = url
         self.name = name
+
+    def check_connect(self):
+        wall = self.api.wall.get(owner_id=self.id, count=1)
+        print(wall)
 
     def wall_info(self):
         answer = {}
@@ -65,52 +71,20 @@ class VkGroup:
                          "offer_start_date": start_date, "additional_data": text,
                          "url": url, "from_id": offer['id'], "owner_id": offer['from_id']
                          }
-            answer.append(offer_obj)
+            offer = Item(name, self.home_name, url, None, None, None,
+                None, None, None, text, None, offer['id'],
+                self.name, offer['from_id'])
+            answer.append(offer)
         return answer
 
     def send_result(self, data):
         i = 0
         for offer in data:
-            if i == 5:
-                time.sleep(1)
-                i = 0
-            z = requests.post("https://synrate.ru/api/offers/create",
-                              json=offer)
-            today = datetime.today().strftime('%d-%m %H:%M')
-            try:
-                print(f'[{self.home_name}] {z.json()}\n{offer}')
-                # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
-                #     # ...
-                #     f.seek(0, 2)
-                #     f.write(f'[{today}] {z.json()}\n{offer}')
-                #     f.close()
-            except:
-                print(f'[{self.home_name}] {z}\n{offer}')
-                # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
-                #     # ...
-                #     f.seek(0, 2)
-                #     f.write(f'[{today}] {z}\n{offer}')
-                #     f.close()
-            try:
-                id = z.json()['unique_error'][0]
-                z = requests.put(f"https://synrate.ru/api/offer/update/{id}/",
-                                  json=offer)
-            except:
-                pass
-            try:
-                print(f'[{self.home_name}] {z.json()}\n{offer}')
-                # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
-                #     # ...
-                #     f.seek(0, 2)
-                #     f.write(f'[{today}] {z.json()}\n{offer}')
-                #     f.close()
-            except:
-                print(f'[{self.home_name}] {z}\n{offer}')
-                # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
-                #     # ...
-                #     f.seek(0, 2)
-                #     f.write(f'[{today}] {z}\n{offer}')
-                #     f.close()
+            offer.post()
+            # if i == 5:
+            #     time.sleep(1)
+            #     i = 0
+
 
 lada = 'd785d6b835c25e6ab39f398b8bc010903a601ceb5f414120b4610536eb84e5856d45fc89fc577123349ac'
 token = 'a77eca1a8ecf84c1ba4af75dbd5e4a500315faba4d777a7bf8c1e02e1faf9f7d396845378d89e4b13fbf7'

@@ -4,7 +4,7 @@ from datetime import datetime
 import sys
 from fake_useragent import UserAgent
 from requests.adapters import HTTPAdapter, Retry
-from connector import change_parser_status
+from connector import change_parser_status, Item
 from ENGINE import Parser
 import requests
 from bs4 import BeautifulSoup
@@ -35,6 +35,7 @@ class ParserEtpgpb(Parser):
                 time.sleep(random.randint(1, 7))
                 print(f'etpgpb: Сканируем стр. {page}\nproxy_mode: {self.current_proxy_ip}')
                 page_soup = self.get_page_soup(self.url+f'&page={page}')
+                self.get_offers(page_soup, self.core)
                 result = self.get_offers(page_soup, self.core)
                 if result:
                     successful = 1
@@ -74,7 +75,8 @@ class ParserEtpgpb(Parser):
         # вытаскиваем информацию из дивов заявок в словари, те в список и возвращаем
         try:
             offers_list = soup.find_all("div", attrs={"class": "procedure"})
-        except:
+        except Exception as ex:
+            print(ex)
             self.change_proxy()
             return False
         cleaned_data = []
@@ -130,8 +132,12 @@ class ParserEtpgpb(Parser):
                                         "offer_price": price,
                                         "additional_data": text, "organisation": company, "url": link,
                                         "from_id": from_id}
+            offer = Item(name, 'etpgpb', link, None, start_date, end_date,
+                None, None, price, text, company, from_id,
+                None, None)
 
-            cleaned_data.append(data_dict)
+            cleaned_data.append(offer)
+            # cleaned_data.append(data_dict)
         # передаем список из словарей с информацией о заявках обратно
         return cleaned_data
 
@@ -172,44 +178,45 @@ class ParserEtpgpb(Parser):
 
     def send_result(self, data):
         for offer in data:
-            # print(offer)
-            z = requests.post("https://synrate.ru/api/offers/create",
-                              json=offer)
-            today = datetime.today().strftime('%d-%m %H:%M')
-            try:
-                print(f'[etpgpb] {z.json()}\n{offer}')
-                # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
-                #     # ...
-                #     f.seek(0, 2)
-                #     f.write(f'[{today}] {z.json()}\n{offer}')
-                #     f.close()
-            except:
-                print(f'[etpgpb] {z}\n{offer}')
-                # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
-                #     # ...
-                #     f.seek(0, 2)
-                #     f.write(f'[{today}] {z}\n{offer}')
-                #     f.close()
-            try:
-                id = z.json()['unique_error'][0]
-                z = requests.put(f"https://synrate.ru/api/offer/update/{id}/",
-                                 json=offer)
-            except:
-                pass
-            try:
-                print(f'[etpgpb] {z.json()}\n{offer}')
-                # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
-                #     # ...
-                #     f.seek(0, 2)
-                #     f.write(f'[{today}] {z.json()}\n{offer}')
-                #     f.close()
-            except:
-                print(f'[etpgpb] {z}\n{offer}')
-                # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
-                #     # ...
-                #     f.seek(0, 2)
-                #     f.write(f'[{today}] {z}\n{offer}')
-                #     f.close()
+            offer.post()
+    #         # print(offer)
+    #         z = requests.post("https://synrate.ru/api/offers/create",
+    #                           json=offer)
+    #         today = datetime.today().strftime('%d-%m %H:%M')
+    #         try:
+    #             print(f'[etpgpb] {z.json()}\n{offer}')
+    #             # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
+    #             #     # ...
+    #             #     f.seek(0, 2)
+    #             #     f.write(f'[{today}] {z.json()}\n{offer}')
+    #             #     f.close()
+    #         except:
+    #             print(f'[etpgpb] {z}\n{offer}')
+    #             # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
+    #             #     # ...
+    #             #     f.seek(0, 2)
+    #             #     f.write(f'[{today}] {z}\n{offer}')
+    #             #     f.close()
+    #         try:
+    #             id = z.json()['unique_error'][0]
+    #             z = requests.put(f"https://synrate.ru/api/offer/update/{id}/",
+    #                              json=offer)
+    #         except:
+    #             pass
+    #         try:
+    #             print(f'[etpgpb] {z.json()}\n{offer}')
+    #             # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
+    #             #     # ...
+    #             #     f.seek(0, 2)
+    #             #     f.write(f'[{today}] {z.json()}\n{offer}')
+    #             #     f.close()
+    #         except:
+    #             print(f'[etpgpb] {z}\n{offer}')
+    #             # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
+    #             #     # ...
+    #             #     f.seek(0, 2)
+    #             #     f.write(f'[{today}] {z}\n{offer}')
+    #             #     f.close()
 
     def get_last_page(self):
         successful = 0
@@ -221,6 +228,7 @@ class ParserEtpgpb(Parser):
                 successful = 1
             except:
                 self.change_proxy()
+        print(last_page)
         return last_page
 
 

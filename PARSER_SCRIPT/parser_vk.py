@@ -12,11 +12,12 @@ erick = 'c99c3ccf61df1de593411dde502690f9561696c4ce79546216a751b3a118fe94c08fe7d
     Необходимые для класса VkGroup данные: 
         ссылка на группу, 
         id группы в контакте, которую парсим,
-        экземляр клиента (api) [передайте токен в PARSER_SCRIPT.vk.backend.get_api для получения]
+        экземляр клиента (api) [передайте токен в PARSER_SCRIP.vk.backend.get_api для получения]
 """
 
 
 def parse(obj):
+    # test = obj.check_connect()
     info = obj.wall_info()
     for i in range(1, int(info['i_count'])+1):
         print(f'{i}')

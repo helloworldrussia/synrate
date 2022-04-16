@@ -1,11 +1,8 @@
 from django.shortcuts import render, get_object_or_404
-
-# Create your views here.
 from django.http import HttpResponse
 from django.core.serializers import serialize
 import requests
 import datetime
-from django.apps import apps
 from django.db import IntegrityError
 from rest_framework.generics import ListAPIView, CreateAPIView, UpdateAPIView
 from rest_framework.views import APIView
@@ -14,6 +11,7 @@ from .serializers import OfferSerializer, ParserSerializer, EngineSerializer, Of
 from .models import Parser, ENGINE
 from synrate_main.models import OfferCategory, OfferSubcategory
 from rest_framework import viewsets
+from django.apps import apps
 
 Offer = apps.get_model('synrate_main', 'Offer')
 

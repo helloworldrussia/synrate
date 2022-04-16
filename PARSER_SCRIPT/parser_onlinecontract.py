@@ -4,7 +4,7 @@ from datetime import datetime
 from fake_useragent import UserAgent
 from requests.adapters import HTTPAdapter
 from urllib3 import Retry
-from connector import change_parser_status
+from connector import change_parser_status, Item
 from ENGINE import Parser
 import requests
 from bs4 import BeautifulSoup
@@ -24,15 +24,10 @@ class ParserOnlineContract(Parser):
         self.start_page = 1
         self.last_page = end
 
-    # def get_start_page(self):
-    #     onlinecontract = Info.objects.get(name='onlinecontract')
-    #     self.start_page = onlinecontract.start_page
-
     def parse(self):
-        # self.get_start_page()
         successful = 0
         while not successful:
-            time.sleep(random.randint(1, 15))
+            time.sleep(random.randint(1, 6))
             try:
                 last_page = self.get_last_page()
                 successful = 1
@@ -43,15 +38,15 @@ class ParserOnlineContract(Parser):
             last_page = int(self.last_page)
         pause_signal = 1
         for i in range(self.start_page, last_page+1):
-            time.sleep(random.randint(5, 10))
+            time.sleep(random.randint(1, 5))
             pause_signal += 1
             if pause_signal == 40:
-                time.sleep(random.randint(300, 400))
+                time.sleep(random.randint(200, 300))
                 pause_signal = 0
             print(f'[onlinecontract] page = {i}')
             successful = 0
             while not successful:
-                time.sleep(random.randint(1, 15))
+                time.sleep(random.randint(1, 4))
                 try:
                     soup = self.get_page_soup(self.url.format(i))
                     result = self.get_offers_from_page(soup)
@@ -72,43 +67,7 @@ class ParserOnlineContract(Parser):
 
     def send_result(self, data):
         for offer in data:
-            z = requests.post("https://synrate.ru/api/offers/create",
-                              json=offer)
-            today = datetime.today().strftime('%d-%m %H:%M')
-            try:
-                print(f'[onlinecontract] {z.json()}\n{offer}')
-                # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
-                #     # ...
-                #     f.seek(0, 2)
-                #     f.write(f'[{today}] {z.json()}\n{offer}')
-                #     f.close()
-            except:
-                print(f'[onlinecontract] {z}\n{offer}')
-                # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
-                #     # ...
-                #     f.seek(0, 2)
-                #     f.write(f'[{today}] {z}\n{offer}')
-                #     f.close()
-            try:
-                id = z.json()['unique_error'][0]
-                z = requests.put(f"https://synrate.ru/api/offer/update/{id}/",
-                                 json=offer)
-            except:
-                pass
-            try:
-                print(f'[onlinecontract] {z.json()}\n{offer}')
-                # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
-                #     # ...
-                #     f.seek(0, 2)
-                #     f.write(f'[{today}] {z.json()}\n{offer}')
-                #     f.close()
-            except:
-                print(f'[onlinecontract] {z}\n{offer}')
-                # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
-                #     # ...
-                #     f.seek(0, 2)
-                #     f.write(f'[{today}] {z}\n{offer}')
-                #     f.close()
+           offer.post()
 
     def get_offers_from_page(self, soup):
         try:
@@ -133,7 +92,9 @@ class ParserOnlineContract(Parser):
                          "organisation": company, "url": link,
                          "from_id": from_id
                          }
-            answer.append(offer_obj)
+            offer = Item(name, "onlinecontract", link, None, None, end_date,
+                None, None, None, name, company, from_id, None, None)
+            answer.append(offer)
         return answer
 
     def make_date_good(self, date):

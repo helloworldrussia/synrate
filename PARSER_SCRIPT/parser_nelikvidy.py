@@ -7,7 +7,7 @@ from fake_useragent import UserAgent
 import datetime
 from requests.adapters import HTTPAdapter
 from urllib3 import Retry
-from connector import change_parser_status
+from connector import change_parser_status, Item
 from ENGINE import Parser
 from mixins import get_proxy, proxy_data
 
@@ -58,17 +58,12 @@ class ParserNelikvidy(Parser):
             "дека": 12,
             "декаб": 12,
         }
-        self.start_page = 25
-
-    # def get_start_page(self):
-    #     nelikvidy = Info.objects.get(name='nelikvidy')
-    #     self.start_page = nelikvidy.start_page
+        self.start_page = 1
 
     def parse(self):
-        # self.get_start_page() # чтобы начать с места, где остановились
         successful = 0
         while not successful:
-            time.sleep(random.randint(1, 15))
+            time.sleep(random.randint(1, 3))
             try:
                 last_page = self.get_last_page()
                 successful = 1
@@ -82,7 +77,7 @@ class ParserNelikvidy(Parser):
             print(f'[nelikvidy] page = {i}')
             successful = 0
             while not successful:
-                time.sleep(random.randint(1, 15))
+                time.sleep(random.randint(1, 3))
                 try:
                     soup = self.get_page_soup(self.url+f'&page={i}')
                     result = self.get_offers_from_page(soup)
@@ -97,44 +92,7 @@ class ParserNelikvidy(Parser):
 
     def send_result(self, result):
         for offer in result:
-            # z = requests.post("https://synrate.ru/api/offers/create",
-            #                   json=offer)
-            # today = datetime.datetime.today().strftime('%d-%m %H:%M')
-            # try:
-            #     print(f'[nelikvidy] {z.json()}\n{offer}')
-            #     # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
-            #     #     # ...
-            #     #     f.seek(0, 2)
-            #     #     f.write(f'[{today}] {z.json()}\n{offer}')
-            #     #     f.close()
-            # except:
-            #     print(f'[nelikvidy] {z}\n{offer}')
-            #     # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
-            #     #     # ...
-            #     #     f.seek(0, 2)
-            #     #     f.write(f'[{today}] {z}\n{offer}')
-            #     #     f.close()
-            # try:
-            #     id = z.json()['unique_error'][0]
-            #     z = requests.put(f"https://synrate.ru/api/offer/update/{id}/",
-            #                      json=offer)
-            # except:
-            #     pass
-            # try:
-            #     print(f'[nelikvidy] {z.json()}\n{offer}')
-            #     # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
-            #     #     # ...
-            #     #     f.seek(0, 2)
-            #     #     f.write(f'[{today}] {z.json()}\n{offer}')
-            #     #     f.close()
-            # except:
-            #     print(f'[nelikvidy] {z}\n{offer}')
-            #     # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
-            #     #     # ...
-            #     #     f.seek(0, 2)
-            #     #     f.write(f'[{today}] {z}\n{offer}')
-            #     #     f.close()
-            pass
+            offer.post()
 
     def get_offers_from_page(self, soup):
         try:
@@ -179,7 +137,10 @@ class ParserNelikvidy(Parser):
                                         "additional_data": name.replace('"', ''), "organisation": company, "url": link,
                                         "from_id": from_id
                                         }
-            answer.append(offer_obj)
+            offer = Item(name.replace('"', ''), "nelikvidi", link, region, None, None,
+                None, None, price, name.replace('"', ''), company, from_id,
+                None, None)
+            answer.append(offer)
         return answer
 
     def make_region_good(self, region):
@@ -218,7 +179,6 @@ class ParserNelikvidy(Parser):
             else:
                 good = good+f' {x}'
             i += 1
-        print(good)
         return good
 
     def make_date_good(self, date):

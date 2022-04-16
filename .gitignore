@@ -3,4 +3,4 @@ venv
 .idea
 __pycache__
 my_test.py
-PARSER_SCRIPT/main.py
+PARSER_SCRIP/main.py

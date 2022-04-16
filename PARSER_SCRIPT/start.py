@@ -2,7 +2,6 @@ import datetime
 import os
 import threading
 import time
-
 from connector import conn
 
 

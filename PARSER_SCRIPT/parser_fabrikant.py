@@ -3,7 +3,7 @@ import time
 from datetime import datetime
 from fake_useragent import UserAgent
 from requests.adapters import HTTPAdapter, Retry
-from connector import change_parser_status
+from connector import change_parser_status, Item
 from ENGINE import Parser
 import requests
 from bs4 import BeautifulSoup
@@ -68,43 +68,44 @@ class ParserFabrikant(Parser):
                     successful = 1
 
             for offer in offers:
-                z = requests.post("https://synrate.ru/api/offers/create",
-                                  json=offer)
-                today = datetime.today().strftime('%d-%m %H:%M')
-                try:
-                    print(f'[fabrikant] {z.json()}\n{offer}')
-                    # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
-                    #     # ...
-                    #     f.seek(0, 2)
-                    #     f.write(f'[{today}] {z.json()}\n{offer}')
-                    #     f.close()
-                except:
-                    print(f'[fabrikant] {z}\n{offer}')
-                    # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
-                    #     # ...
-                    #     f.seek(0, 2)
-                    #     f.write(f'[{today}] {z}\n{offer}')
-                    #     f.close()
-                try:
-                    id = z.json()['unique_error'][0]
-                    z = requests.put(f"https://synrate.ru/api/offer/update/{id}/",
-                                     json=offer)
-                except:
-                    pass
-                try:
-                    print(f'[fabrikant] {z.json()}\n{offer}')
-                    # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
-                    #     # ...
-                    #     f.seek(0, 2)
-                    #     f.write(f'[{today}] {z.json()}\n{offer}')
-                    #     f.close()
-                except:
-                    print(f'[fabrikant] {z}\n{offer}')
-                    # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
-                    #     # ...
-                    #     f.seek(0, 2)
-                    #     f.write(f'[{today}] {z}\n{offer}')
-                    #     f.close()
+                offer.post()
+                # z = requests.post("https://synrate.ru/api/offers/create",
+                #                   json=offer)
+                # today = datetime.today().strftime('%d-%m %H:%M')
+                # try:
+                #     print(f'[fabrikant] {z.json()}\n{offer}')
+                #     # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
+                #     #     # ...
+                #     #     f.seek(0, 2)
+                #     #     f.write(f'[{today}] {z.json()}\n{offer}')
+                #     #     f.close()
+                # except:
+                #     print(f'[fabrikant] {z}\n{offer}')
+                #     # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
+                #     #     # ...
+                #     #     f.seek(0, 2)
+                #     #     f.write(f'[{today}] {z}\n{offer}')
+                #     #     f.close()
+                # try:
+                #     id = z.json()['unique_error'][0]
+                #     z = requests.put(f"https://synrate.ru/api/offer/update/{id}/",
+                #                      json=offer)
+                # except:
+                #     pass
+                # try:
+                #     print(f'[fabrikant] {z.json()}\n{offer}')
+                #     # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
+                #     #     # ...
+                #     #     f.seek(0, 2)
+                #     #     f.write(f'[{today}] {z.json()}\n{offer}')
+                #     #     f.close()
+                # except:
+                #     print(f'[fabrikant] {z}\n{offer}')
+                #     # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
+                #     #     # ...
+                #     #     f.seek(0, 2)
+                #     #     f.write(f'[{today}] {z}\n{offer}')
+                #     #     f.close()
         change_parser_status('fabrikant', 'Выкл')
         sys.exit()
 
@@ -182,7 +183,10 @@ class ParserFabrikant(Parser):
                          "additional_data": text, "offer_price": price, "organisation": company,
                          "url": link, "from_id": from_id
                          }
-            offers.append(offer_obj)
+            offer = Item(name, "fabrikant", link, region, start_date, end_date,
+                None, None, price, text, company, from_id,
+                None, None)
+            offers.append(offer)
 
         return offers
 

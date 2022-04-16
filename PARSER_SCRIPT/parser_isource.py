@@ -2,7 +2,7 @@ import sys
 import time
 from datetime import datetime
 import requests
-from connector import change_parser_status
+from connector import change_parser_status, Item
 from ENGINE import Parser
 
 
@@ -64,43 +64,52 @@ class ParserSource(Parser):
                                                + self.response_item["auction_transliteration_name"],
                                         "from_id": self.response_item['auction_transliteration_name'].split("-")[-1]
                                         }
-                z = requests.post("https://synrate.ru/api/offers/create",
-                                  json=offer)
-                today = datetime.today().strftime('%d-%m %H:%M')
-                try:
-                    print(f'[isource] {z.json()}\n{offer}')
-                    # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
-                    #     # ...
-                    #     f.seek(0, 2)
-                    #     f.write(f'[{today}] {z.json()}\n{offer}')
-                    #     f.close()
-                except:
-                    print(f'[isource] {z}\n{offer}')
-                    # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
-                    #     # ...
-                    #     f.seek(0, 2)
-                    #     f.write(f'[{today}] {z}\n{offer}')
-                    #     f.close()
-                try:
-                    id = z.json()['unique_error'][0]
-                    z = requests.put(f"https://synrate.ru/api/offer/update/{id}/",
-                                     json=offer)
-                except:
-                    pass
-                try:
-                    print(f'[isource] {z.json()}\n{offer}')
-                    # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
-                    #     # ...
-                    #     f.seek(0, 2)
-                    #     f.write(f'[{today}] {z.json()}\n{offer}')
-                    #     f.close()
-                except:
-                    print(f'[isource] {z}\n{offer}')
-                    # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
-                    #     # ...
-                    #     f.seek(0, 2)
-                    #     f.write(f'[{today}] {z}\n{offer}')
-                    #     f.close()
+                offer = Item(self.response_item["name"], "isource",
+                    "https://reserve.isource.ru/trades/item/"+self.response_item["auction_transliteration_name"],
+                    self.response_item["region"][0]["name"],
+                    self.response_item["date_begin"].split(" ")[0], self.response_item["date_end"].split(" ")[0],
+                    self.response_item["author_full_name"], self.response_item["author_phone"],
+                    round(float(self.response_item["current_fix_price_without_nds"])),
+                    None, self.response_item["contragent_host_name"], self.response_item['auction_transliteration_name'].split("-")[-1],
+                    None, None)
+                offer.post()
+                # z = requests.post("https://synrate.ru/api/offers/create",
+                #                   json=offer)
+                # today = datetime.today().strftime('%d-%m %H:%M')
+                # try:
+                #     print(f'[isource] {z.json()}\n{offer}')
+                #     # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
+                #     #     # ...
+                #     #     f.seek(0, 2)
+                #     #     f.write(f'[{today}] {z.json()}\n{offer}')
+                #     #     f.close()
+                # except:
+                #     print(f'[isource] {z}\n{offer}')
+                #     # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
+                #     #     # ...
+                #     #     f.seek(0, 2)
+                #     #     f.write(f'[{today}] {z}\n{offer}')
+                #     #     f.close()
+                # try:
+                #     id = z.json()['unique_error'][0]
+                #     z = requests.put(f"https://synrate.ru/api/offer/update/{id}/",
+                #                      json=offer)
+                # except:
+                #     pass
+                # try:
+                #     print(f'[isource] {z.json()}\n{offer}')
+                #     # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
+                #     #     # ...
+                #     #     f.seek(0, 2)
+                #     #     f.write(f'[{today}] {z.json()}\n{offer}')
+                #     #     f.close()
+                # except:
+                #     print(f'[isource] {z}\n{offer}')
+                #     # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
+                #     #     # ...
+                #     #     f.seek(0, 2)
+                #     #     f.write(f'[{today}] {z}\n{offer}')
+                #     #     f.close()
         change_parser_status('isource', 'Выкл')
         sys.exit()
 

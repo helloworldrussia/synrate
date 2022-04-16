@@ -9,7 +9,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-knlrtz6ws_wbw_%$uo0wrozvbzk!h5vy6c76k9l3dee(n#nx%2'
-SITE_ID = 1
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -32,18 +31,13 @@ INSTALLED_APPS = [
     'Users',
     'synrate_main',
     'rest_framework',
-
-
     'parsers',
-
     'cms',
-
     'menus',
     'treebeard',
     'sekizai',
     'easy_thumbnails',
     'mptt',
-
     'filer',
     'djangocms_text_ckeditor',
     'djangocms_link',
@@ -53,10 +47,10 @@ INSTALLED_APPS = [
     'djangocms_googlemap',
     'djangocms_snippet',
     'djangocms_style',
-
-
-
+    'PARSER_SCRIPT',
 ]
+
+SITE_ID = 1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

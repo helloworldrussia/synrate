@@ -4,7 +4,7 @@ import time
 from fake_useragent import UserAgent
 from requests.adapters import HTTPAdapter
 from urllib3 import Retry
-from connector import change_parser_status
+from connector import change_parser_status, Item
 from ENGINE import Parser
 import requests
 from bs4 import BeautifulSoup
@@ -89,46 +89,10 @@ class ParserTender(Parser):
                                             "url": url, "from_id": from_id
                                             }
 
-                    z = requests.post("https://synrate.ru/api/offers/create",
-                                      json=offer)
-
-                    # TESTING -------------
-
-                    today = datetime.datetime.today().strftime('%d-%m %H:%M')
-                    try:
-                        print(f'[tenderpro] {z.json()}\n{offer}')
-                        # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
-                        #     # ...
-                        #     f.seek(0, 2)
-                        #     f.write(f'[{today}] {z.json()}\n{offer}')
-                        #     f.close()
-                    except:
-                        print(f'[tenderpro] {z}\n{offer}')
-                        # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
-                        #     # ...
-                        #     f.seek(0, 2)
-                        #     f.write(f'[{today}] {z}\n{offer}')
-                        #     f.close()
-                    try:
-                        id = z.json()['unique_error'][0]
-                        z = requests.put(f"https://synrate.ru/api/offer/update/{id}/",
-                                         json=offer)
-                    except:
-                        pass
-                    try:
-                        print(f'[tenderpro] {z.json()}\n{offer}')
-                        # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
-                        #     # ...
-                        #     f.seek(0, 2)
-                        #     f.write(f'[{today}] {z.json()}\n{offer}')
-                        #     f.close()
-                    except:
-                        print(f'[tenderpro] {z}\n{offer}')
-                        # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
-                        #     # ...
-                        #     f.seek(0, 2)
-                        #     f.write(f'[{today}] {z}\n{offer}')
-                        #     f.close()
+                    offer = Item(name, "tenderpro", url, "РФ", str(start_date), str(fin_date),
+                        None, None, None, None, company.replace('"', ''), from_id,
+                        None, None)
+                    offer.post()
                     time.sleep(random.randint(1, 5) / 10)
                     # ---------------------
         change_parser_status('tenderpro', 'Выкл')

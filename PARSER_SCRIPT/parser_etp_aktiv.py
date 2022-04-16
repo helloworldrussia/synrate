@@ -3,7 +3,7 @@ import time
 from datetime import datetime
 from fake_useragent import UserAgent
 from requests.adapters import HTTPAdapter, Retry
-from connector import change_parser_status
+from connector import change_parser_status, Item
 from ENGINE import Parser
 import requests
 from bs4 import BeautifulSoup
@@ -30,10 +30,10 @@ class ParserEtpActiv(Parser):
         if self.last_page:
             last_page = int(self.last_page)
         for page in range(1, int(last_page)+1):
-            time.sleep(random.randint(1, 7))
+            time.sleep(random.randint(1, 3))
             successful = 0
             while not successful:
-                time.sleep(random.randint(1, 7))
+                time.sleep(random.randint(1, 3))
                 page_url = self.url+f'?PAGEN_1={page}'
                 result = self.get_page_offers(page_url)
                 if result:
@@ -84,7 +84,7 @@ class ParserEtpActiv(Parser):
     def change_proxy(self):
         print('change_proxy: start')
         self.proxy, self.current_proxy_ip = get_proxy(self.current_proxy_ip)
-        time.sleep(30)
+        time.sleep(10)
 
     def get_page_offers(self, url):
 
@@ -120,7 +120,10 @@ class ParserEtpActiv(Parser):
             detail = self.get_detail_info(link)
             for key, value in detail.items():
                 offer_obj[f'{key}'] = value
-            answer.append(offer_obj)
+            offer = Item(name, "etp-activ", link, offer_obj['location'], None, None,
+                         None, None, offer_obj['price'], offer_obj['additional_data'], offer_obj['owner'], from_id,
+                         offer_obj['short_cat'], None)
+            answer.append(offer)
         return answer
 
     def get_detail_info(self, url):
@@ -151,49 +154,49 @@ class ParserEtpActiv(Parser):
             "name": name, "price": price, "owner": company,
             "location": region, "additional_data": a_data, "short_cat": category
         }
-
         # print('ANSWER:', answer)
         return answer
 
     def post_result(self, data):
         for offer in data:
-            z = requests.post("https://synrate.ru/api/offers/create",
-                              json=offer)
-            today = datetime.today().strftime('%d-%m %H:%M')
-            try:
-                print(f'[etp_aktiv] {z.json()}\n{offer}')
-                # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
-                #     # ...
-                #     f.seek(0, 2)
-                #     f.write(f'[{today}] {z.json()}\n{offer}')
-                #     f.close()
-            except:
-                print(f'[etp_aktiv] {z}\n{offer}')
-                # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
-                #     # ...
-                #     f.seek(0, 2)
-                #     f.write(f'[{today}] {z}\n{offer}')
-                #     f.close()
-            try:
-                id = z.json()['unique_error'][0]
-                z = requests.put(f"https://synrate.ru/api/offer/update/{id}/",
-                                 json=offer)
-            except:
-                pass
-            try:
-                print(f'[etp_aktiv] {z.json()}\n{offer}')
-                # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
-                #     # ...
-                #     f.seek(0, 2)
-                #     f.write(f'[{today}] {z.json()}\n{offer}')
-                #     f.close()
-            except:
-                print(f'[etp_aktiv] {z}\n{offer}')
-                # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
-                #     # ...
-                #     f.seek(0, 2)
-                #     f.write(f'[{today}] {z}\n{offer}')
-                #     f.close()
+            offer.post()
+            # z = requests.post("https://synrate.ru/api/offers/create",
+            #                   json=offer)
+            # today = datetime.today().strftime('%d-%m %H:%M')
+            # try:
+            #     print(f'[etp_aktiv] {z.json()}\n{offer}')
+            #     # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
+            #     #     # ...
+            #     #     f.seek(0, 2)
+            #     #     f.write(f'[{today}] {z.json()}\n{offer}')
+            #     #     f.close()
+            # except:
+            #     print(f'[etp_aktiv] {z}\n{offer}')
+            #     # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
+            #     #     # ...
+            #     #     f.seek(0, 2)
+            #     #     f.write(f'[{today}] {z}\n{offer}')
+            #     #     f.close()
+            # try:
+            #     id = z.json()['unique_error'][0]
+            #     z = requests.put(f"https://synrate.ru/api/offer/update/{id}/",
+            #                      json=offer)
+            # except:
+            #     pass
+            # try:
+            #     print(f'[etp_aktiv] {z.json()}\n{offer}')
+            #     # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
+            #     #     # ...
+            #     #     f.seek(0, 2)
+            #     #     f.write(f'[{today}] {z.json()}\n{offer}')
+            #     #     f.close()
+            # except:
+            #     print(f'[etp_aktiv] {z}\n{offer}')
+            #     # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
+            #     #     # ...
+            #     #     f.seek(0, 2)
+            #     #     f.write(f'[{today}] {z}\n{offer}')
+            #     #     f.close()
 
 
 if __name__ == '__main__':

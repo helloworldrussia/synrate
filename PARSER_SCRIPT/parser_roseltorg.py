@@ -5,7 +5,7 @@ from fake_useragent import UserAgent
 from requests.adapters import HTTPAdapter
 from urllib3 import Retry
 
-from connector import change_parser_status
+from connector import change_parser_status, Item
 from ENGINE import Parser
 import time
 import random
@@ -37,10 +37,10 @@ class RoseltorgParser(Parser):
             last_page = int(self.last_page)
         for i in range(self.start_page, last_page + 1):
             print(i)
-            time.sleep(10)
+            time.sleep(6)
             successful = 0
             while not successful:
-                time.sleep(random.randint(1, 15))
+                time.sleep(random.randint(1, 6))
                 try:
                     self.soup = self.get_page_soup(self.sale_url.format(i, i * 10))
                     result = self.get_offers_from_page(self.soup)
@@ -57,43 +57,7 @@ class RoseltorgParser(Parser):
 
     def send_result(self, data):
         for offer in data:
-            z = requests.post("https://synrate.ru/api/offers/create",
-                              json=offer)
-            today = datetime.datetime.today().strftime('%d-%m %H:%M')
-            try:
-                print(f'[roseltorg] {z.json()}\n{offer}')
-                # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
-                #     # ...
-                #     f.seek(0, 2)
-                #     f.write(f'[{today}] {z.json()}\n{offer}')
-                #     f.close()
-            except:
-                print(f'[roseltorg] {z}\n{offer}')
-                # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
-                #     # ...
-                #     f.seek(0, 2)
-                #     f.write(f'[{today}] {z}\n{offer}')
-                #     f.close()
-            try:
-                id = z.json()['unique_error'][0]
-                z = requests.put(f"https://synrate.ru/api/offer/update/{id}/",
-                                 json=offer)
-            except:
-                pass
-            try:
-                print(f'[roseltorg] {z.json()}\n{offer}')
-                # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
-                #     # ...
-                #     f.seek(0, 2)
-                #     f.write(f'[{today}] {z.json()}\n{offer}')
-                #     f.close()
-            except:
-                print(f'[roseltorg] {z}\n{offer}')
-                # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
-                #     # ...
-                #     f.seek(0, 2)
-                #     f.write(f'[{today}] {z}\n{offer}')
-                #     f.close()
+            offer.post()
 
     def get_offers_from_page(self, soup):
         try:
@@ -140,7 +104,10 @@ class RoseltorgParser(Parser):
                          "additional_data": name, "organisation": company,
                          "url": link, "from_id": from_id
                          }
-            answer.append(offer_obj)
+            offer = Item(name, "roseltorg", link, region, None, end_date,
+                None, None, price, name, company, from_id,
+                None, None)
+            answer.append(offer)
 
         return answer
 
