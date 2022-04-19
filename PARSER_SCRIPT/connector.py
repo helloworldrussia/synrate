@@ -74,29 +74,23 @@ class Item:
 
    def validate(self):
       if self.home_name == 'tenderpro':
-         try:
             group = self.get_db_data("synrate_main_offer", 'name', 'home_name', "= 'tenderpro'", False, False)
-            for item in group:
-               if item[0] == self.name:
-                  return False, 'Tenderpro validation failed. Not unique'
-         except:
-            pass
+            if group:
+               for item in group:
+                  if item[0] == self.name:
+                     return False, 'Tenderpro validation failed. Not unique'
       if self.owner_id:
-         try:
             group = self.get_db_data("synrate_main_offer", 'additional_data', 'owner_id', f"= '{self.owner_id}'", False, False)
-            for item in group:
-               if item[0] == self.additional_data:
-                  return False, 'VK validation failed. Not unique'
-         except:
-            pass
+            if group:
+               for item in group:
+                  if item[0] == self.additional_data:
+                     return False, 'VK validation failed. Not unique'
       else:
-         try:
             group = self.get_db_data("synrate_main_offer", 'name', 'url', f"= '{self.url}'", False, False)
-            for item in group:
-               if item[0] == self.name:
-                  return False, 'Validation failed. Not unique offer'
-         except:
-            pass
+            if group:
+               for item in group:
+                  if item[0] == self.name:
+                     return False, 'Validation failed. Not unique offer'
       return True, 'OK'
 
    def get_db_data(self, table, target, field, value, second_field, second_value):
@@ -104,15 +98,17 @@ class Item:
       if second_field:
          try:
             cursor.execute(f"SELECT {target} FROM {table} WHERE {field} {value} AND {second_field} {second_value}")
+            qs = cursor.fetchall()
          except:
             self.conn.rollback()
-         qs = cursor.fetchall()
+            qs = 0
          return qs
       try:
          cursor.execute(f"SELECT {target} FROM {table} WHERE {field} {value}")
+         qs = cursor.fetchall()
       except:
          self.conn.rollback()
-      qs = cursor.fetchall()
+         qs = 0
       return qs
 # ------------------
 # name, home_name, url, location = 'Тросостойка П4', 'tenderpro', 'https://reserve.isource.ru/trades/item/trosostojka-p43-50068', 'РФ'
