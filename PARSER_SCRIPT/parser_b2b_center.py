@@ -90,7 +90,8 @@ class ParserCenter(Parser):
             link = self.core_www+link.replace(self.core, '').replace(self.core_www, '')
             text = name
             from_id = from_id.split('№')[1].split(" ")[1]
-
+            if name is None or name == '':
+                continue
             offer_obj = {"name": name,
                          "home_name": "b2b-center",
                          "offer_start_date": start_date, "offer_end_date": end_date,

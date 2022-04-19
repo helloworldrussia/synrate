@@ -62,7 +62,7 @@
                       <tr>
                         <td>
                             <div class="product-offer">
-                                <p class="product-additional_data">{{ offer.name }} {{ offer.additional_data }}</p>
+                                <p class="product-additional_data">{{ offer.name }} {% if offer.additional_data is not None and offer.additional_data != '' %}{{ offer.additional_data }}{% endif %}</p>
                             </div>
                         </td>
                       </tr>

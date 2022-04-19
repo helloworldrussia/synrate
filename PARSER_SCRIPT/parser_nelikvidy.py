@@ -9,7 +9,7 @@ from requests.adapters import HTTPAdapter
 from urllib3 import Retry
 from connector import change_parser_status, Item
 from ENGINE import Parser
-from mixins import get_proxy, proxy_data
+from mixins import get_proxy
 
 
 class ParserNelikvidy(Parser):
@@ -85,7 +85,7 @@ class ParserNelikvidy(Parser):
                         self.send_result(result)
                         successful = 1
                 except Exception as ex:
-                    print(ex)
+                    print(ex, 111)
                     self.change_proxy()
         change_parser_status('nelikvidy', 'Выкл')
         sys.exit()
@@ -111,7 +111,10 @@ class ParserNelikvidy(Parser):
             date = date.find("span", attrs={"class": "btn-icon"}).find("small")
             price = offer.find("p", attrs={"class": "formated_price"})
             from_id = link.split('-')[-1].replace('.html', '')
-
+            try:
+                a_data = offer.find("div", attrs={"class": "card-side"}).find_all("div")[1].getText()
+            except:
+                a_data = name
             try:
                 company = region.find("a").getText().replace('"', '')
             except:
@@ -131,14 +134,27 @@ class ParserNelikvidy(Parser):
                 # region = region.split(' ')[-1][:-1]
             else:
                 region = None
+            # вычленение "(Имя компании)" из названия заявки
+            v = name.split('(')
+            v.remove(v[-1])
+            e = ''
+            i = 1
+            for x in v:
+                if i == 1:
+                    e += x
+                else:
+                    e += f'({x}'
+                i += 1
+            name = e
+
             offer_obj = {"name": name.replace('"', ''), "location": region, "home_name": "nelikvidi",
                                         "offer_start_date": str(date),
                                         "offer_price": price,
-                                        "additional_data": name.replace('"', ''), "organisation": company, "url": link,
+                                        "additional_data": a_data.replace('"', ''), "organisation": company, "url": link,
                                         "from_id": from_id
                                         }
-            offer = Item(name.replace('"', ''), "nelikvidi", link, region, None, None,
-                None, None, price, name.replace('"', ''), company, from_id,
+            offer = Item(name.replace('"', ''), "nelikvidi", link, region, str(date), None,
+                None, None, price, a_data.replace('"', ''), company, from_id,
                 None, None)
             answer.append(offer)
         return answer
@@ -203,7 +219,7 @@ class ParserNelikvidy(Parser):
     def change_proxy(self):
         print('change_proxy: start')
         self.proxy, self.current_proxy_ip = get_proxy(self.current_proxy_ip)
-        time.sleep(30)
+        time.sleep(5)
 
     def get_page_soup(self, url):
         if self.current_proxy_ip:

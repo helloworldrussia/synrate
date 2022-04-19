@@ -4,9 +4,6 @@ import threading
 from connector import conn, change_parser_status
 from backend import get_api, VkGroup
 
-lada = 'd785d6b835c25e6ab39f398b8bc010903a601ceb5f414120b4610536eb84e5856d45fc89fc577123349ac'
-token = 'a77eca1a8ecf84c1ba4af75dbd5e4a500315faba4d777a7bf8c1e02e1faf9f7d396845378d89e4b13fbf7'
-erick = 'c99c3ccf61df1de593411dde502690f9561696c4ce79546216a751b3a118fe94c08fe7d2ec42ba3111f0'
 
 """
     Необходимые для класса VkGroup данные: 

@@ -45,7 +45,7 @@ class Offer(models.Model):
     owner = models.CharField(max_length=100, null=True, blank=True, default=None, verbose_name="Владелец")
     ownercontact = models.CharField(max_length=250, null=True, blank=True, default="Не указан",
                                     verbose_name="Контакт владельцы")
-    offer_price = models.IntegerField(null=True, blank=True, default=None, verbose_name="Цена")
+    offer_price = models.FloatField(null=True, blank=True, default=None, verbose_name="Цена")
     additional_data = models.TextField(null=True, blank=True, default=None, verbose_name="Дополнительные данные")
     organisation = models.CharField(max_length=250, null=True, blank=True, default=None, verbose_name="Организация")
     views = models.IntegerField(default=0, blank=True, verbose_name="Просмотры")

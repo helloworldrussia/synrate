@@ -99,10 +99,7 @@ class ParserEtpgpb(Parser):
             else:
                 price = None
             offer_type = offer.find("div", attrs={"class": "procedure__infoAuctionType"}).getText()
-            try:
-                price = int(price)
-            except:
-                price = None
+
             divs_texts = []
             for x in divs:
                 divs_texts.append(x.getText())
@@ -172,7 +169,8 @@ class ParserEtpgpb(Parser):
         try:
             split_price = price.split(' ')
             price = price.replace(f'{split_price[-1]}', '').replace(' ', '')
-        except:
+        except Exception as ex:
+            print(ex)
             price = 0
         return price
 
