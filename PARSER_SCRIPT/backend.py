@@ -5,7 +5,7 @@ import time
 import requests
 import vk
 
-from PARSER_SCRIPT.connector import Item
+from connector import Item
 
 
 def get_api(token):
