@@ -96,11 +96,16 @@ class Item:
    def get_db_data(self, table, target, field, value, second_field, second_value):
       cursor = self.conn.cursor()
       if second_field:
-         cursor.execute(f"SELECT {target} FROM {table} WHERE {field} {value} AND {second_field} {second_value}")
+         try:
+            cursor.execute(f"SELECT {target} FROM {table} WHERE {field} {value} AND {second_field} {second_value}")
+         except:
+            self.conn.rollback()
          qs = cursor.fetchall()
          return qs
-
-      cursor.execute(f"SELECT {target} FROM {table} WHERE {field} {value}")
+      try:
+         cursor.execute(f"SELECT {target} FROM {table} WHERE {field} {value}")
+      except:
+         self.conn.rollback()
       qs = cursor.fetchall()
       return qs
 # ------------------
