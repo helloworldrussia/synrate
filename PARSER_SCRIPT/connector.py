@@ -74,23 +74,29 @@ class Item:
 
    def validate(self):
       if self.home_name == 'tenderpro':
-         group = self.get_db_data("synrate_main_offer", 'name', 'home_name', "= 'tenderpro'", False, False)
-         for item in group:
-            if item[0] == self.name:
-               return False, 'Tenderpro validation failed. Not unique'
-
+         try:
+            group = self.get_db_data("synrate_main_offer", 'name', 'home_name', "= 'tenderpro'", False, False)
+            for item in group:
+               if item[0] == self.name:
+                  return False, 'Tenderpro validation failed. Not unique'
+         except:
+            pass
       if self.owner_id:
-         group = self.get_db_data("synrate_main_offer", 'additional_data', 'owner_id', f"= '{self.owner_id}'", False, False)
-         for item in group:
-            if item[0] == self.additional_data:
-               return False, 'VK validation failed. Not unique'
-
+         try:
+            group = self.get_db_data("synrate_main_offer", 'additional_data', 'owner_id', f"= '{self.owner_id}'", False, False)
+            for item in group:
+               if item[0] == self.additional_data:
+                  return False, 'VK validation failed. Not unique'
+         except:
+            pass
       else:
-         group = self.get_db_data("synrate_main_offer", 'name', 'url', f"= '{self.url}'", False, False)
-         for item in group:
-            if item[0] == self.name:
-               return False, 'Validation failed. Not unique offer'
-
+         try:
+            group = self.get_db_data("synrate_main_offer", 'name', 'url', f"= '{self.url}'", False, False)
+            for item in group:
+               if item[0] == self.name:
+                  return False, 'Validation failed. Not unique offer'
+         except:
+            pass
       return True, 'OK'
 
    def get_db_data(self, table, target, field, value, second_field, second_value):
