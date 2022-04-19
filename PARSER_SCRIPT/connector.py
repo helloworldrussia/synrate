@@ -110,25 +110,3 @@ class Item:
          self.conn.rollback()
          qs = 0
       return qs
-# ------------------
-# name, home_name, url, location = 'Тросостойка П4', 'tenderpro', 'https://reserve.isource.ru/trades/item/trosostojka-p43-50068', 'РФ'
-# offer_start_date, offer_end_date = '2022-06-06', '2022-07-07'
-# owner, ownercontact, offer_price, additional_data, organisation = 'Антонов В. А.', 'Антонов В. А.', 777, name, 'ОАО'
-# created_at, from_id, short_cat, owner_id = datetime.datetime.now(), '18233377', 'some_short_cat', None
-#
-# data = {"name": name, "home_name": home_name, "url": url, "location": location,
-# "offer_start_date": offer_start_date, "offer_end_date": offer_end_date, "owner": owner, "ownercontact": ownercontact,
-# "offer_price": offer_price, "additional_data": additional_data, "organisation": organisation,
-# "from_id": from_id, "short_cat": short_cat, "owner_id": owner_id}
-#
-# obj = Item(**data)
-# obj.post()
-# a = Offer.objects.filer(home_name='vk.com')
-# print(a)
-# res = obj.get_db_data("synrate_main_offer", 'name', 'home_name', "= 'tenderpro'", False, False)
-# print('result', len(res), res)
-# i = 1
-# for x in res:
-#    print(i, x)
-#    i += 1
-# ------------------

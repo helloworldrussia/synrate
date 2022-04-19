@@ -37,8 +37,8 @@ class ProxyUserAdmin(admin.ModelAdmin):
 
 
 class VkAccountAdmin(admin.ModelAdmin):
-    list_display = ['name', 'token']
-    search_fields = ['name', 'token']
+    list_display = ['name', 'token', 'active']
+    search_fields = ['name', 'token', 'active']
 
 
 admin.site.register(Parser)
