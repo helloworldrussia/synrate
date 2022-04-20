@@ -35,4 +35,3 @@ class SynrateUser(AbstractUser):
             is_admin=True
         )
         return user
-

@@ -127,3 +127,12 @@ class CONTACT(CMSPlugin):
     def __str__(self):
         return self.get_title()
 
+
+class VkUser(models.Model):
+    from_id = models.IntegerField(unique=True, null=False)
+    a_data = models.TextField(null=True)
+
+
+class TgUser(models.Model):
+    from_id = models.IntegerField(unique=True, null=False)
+    a_data = models.TextField(null=True)

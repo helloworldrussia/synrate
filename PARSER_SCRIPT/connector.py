@@ -12,6 +12,15 @@ conn = psycopg2.connect(
    port="5432")
 
 
+def save_from_id(id, db):
+   try:
+      cursor = conn.cursor()
+      cursor.execute(f"INSERT INTO {db}(from_id) VALUES({id})")
+      conn.commit()
+   except:
+      conn.rollback()
+
+
 def change_parser_status(name, status):
    cursor = conn.cursor()
    cursor.execute(f"UPDATE synrate_main_parserdetail SET status = '{status}' WHERE name = '{name}'")
@@ -88,6 +97,11 @@ class Item:
                for item in group:
                   if item[0] == self.additional_data:
                      return False, 'VK/TG validation failed. Not unique'
+            if self.home_name == 'telegram':
+               save_from_id(self.owner_id, 'synrate_main_tguser')
+            elif self.home_name == 'vk.com':
+               save_from_id(self.owner_id, 'synrate_main_vkuser')
+
       else:
             group = self.get_db_data("synrate_main_offer", 'name', 'url', f"= '{self.url}'", False, False)
             if group:
