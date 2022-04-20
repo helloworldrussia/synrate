@@ -44,14 +44,10 @@ class TelegramItem:
             peer=self.target, offset_id=cur_id, offset_date=0,
             add_offset=0, limit=self.limit, max_id=0, min_id=0, hash=0,
         ))
+        result = result.messages
         return result
 
     def data_processing(self, data):
-        try:
-            data = data.messages
-        except Exception as ex:
-            print(ex)
-            return None
         for offer in data:
             try:
                 test = offer.message
