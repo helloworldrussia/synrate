@@ -1,6 +1,16 @@
 from django.contrib import admin
 
-from .models import Offer, FAQ, OfferCategory, OfferSubcategory
+from .models import Offer, FAQ, OfferCategory, OfferSubcategory, TgUser, VkUser
+
+
+class VkUserAdmin(admin.ModelAdmin):
+    list_display = ['from_id', 'a_data']
+    search_fields = ['from_id', 'a_data']
+
+
+class TgUserAdmin(admin.ModelAdmin):
+    list_display = ['from_id', 'a_data']
+    search_fields = ['from_id', 'a_data']
 
 
 # @admin.register(Offer)
@@ -59,5 +69,6 @@ class FAQAdmin(admin.ModelAdmin):
 admin.site.register(OfferSubcategory, OfferSubcategoryAdmin)
 admin.site.register(OfferCategory, OfferCategoryAdmin)
 admin.site.register(FAQ, FAQAdmin)
-
+admin.site.register(TgUser, TgUserAdmin)
+admin.site.register(VkUser, VkUserAdmin)
 admin.site.register(Offer, OfferAdmin)

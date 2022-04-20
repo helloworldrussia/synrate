@@ -52,7 +52,7 @@
                         <a href="{{ offer.url }}" target="_blank"><img src="{% static 'img/vk.png' %}" class="offer-block__img" alt=""></a>
                         {% endif %}
                         {% if offer.home_name == "telegram" %}
-                        <img src="{% static 'img/telegram.png' %}" class="offer-block__img" alt="">
+                        <a href="{{ offer.url }}" target="_blank"><img src="{% static 'img/telegram.png' %}" class="offer-block__img" alt=""></a>
                         {% endif %}
                     </div>
                     <a href="{{ offer.url }}" target="_blank">Перейти на источник</a>

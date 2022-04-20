@@ -53,7 +53,7 @@ class TelegramItem:
                 test = offer.message
             except :
                 continue
-            obj = Item(offer.message[:120], 'telegram', None, None, str(offer.date).split(' ')[0], None,
+            obj = Item(offer.message[:120], 'telegram', self.target, None, str(offer.date).split(' ')[0], None,
                        None, None, None, offer.message, None, offer.id,
                        self.target_name, offer.from_id)
             obj.post()
