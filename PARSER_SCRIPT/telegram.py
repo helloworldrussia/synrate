@@ -1,6 +1,4 @@
 import threading
-
-import asyncio
 from telethon import TelegramClient
 from connector import conn
 from tg_backend import TelegramItem
@@ -13,8 +11,7 @@ client.start()
 
 def go(client, target, target_name):
     obj = TelegramItem(client, target, target_name)
-    loop = asyncio.new_event_loop()
-    run = loop.run_until_complete(obj.go())
+    obj.go()
 
 
 def main():

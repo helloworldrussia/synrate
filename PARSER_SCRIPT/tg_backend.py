@@ -1,5 +1,6 @@
 import sys
 
+import asyncio
 from telethon import TelegramClient
 import datetime
 from telethon.tl import functions
@@ -19,6 +20,8 @@ class TelegramItem:
         self.limit = 100
 
     def go(self):
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
         successful, i = 0, 1
         # при первой итерации i = 1, и cur_id = 0
         # далее cur_id = ид последнего спаршенного сообщения
