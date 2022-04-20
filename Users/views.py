@@ -115,6 +115,9 @@ def stat_view(request):
     vk = Offer.objects.filter(home_name='vk.com')
     vk_all, vk_month, vk_day = get_counts(vk)
 
+    telegram = Offer.objects.filter(home_name='telegram')
+    telegram_all, telegram_month, telegram_day = get_counts(telegram)
+
     content = {"all": all,
      "vk_all": vk_all, "vk_month": vk_month, "vk_day": vk_day, 'tenderpro_all': tenderpro_all, "tenderpro_day": tenderpro_day, "tenderpro_month": tenderpro_month,
      "tektorg_day": tektorg_day, "tektorg_month": tektorg_month, "tektorg_all": tektorg_all,
@@ -125,8 +128,9 @@ def stat_view(request):
      "fabrikant_all": fabrikant_all, "fabrikant_month": fabrikant_month, "fabrikant_day": fabrikant_day,
      "etpgpb_all": etpgpb_all, "etpgpb_month": etpgpb_month, "etpgpb_day": etpgpb_day,
      "etp_aktiv_all": etp_aktiv_all, "etp_aktiv_month": etp_aktiv_month, "etp_aktiv_day": etp_aktiv_day,
-     "b2b_center_all": b2b_center_all, "b2b_center_month": b2b_center_month, "b2b_center_day": b2b_center_day
-               }
+     "b2b_center_all": b2b_center_all, "b2b_center_month": b2b_center_month, "b2b_center_day": b2b_center_day,
+     "telegram_all": telegram_all, "telegram_day": telegram_day, "telegram_month": telegram_month
+    }
 
     qs = ParserDetail.objects.all()
     for parser in qs:

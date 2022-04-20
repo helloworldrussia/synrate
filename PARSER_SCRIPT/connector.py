@@ -2,8 +2,7 @@ import datetime
 import psycopg2
 
 
-""" Подключение к БД postgres и backend сохранения заявок напрямую
-    Импортируйте conn для использования соединения с базой """
+""" Импортируйте conn для использования соединения с базой """
 
 conn = psycopg2.connect(
    database="synrate_db",
@@ -17,6 +16,10 @@ def change_parser_status(name, status):
    cursor = conn.cursor()
    cursor.execute(f"UPDATE synrate_main_parserdetail SET status = '{status}' WHERE name = '{name}'")
    conn.commit()
+
+
+""" Класс заявки для сохранения напрямую в БД.
+    Вводите данные при создании экз. класса, если какого-то парметра от парсера не поступает, вписывайте None """
 
 
 class Item:
@@ -38,7 +41,7 @@ class Item:
       self.organisation = organisation
       self.created_at = datetime.datetime.now()
       self.from_id = from_id
-      # для заявок с вк
+      # для заявок с вк и тг
       self.short_cat = short_cat
       self.owner_id = owner_id
       self.views = 1
@@ -84,7 +87,7 @@ class Item:
             if group:
                for item in group:
                   if item[0] == self.additional_data:
-                     return False, 'VK validation failed. Not unique'
+                     return False, 'VK/TG validation failed. Not unique'
       else:
             group = self.get_db_data("synrate_main_offer", 'name', 'url', f"= '{self.url}'", False, False)
             if group:

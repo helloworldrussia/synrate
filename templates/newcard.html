@@ -51,6 +51,9 @@
                         {% if offer.home_name == "vk.com" %}
                         <a href="{{ offer.url }}" target="_blank"><img src="{% static 'img/vk.png' %}" class="offer-block__img" alt=""></a>
                         {% endif %}
+                        {% if offer.home_name == "telegram" %}
+                        <img src="{% static 'img/telegram.png' %}" class="offer-block__img" alt="">
+                        {% endif %}
                     </div>
                     <a href="{{ offer.url }}" target="_blank">Перейти на источник</a>
                 </div>
@@ -79,7 +82,7 @@
                         <td>
                             {% if offer.short_cat != None and offer.short_cat != '' %}
                             <div class="product-organization">
-                                <p class="product-organization-name"><span>{% if offer.home_name == 'vk.com' %}Группа VK:{% else %}Категория:{% endif %}</span> {{ offer.short_cat }}</p>
+                                <p class="product-organization-name"><span>{% if offer.home_name == 'vk.com' %}Группа VK:{% elif offer.home_name == 'telegram' %}Группа Telegram:{% else %}Категория:{% endif %}</span> {{ offer.short_cat }}</p>
                             </div>
                             {% endif %}
                         </td>
@@ -183,6 +186,9 @@
                             {% endif %}
                             {% if offer.home_name == "vk.com" %}
                             <img src="{% static 'img/vk.png' %}" class="offer-block__img" alt="">
+                            {% endif %}
+                            {% if offer.home_name == "telegram" %}
+                            <img src="{% static 'img/telegram.png' %}" class="offer-block__img" alt="">
                             {% endif %}
                         </div>
                         <a href="{% url 'synrate_main:detail_view' id=offer.id %}" class="detailhref">

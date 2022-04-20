@@ -1,7 +1,5 @@
-import datetime
 import os
 import threading
-import time
 from connector import conn
 
 
@@ -13,15 +11,25 @@ def start_vk():
     os.system(f"python3 /var/www/synrate_dir/synrate/PARSER_SCRIPT/vk_main.py")
 
 
+def start_tg():
+    os.system(f"python3 /var/www/synrate_dir/synrate/PARSER_SCRIPT/telegram")
+
+
 def start():
     change_status_for_all()
+
     th = threading.Thread(target=start_default, args=(' --m short',))
     th.start()
-    th_second = threading.Thread(target=start_vk)
-    th_second.start()
-    th.join()
-    th_second.join()
 
+    th_vk = threading.Thread(target=start_vk)
+    th_vk.start()
+
+    th_tg = threading.Thread(target=start_tg)
+    th_tg.start()
+
+    th.join()
+    th_vk.join()
+    th_tg.join()
 
 def change_status_for_all():
     # меняет статусы всех парсеров на "В работе". При включении.

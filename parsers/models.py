@@ -78,6 +78,18 @@ class VkGroupDetail(models.Model):
         verbose_name_plural = "Группы ВК"
 
 
+class TelegramGroupDetail(models.Model):
+    url = models.CharField(max_length=599, unique=True, verbose_name="Ссылка группу")
+    name = models.CharField(max_length=255, unique=True, verbose_name='Название группы')
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = "Группа Telegram"
+        verbose_name_plural = "Группы Telegram"
+
+
 class Proxy(models.Model):
     login = models.CharField(max_length=255, null=False, verbose_name="Логин")
     password = models.CharField(max_length=255, null=False, verbose_name='Пароль')

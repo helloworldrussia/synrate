@@ -38,30 +38,6 @@ class OfferCreateView(CreateAPIView):
     serializer_class = OfferSerializer
 
 
-    # def post(self, request, *args, **kwargs):
-    #     # try:
-    #     #     x = OfferSubcategory.objects.get(name=request.data["subcategory"])
-    #     #     del request.data["category"]
-    #     #     request.data["category"] = x.id
-    #     #     del request.data["subcategory"]
-    #     # except:
-    #     #     try:
-    #     #         x = OfferCategory.objects.get(name=request.data["category"])
-    #     #         subcategory = OfferSubcategory(name=request.data["subcategory"], category=x)
-    #     #         subcategory.save()
-    #     #         del request.data["category"]
-    #     #         request.data["category"] = subcategory.id
-    #     #         del request.data["subcategory"]
-    #     #     except:
-    #     #         category = OfferCategory(name=request.data["category"])
-    #     #         category.save()
-    #     #         subcategory = OfferSubcategory(name=request.data["subcategory"], category=category)
-    #     #         del request.data["category"]
-    #     #         request.data["category"] = subcategory.id
-    #     #         del request.data["subcategory"]
-    #     return self.create(request, *args, **kwargs)
-
-
 class ParserListView(ListAPIView):
     model = Parser
     serializer_class = ParserSerializer

@@ -1,16 +1,21 @@
 from django.contrib import admin
 from django.utils.html import format_html
 
-from .models import Parser, ENGINE, VkGroupDetail, Proxy, ProxyUser, VkAccount
+from synrate_main.models import Offer
+from .models import Parser, ENGINE, VkGroupDetail, Proxy, ProxyUser, VkAccount, TelegramGroupDetail
 
 
 class VkGroupDetailAdmin(admin.ModelAdmin):
 
-    list_display = ('name', 'vk_id', 'link',)
+    list_display = ('name', 'vk_id', 'link', 'offers')
     search_fields = ['name', 'vk_id', 'url', ]
 
     def link(self, obj):
         return format_html(f"<a href='{obj.url}' target='_blank'>{obj.url}</a>", url=obj.url)
+
+    def offers(self, obj):
+        offers = Offer.objects.filter(short_cat=obj.name).count()
+        return offers
 
 
 class ProxyAdmin(admin.ModelAdmin):
@@ -41,11 +46,26 @@ class VkAccountAdmin(admin.ModelAdmin):
     search_fields = ['name', 'token', 'active']
 
 
+class TelegramGroupDetailAdmin(admin.ModelAdmin):
+
+    list_display = ('name', 'link', 'offers')
+    search_fields = ['name', 'url', ]
+
+    def link(self, obj):
+        return format_html(f"<a href='{obj.url}' target='_blank'>{obj.url}</a>", url=obj.url)
+
+    def offers(self, obj):
+        offers = Offer.objects.filter(short_cat=obj.name).count()
+        return offers
+
+
 admin.site.register(Parser)
 admin.site.register(ENGINE)
 admin.site.register(VkGroupDetail, VkGroupDetailAdmin)
 admin.site.register(VkAccount, VkAccountAdmin)
 admin.site.register(Proxy, ProxyAdmin)
 admin.site.register(ProxyUser, ProxyUserAdmin)
+admin.site.register(TelegramGroupDetail, TelegramGroupDetailAdmin)
+
 
 
