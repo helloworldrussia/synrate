@@ -155,9 +155,6 @@ class RoseltorgParser(Parser):
         self.proxy, self.current_proxy_ip = get_proxy(self.current_proxy_ip)
         time.sleep(30)
 
-    # сайт не показывает последнюю страницу, но мы можем перейти на нее используя баг
-    # сайт перекинет на ласт страницу, если укажем page больше чем их на самом деле и from=10
-    # уберете фром и скажет, что стр. 500 нет. надо с from
     def get_last_page(self):
         soup = self.get_page_soup(self.sale_url.format(500, 10))
         last_page = soup.find("a", attrs={"class": "pagination__link pagination__link--active"}).getText()

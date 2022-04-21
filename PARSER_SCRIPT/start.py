@@ -16,7 +16,7 @@ def start_default(mode):
 
 
 def start_vk():
-    os.system(f"python3 /var/www/synrate_dir/synrate/PARSER_SCRIPT/vk_main.py")
+    os.system(f"python3 /var/www/synrate_dir/synrate/PARSER_SCRIPT/parser_vk.py")
 
 
 # def start_tg():

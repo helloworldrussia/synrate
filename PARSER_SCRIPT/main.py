@@ -4,6 +4,7 @@ from parser_b2b_center import ParserCenter
 from parser_fabrikant import ParserFabrikant
 from parser_etpgpb import ParserEtpgpb
 from parser_nelikvidy import ParserNelikvidy
+from parser_prostanki import ProstankiParser
 from parser_tenderpro import ParserTender
 from parser_roseltorg import RoseltorgParser
 from parser_isource import ParserSource
@@ -11,9 +12,7 @@ from parser_tektorg import ParserTektorg
 from parser_onlinecontract import ParserOnlineContract
 from threading import Thread
 import time
-import sys
 import urllib3
-from json.decoder import JSONDecodeError
 import argparse
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -74,6 +73,7 @@ def server_listener():
         nelikvidy_obj = ParserNelikvidy(False, 300)
         tender_obj = ParserTender(12)
         roseltorg_obj = RoseltorgParser(10)
+        prostanki_obj = ProstankiParser(10)
         isource_obj = ParserSource(10)
         tectorg_obj = ParserTektorg()
         onlinecontract_obj = ParserOnlineContract(125)
@@ -87,6 +87,7 @@ def server_listener():
         nelikvidy_obj = ParserNelikvidy(False, False)
         tender_obj = ParserTender(False)
         roseltorg_obj = RoseltorgParser(False)
+        prostanki_obj = ProstankiParser(False)
         isource_obj = ParserSource(False)
         tectorg_obj = ParserTektorg()
         onlinecontract_obj = ParserOnlineContract(False)
@@ -105,12 +106,14 @@ def server_listener():
     parser_fabrikant = ParserThread("parser_fabrikant", fabrikant_obj)
     parser_b2b_center = ParserThread("parser_b2b_cetner", b2b_center_obj)
     parser_etp_aktiv = ParserThread("parser_etp_aktiv", etp_activ_obj)
+    parser_prostanki = ParserThread("parser_prostanki", prostanki_obj)
 
     #DEBUG OPTIONS
     #check_thread_1 = CheckThread('parser_roseltorg')
     #check_thread_1.start()
 
     parser_roseltorg.start()
+    parser_prostanki.start()
     parser_nelikvidy.start()
     parser_tender.start()
     parser_isource.start()
@@ -120,73 +123,6 @@ def server_listener():
     parser_fabrikant.start()
     parser_b2b_center.start()
     parser_etp_aktiv.start()
-
-    # status = True
-    #
-    # while status:
-    #     while True:
-    #         try:
-    #             request = requests.get("https://synrate.ru/api/ENGINE/list")
-    #
-    #             json = (request.json()[0])
-    #             status = json["status"]
-    #             break
-    #         except JSONDecodeError:
-    #             print("Server restarting")
-    #     if status:
-    #         while True:
-    #             try:
-    #                 parser_list_request = requests.get("https://synrate.ru/api/parser/list")
-    #                 parser_json = parser_list_request.json()
-    #                 break
-    #             except JSONDecodeError:
-    #                 print("Sercer restarting")
-    #
-    #         for json in parser_json:
-    #             unique_code = json["unique_code"]
-    #             p_status = json["status"]
-    #             if unique_code == "parser_nelikvidy":
-    #                 if p_status:
-    #                     parser_nelikvidy.active = True
-    #                 else:
-    #                     parser_nelikvidy.active = False
-    #             if unique_code == "parser_tender":
-    #                 if p_status:
-    #                     parser_tender.active = True
-    #                 else:
-    #                     #if parser_tender.active != False:
-    #                     parser_tender.active = False
-    #             if unique_code == "parser_roseltorg":
-    #                 if p_status:
-    #                     parser_roseltorg.active = True
-    #                 else:
-    #                     parser_roseltorg.active = False
-    #             if unique_code == "parser_onlinecontract":
-    #                 if p_status:
-    #                     parser_onlinecontract.active = True
-    #                 else:
-    #                     parser_onlinecontract.active = False
-    #             if unique_code == "parser_tectorg":
-    #                 if p_status:
-    #                     parser_tectorg.active = True
-    #                 else:
-    #                     parser_tectorg.active = False
-    #             if unique_code == "parser_isource":
-    #                 if p_status:
-    #                     parser_isource.active = True
-    #                 else:
-    #                     parser_isource.active = False
-    #     else:
-    #         #check_thread_1.status = False
-    #         parser_nelikvidy.status = False
-    #         parser_tender.status = False
-    #         parser_roseltorg.status = False
-    #         parser_isource.status = False
-    #         parser_tectorg.status = False
-    #         parser_onlinecontract.status = False
-    #
-    # else:
-    #     sys.exit()
 
 
 if __name__ == '__main__':
