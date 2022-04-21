@@ -76,6 +76,9 @@
                         {% if offer.home_name == "telegram" %}
                         <img src="{% static 'img/telegram.png' %}" class="offer-block__img" alt="">
                         {% endif %}
+                        {% if offer.home_name == "prostanki" %}
+                        <img src="{% static 'img/prostanki.png' %}" class="offer-block__img" alt="">
+                        {% endif %}
                     </div>
                     <a href="{% url 'synrate_main:detail_view' id=offer.id %}" class="detailhref">
                         <div class="offer-wrapper">
