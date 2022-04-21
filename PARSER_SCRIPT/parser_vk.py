@@ -32,7 +32,7 @@ def get_vk_models():
     cursor.execute(f"SELECT * FROM parsers_vkgroupdetail")
     all_goups = cursor.fetchall()
     cursor = conn.cursor()
-    cursor.execute(f"SELECT * FROM parsers_vkaccount WHERE active = 1")
+    cursor.execute(f"SELECT * FROM parsers_vkaccount WHERE active = Ture")
     all_accounts = cursor.fetchall()
     return all_goups, all_accounts
 
