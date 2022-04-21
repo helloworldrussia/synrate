@@ -48,6 +48,8 @@ class ProstankiParser(Parser):
         for cat in self.target_list:
             self.cur_cat = cat
             self.parse_cat(cat)
+        change_parser_status('prostanki', 'Выкл')
+        sys.exit()
 
     def parse_cat(self, url):
         last_page = self.get_last_page(url)
