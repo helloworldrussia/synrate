@@ -1,4 +1,6 @@
 import threading
+import time
+
 from telethon import TelegramClient
 from connector import conn
 from tg_backend import TelegramItem
@@ -23,4 +25,6 @@ def main():
         th.start()
 
 
-main()
+while True:
+    main()
+    time.sleep(1200)
