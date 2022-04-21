@@ -31,7 +31,7 @@ def get_all_category_names():
 
 
 def index(request):
-    queryset = Offer.objects.all().order_by('-offer_start_date')
+    queryset = Offer.objects.all().exclude(offer_start_date__isnull=True).order_by('-offer_start_date')
     # получаем количество заявок всего, за мес., день
     all_count, month_count, today_count = get_counts(queryset)
 

@@ -1,6 +1,6 @@
 import datetime
 import psycopg2
-
+from dateutil.relativedelta import relativedelta
 
 """ Импортируйте conn для использования соединения с базой """
 
@@ -72,6 +72,11 @@ class Item:
             if self.arg_list[f'{key}'] is not None and self.arg_list[f'{key}'] != '':
                arg_string += f'{key},'
                val_string += f"'{self.arg_list[f'{key}']}',"
+            else:
+               if key == 'offer_start_date':
+                  custom_start_date = one_month = datetime.date.today() + relativedelta(months=-1)
+                  arg_string += f'offer_start_date,'
+                  val_string += f"'{custom_start_date}',"
          arg_string, val_string = arg_string[:-1], val_string[:-1]
          cursor = self.conn.cursor()
          try:
@@ -127,3 +132,5 @@ class Item:
          self.conn.rollback()
          qs = 0
       return qs
+
+
