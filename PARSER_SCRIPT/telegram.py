@@ -26,5 +26,13 @@ def main():
 
 
 while True:
+    cursor = conn.cursor()
+    cursor.execute(f"UPDATE synrate_main_parserdetail SET status = 'В работе' WHERE name = 'telegram'")
+    conn.commit()
+    conn.close()
     main()
+    cursor = conn.cursor()
+    cursor.execute(f"UPDATE synrate_main_parserdetail SET status = 'Выкл' WHERE name = 'telegram'")
+    conn.commit()
+    conn.close()
     time.sleep(1200)
