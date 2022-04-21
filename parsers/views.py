@@ -1,4 +1,6 @@
-from django.shortcuts import render, get_object_or_404
+import threading
+
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
 from django.core.serializers import serialize
 import requests
@@ -7,6 +9,8 @@ from django.db import IntegrityError
 from rest_framework.generics import ListAPIView, CreateAPIView, UpdateAPIView
 from rest_framework.views import APIView
 from rest_framework.response import Response
+
+from .mixins import start_telegram_script
 from .serializers import OfferSerializer, ParserSerializer, EngineSerializer, OfferUpdateSerializer
 from .models import Parser, ENGINE
 from synrate_main.models import OfferCategory, OfferSubcategory
@@ -92,3 +96,9 @@ class EngineUpdateView(APIView):
         if serializer.is_valid(raise_exception=True):
             engine_updated = serializer.save()
         return Response({"success": "ENGINE '{}' updated successfully".format(engine_updated.name)})
+
+
+def start_telegram(request):
+    th = threading.Thread(target=start_telegram_script)
+    th.start()
+    return redirect('https://synrate.ru/admin')
