@@ -64,7 +64,10 @@ class Item:
 
    def post(self):
       successful, message = self.validate()
-      print(f'[{self.home_name}]', successful, message)
+      if self.home_name == 'vk.com':
+         pass
+      else:
+         print(f'[{self.home_name}]', successful, message)
       if successful:
          arg_string = ''
          val_string = ''

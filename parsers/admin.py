@@ -42,7 +42,7 @@ class ProxyUserAdmin(admin.ModelAdmin):
 
 
 class VkAccountAdmin(admin.ModelAdmin):
-    list_display = ['name', 'token', 'active']
+    list_display = ['name', 'token', 'active', 'status']
     search_fields = ['name', 'token', 'active']
 
 

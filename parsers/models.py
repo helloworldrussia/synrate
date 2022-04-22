@@ -56,6 +56,7 @@ class VkAccount(models.Model):
     name = models.CharField(max_length=255, unique=True, verbose_name='Имя')
     token = models.CharField(max_length=400, unique=True, verbose_name='Токен')
     active = models.BooleanField(default=True, verbose_name="Действующий")
+    status = models.BooleanField(default=True, blank=True, verbose_name="Состояние")
 
     def __str__(self):
         return self.name

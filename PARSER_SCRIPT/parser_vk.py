@@ -3,6 +3,7 @@ import time
 import threading
 from connector import conn, change_parser_status
 from backend import get_api, VkGroup
+import vk
 
 
 """
@@ -11,6 +12,31 @@ from backend import get_api, VkGroup
         id группы в контакте, которую парсим,
         экземляр клиента (api) [передайте токен в PARSER_SCRIP.vk.backend.get_api для получения]
 """
+
+
+def change_tokens_status(good, bad):
+    cursor = conn.cursor()
+    for x in good:
+        cursor.execute(f"UPDATE parsers_vkaccount SET status = True WHERE token = '{x}'")
+        conn.commit()
+    for x in bad:
+        cursor.execute(f"UPDATE parsers_vkaccount SET status = False WHERE token = '{x}'")
+        conn.commit()
+
+
+def check_tokens(data):
+    good, bad = [], []
+    for token in data:
+        token = token[2]
+        session = vk.Session(access_token=token)
+        api = vk.API(session, v='5.81', lang='ru', timeout=10)
+        try:
+            test = api.wall.get(owner_id=-67991189, count=1)
+            good.append(token)
+        except:
+            bad.append(token)
+    change_tokens_status(good, bad)
+    return good
 
 
 def parse(obj):
@@ -40,6 +66,7 @@ def get_vk_models():
 def main():
     grps, accs = get_vk_models()
     print(f'groups: {len(grps)} accounts: {len(accs)}')
+    accs = check_tokens(accs)
     # расчитываем сколько групп будет парсить один аккаунт (экземпляр апи)
     result = len(grps) / len(accs)
     if result > int(result):
@@ -47,9 +74,9 @@ def main():
     result = int(result)
     print(result)
     for account in accs:
-        api = get_api(account[2])
+        api = get_api(account)
         i = 1
-        list = grps[:11]
+        list = grps[:result]
         for group in list:
             print(i)
             if i == result:
@@ -72,3 +99,8 @@ def main():
 
 
 main()
+# ---------------------
+# api = get_api('8dbe2f8fb5e907d08fd82463d9ebf27a3f2ee828629da537549dc862302d598a3f3c695650cd3a0461fb6')
+# url, id, name = 'https://vk.com/nelikvidi_com', -9203626, 'Неликвиды, оборудование, остатки | Объявления',
+# obj = VkGroup(url, id, name, api)
+# parse(obj)
