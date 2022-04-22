@@ -39,21 +39,38 @@ def check_tokens(data):
     return good
 
 
-def parse(obj):
-    # test = obj.check_connect()
-    info = obj.wall_info()
-    for i in range(1, int(info['i_count'])+1):
-        print(f'{i}')
+def parse_iteration(obj):
+    iteration = 1
+    for i in range(obj.last_i, int(obj.i_count) + 1):
+        if iteration == 3:
+            obj.last_i = i
+            print(obj.name, 'BREAK')
+            return 1
         if i == 1:
             items = obj.wall_items(None)
         else:
-            items = obj.wall_items(i*90)
+            items = obj.wall_items(i * 90)
         offers = obj.get_offers(items)
+        # th = threading.Thread(target=obj.send_result, args=(offers,))
+        # th.start()
         obj.send_result(offers)
+        iteration += 1
+        # time.sleep(1)
+
+
+def parse(data):
+    for obj in data:
+        obj = obj['obj']
+        info = obj.wall_info()
+        time.sleep(1)
+    while True:
+        for obj in data:
+            obj = obj['obj']
+            # print('START', obj.name)
+            parse_iteration(obj)
 
 
 def get_vk_models():
-    print(1)
     cursor = conn.cursor()
     cursor.execute(f"SELECT * FROM parsers_vkgroupdetail")
     all_goups = cursor.fetchall()
@@ -63,44 +80,61 @@ def get_vk_models():
     return all_goups, all_accounts
 
 
-def main():
+def get_vk_group_obj_list():
     grps, accs = get_vk_models()
-    print(f'groups: {len(grps)} accounts: {len(accs)}')
     accs = check_tokens(accs)
-    # расчитываем сколько групп будет парсить один аккаунт (экземпляр апи)
-    result = len(grps) / len(accs)
-    if result > int(result):
-        result += 1
-    result = int(result)
-    print(result)
-    for account in accs:
-        api = get_api(account)
-        i = 1
-        list = grps[:result]
-        for group in list:
-            print(i)
-            if i == result:
-                i = 1
+
+    # print(f'groups: {len(grps)} accounts: {len(accs)}')
+    res = len(grps) / len(accs)
+
+    obj_list = []
+
+    while grps != []:
+        for token in accs:
+            try:
+                group = grps[0]
+            except:
                 break
+            api = get_api(token)
             obj = VkGroup(group[1], group[2], group[3], api)
-            th = threading.Thread(target=parse, args=(obj,))
-            th.start()
-            i += 1
-        for x in list:
-            grps.remove(x)
+            obj_list.append({"obj": obj, "token": token})
+            grps.remove(group)
+
+    # print('grps:', grps)
+    return obj_list, accs
+
+
+def main():
+    obj_list, accs = get_vk_group_obj_list()
+    for token in accs:
+        soldiers = []
+        for object in obj_list:
+            if object['token'] == token:
+                soldiers.append(object)
+        for x in soldiers:
+            print(x)
+        print('---------')
+        th = threading.Thread(target=parse, args=(soldiers,))
+        th.start()
+        # time.sleep(2)
+
+    check_situation()
+
+
+def check_situation():
     print('Начинаем отслеживать потоки')
     successful = 0
     while not successful:
         if threading.active_count() <= 1:
             change_parser_status('vk.com', 'Выкл')
             sys.exit()
-        print('[vk.com]Активны:', threading.active_count())
-        time.sleep(3)
+        # print('[vk.com]Активны:', threading.active_count())
+        time.sleep(15)
 
 
 main()
 # ---------------------
 # api = get_api('8dbe2f8fb5e907d08fd82463d9ebf27a3f2ee828629da537549dc862302d598a3f3c695650cd3a0461fb6')
-# url, id, name = 'https://vk.com/nelikvidi_com', -9203626, 'Неликвиды, оборудование, остатки | Объявления',
+# url, id, name = 'https://vk.com/nelikvidby', -169974103, 'Неликвид,товары для бизнеса, б/у оборудование.',
 # obj = VkGroup(url, id, name, api)
 # parse(obj)

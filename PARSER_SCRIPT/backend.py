@@ -21,10 +21,11 @@ class VkGroup:
         self.home_name = 'vk.com'
         self.url = url
         self.name = name
+        self.i_count = None
+        self.last_i = 1
 
     def check_connect(self):
         wall = self.api.wall.get(owner_id=self.id, count=1)
-        print(wall)
 
     def wall_info(self):
         answer = {}
@@ -35,13 +36,12 @@ class VkGroup:
                 successful = 1
             except Exception as ex:
                 print(ex)
-                time.sleep(random.randint(1, 3))
         count = wall['count']
-        print(count)
         i = int(count) / 90
         if i > int(i):
             i = int(i) + 1
         answer['i_count'] = i
+        self.i_count = i
         return answer
 
     def wall_items(self, offset):
@@ -50,8 +50,9 @@ class VkGroup:
             try:
                 wall = self.api.wall.get(owner_id=self.id, count=90, offset=offset)
                 successful = 1
-            except:
-                time.sleep(random.randint(1, 3))
+            except Exception as ex:
+                print(ex)
+                time.sleep(1)
         wall_items = wall['items']
         return wall_items
 
@@ -78,6 +79,5 @@ class VkGroup:
         return answer
 
     def send_result(self, data):
-        i = 0
         for offer in data:
             offer.post()
