@@ -60,7 +60,7 @@ class ParserSource(Parser):
                                         "ownercontact": self.response_item["author_phone"],
                                         "offer_price": round(float(self.response_item["current_price_with_nds"])),
                                         "additional_data": "не указано",
-                                        "organisation": self.response_item["contragent_host_name"],
+                                        "organisation": self.response_item["supplier_name"],
                                         "url": "https://reserve.isource.ru/trades/item/"
                                                + self.response_item["auction_transliteration_name"],
                                         "from_id": self.response_item['auction_transliteration_name'].split("-")[-1]
@@ -71,7 +71,7 @@ class ParserSource(Parser):
                     self.response_item["date_begin"].split(" ")[0], self.response_item["date_end"].split(" ")[0],
                     self.response_item["author_full_name"], self.response_item["author_phone"],
                     round(float(self.response_item["current_price_with_nds"])),
-                    None, self.response_item["contragent_host_name"], self.response_item['auction_transliteration_name'].split("-")[-1],
+                    None, self.response_item["supplier_name"], self.response_item['auction_transliteration_name'].split("-")[-1],
                     None, None)
                 offer.post()
         change_parser_status('isource', 'Выкл')
