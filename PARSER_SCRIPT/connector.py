@@ -103,12 +103,17 @@ class Item:
                for item in group:
                   if item[0] == self.name:
                      return False, 'Tenderpro validation failed. Not unique'
+            else:
+               return False, 'Validation SELECT FROM failed'
+
       if self.owner_id:
             group = self.get_db_data("synrate_main_offer", 'additional_data', 'owner_id', f"= '{self.owner_id}'", False, False)
             if group:
                for item in group:
                   if item[0] == self.additional_data:
                      return False, 'VK/TG validation failed. Not unique'
+            else:
+               return False, 'Validation SELECT FROM failed'
             if self.home_name == 'telegram':
                save_from_id(self.owner_id, 'synrate_main_tguser')
             elif self.home_name == 'vk.com':
@@ -120,6 +125,9 @@ class Item:
                for item in group:
                   if item[0] == self.name:
                      return False, 'Validation failed. Not unique offer'
+            else:
+               return False, 'Validation SELECT FROM failed'
+
       return True, 'OK'
 
    def get_db_data(self, table, target, field, value, second_field, second_value):
@@ -139,11 +147,3 @@ class Item:
          self.conn.rollback()
          qs = 0
       return qs
-
-a = '''🛺🚨Добрый день! Москва и МО Предлагаем услуги по перевозке бригад, грузов на коммерческом транспорте: Аренда Газель ферме 🛺🚨Добрый день! Москва и МО Предлагаем услуги по перевозке бригад, грузов на коммерческом транспорте: Аренда Газель фермер 5+1 (тент), Мерседес спринтер 2+1 (фургон), Соболь 6+1 (фургон). Форма оплаты любая: ИП, ООО. Сергей 84955818888 89646313884'''
-item = Item(a, 'telegram', 'test:test.com', None, None, None,
-                None, None, None, a, None, 111111,
-                None, 13131313)
-print(item.name)
-print(item.additional_data)
-item.post()
