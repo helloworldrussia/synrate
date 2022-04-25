@@ -133,8 +133,3 @@ def check_situation():
 
 
 main()
-# ---------------------
-# api = get_api('8dbe2f8fb5e907d08fd82463d9ebf27a3f2ee828629da537549dc862302d598a3f3c695650cd3a0461fb6')
-# url, id, name = 'https://vk.com/nelikvidby', -169974103, 'Неликвид,товары для бизнеса, б/у оборудование.',
-# obj = VkGroup(url, id, name, api)
-# parse(obj)

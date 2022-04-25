@@ -1,4 +1,7 @@
+# -*- coding: utf-8 -*-
 import datetime
+import time
+
 import psycopg2
 from dateutil.relativedelta import relativedelta
 
@@ -90,6 +93,10 @@ class Item:
       return False
 
    def validate(self):
+
+      if self.name == '' or self.name is None:
+         return False, 'Failed name validation'
+
       if self.home_name == 'tenderpro':
             group = self.get_db_data("synrate_main_offer", 'name', 'home_name', "= 'tenderpro'", False, False)
             if group:
@@ -133,4 +140,10 @@ class Item:
          qs = 0
       return qs
 
-
+a = '''🛺🚨Добрый день! Москва и МО Предлагаем услуги по перевозке бригад, грузов на коммерческом транспорте: Аренда Газель ферме 🛺🚨Добрый день! Москва и МО Предлагаем услуги по перевозке бригад, грузов на коммерческом транспорте: Аренда Газель фермер 5+1 (тент), Мерседес спринтер 2+1 (фургон), Соболь 6+1 (фургон). Форма оплаты любая: ИП, ООО. Сергей 84955818888 89646313884'''
+item = Item(a, 'telegram', 'test:test.com', None, None, None,
+                None, None, None, a, None, 111111,
+                None, 13131313)
+print(item.name)
+print(item.additional_data)
+item.post()
