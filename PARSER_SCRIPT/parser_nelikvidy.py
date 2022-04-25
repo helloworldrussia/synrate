@@ -7,7 +7,7 @@ from fake_useragent import UserAgent
 import datetime
 from requests.adapters import HTTPAdapter
 from urllib3 import Retry
-from connector import change_parser_status, Item
+from connector import change_parser_status, Item, DbManager
 from ENGINE import Parser
 from mixins import get_proxy
 
@@ -25,6 +25,7 @@ class ParserNelikvidy(Parser):
         :param verify:
         """
         super().__init__()
+        self.db_manager = DbManager()
         self.verify = verify
         self.last_page = end
         self.url = "https://nelikvidi.com/sell?sort=-date"
@@ -92,7 +93,8 @@ class ParserNelikvidy(Parser):
 
     def send_result(self, result):
         for offer in result:
-            offer.post()
+            offer.post(self.db_manager)
+        self.db_manager.task_manager()
 
     def get_offers_from_page(self, soup):
         try:

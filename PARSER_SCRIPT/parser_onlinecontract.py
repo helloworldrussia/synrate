@@ -4,7 +4,7 @@ from datetime import datetime
 from fake_useragent import UserAgent
 from requests.adapters import HTTPAdapter
 from urllib3 import Retry
-from connector import change_parser_status, Item
+from connector import change_parser_status, Item, DbManager
 from ENGINE import Parser
 import requests
 from bs4 import BeautifulSoup
@@ -23,6 +23,7 @@ class ParserOnlineContract(Parser):
         self.core = 'https://onlinecontract.ru'
         self.start_page = 1
         self.last_page = end
+        self.db_manager = DbManager()
 
     def parse(self):
         successful = 0
@@ -67,7 +68,8 @@ class ParserOnlineContract(Parser):
 
     def send_result(self, data):
         for offer in data:
-           offer.post()
+           offer.post(self.db_manager)
+        self.db_manager.task_manager()
 
     def get_offers_from_page(self, soup):
         try:

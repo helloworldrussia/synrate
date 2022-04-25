@@ -5,7 +5,7 @@ import time
 import requests
 import vk
 
-from connector import Item
+from connector import Item, DbManager
 
 
 def get_api(token):
@@ -23,6 +23,7 @@ class VkGroup:
         self.name = name
         self.i_count = None
         self.last_i = 1
+        self.db_manager = DbManager()
 
     def check_connect(self):
         wall = self.api.wall.get(owner_id=self.id, count=1)
@@ -80,4 +81,5 @@ class VkGroup:
 
     def send_result(self, data):
         for offer in data:
-            offer.post()
+            offer.post(self.db_manager)
+        self.db_manager.task_manager()

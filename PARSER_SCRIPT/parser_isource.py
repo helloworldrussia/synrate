@@ -2,7 +2,7 @@ import sys
 import time
 from datetime import datetime
 import requests
-from connector import change_parser_status, Item
+from connector import change_parser_status, Item, DbManager
 from ENGINE import Parser
 
 
@@ -19,6 +19,7 @@ class ParserSource(Parser):
         self.proxy = False
         self.count = 0
         self.last_page = end
+        self.db_manager = DbManager()
 
     def get_last_page(self):
         response = requests.post(self.api_get_auction_url, headers={
@@ -73,7 +74,8 @@ class ParserSource(Parser):
                     round(float(self.response_item["current_price_with_nds"])),
                     None, self.response_item["supplier_name"], self.response_item['auction_transliteration_name'].split("-")[-1],
                     None, None)
-                offer.post()
+                offer.post(self.db_manager)
+            self.db_manager.task_manager()
         change_parser_status('isource', 'Выкл')
         sys.exit()
 

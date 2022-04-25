@@ -3,7 +3,7 @@ import time
 from datetime import datetime
 from fake_useragent import UserAgent
 from requests.adapters import HTTPAdapter, Retry
-from connector import change_parser_status, Item
+from connector import change_parser_status, Item, DbManager
 from ENGINE import Parser
 import requests
 from bs4 import BeautifulSoup
@@ -51,6 +51,7 @@ class ParserFabrikant(Parser):
             "дека": 12,
             "декаб": 12,
         }
+        self.db_manager = DbManager()
 
     def parse(self):
         last_page = self.get_last_page()
@@ -68,7 +69,9 @@ class ParserFabrikant(Parser):
                     successful = 1
 
             for offer in offers:
-                offer.post()
+                offer.post(self.db_manager)
+            self.db_manager.task_manager()
+
         change_parser_status('fabrikant', 'Выкл')
         sys.exit()
 

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import datetime
+import threading
 import time
 
 import psycopg2
@@ -30,8 +31,120 @@ def change_parser_status(name, status):
    conn.commit()
 
 
-""" Класс заявки для сохранения напрямую в БД.
-    Вводите данные при создании экз. класса, если какого-то парметра от парсера не поступает, вписывайте None """
+class DbManager:
+
+   def __init__(self):
+      self.conn = conn
+      self.tasks = []
+
+   def task_manager(self):
+      print(self.tasks)
+      if self.tasks != []:
+         if self.do_tasks():
+            return True
+
+   def do_tasks(self):
+      print(self.tasks)
+      while self.tasks != []:
+         cur_task = self.tasks[0]
+         self.tasks.remove(cur_task)
+         self.post(cur_task)
+         time.sleep(1)
+      return True
+
+   def post(self, obj):
+      successful, message = self.validate(obj)
+      print(f'[{obj.home_name}]', successful, message)
+      if successful:
+         arg_string = ''
+         val_string = ''
+         for key, value in obj.arg_list.items():
+            if obj.arg_list[f'{key}'] is not None and obj.arg_list[f'{key}'] != '':
+               arg_string += f'{key},'
+               val_string += f"'{obj.arg_list[f'{key}']}',"
+            else:
+               if key == 'offer_start_date':
+                  custom_start_date = one_month = datetime.date.today() + relativedelta(months=-1)
+                  arg_string += f'offer_start_date,'
+                  val_string += f"'{custom_start_date}',"
+         arg_string, val_string = arg_string[:-1], val_string[:-1]
+         cursor = self.conn.cursor()
+         try:
+            cursor.execute(f"INSERT INTO synrate_main_offer "
+                           f"({arg_string}) "
+                           f"VALUES({val_string})")
+            self.conn.commit()
+            return True
+         except:
+            self.conn.rollback()
+      return False
+
+   def validate(self, obj):
+      if obj.name == '' or obj.name is None:
+         return False, 'Failed name validation'
+
+      if obj.home_name == 'tenderpro':
+            group = self.get_db_data("synrate_main_offer", 'name', 'home_name', "= 'tenderpro'", False, False)
+            if group:
+               for item in group:
+                  if item[0] == obj.name:
+                     return False, 'Tenderpro validation failed. Not unique'
+            elif group == []:
+               pass
+            elif group == 0:
+               return False, 'Validation SELECT FROM failed'
+
+      if obj.owner_id:
+            group = self.get_db_data("synrate_main_offer", 'additional_data', 'owner_id', f"= '{obj.owner_id}'", False, False)
+            if group:
+               for item in group:
+                  if item[0] == obj.additional_data:
+                     return False, 'VK/TG validation failed. Not unique'
+            elif group == []:
+               pass
+            elif group == 0:
+               return False, 'Validation SELECT FROM failed'
+
+            if obj.home_name == 'telegram':
+               save_from_id(obj.owner_id, 'synrate_main_tguser')
+            elif obj.home_name == 'vk.com':
+               save_from_id(obj.owner_id, 'synrate_main_vkuser')
+
+      else:
+            group = self.get_db_data("synrate_main_offer", 'name', 'url', f"= '{obj.url}'", False, False)
+            if group:
+               for item in group:
+                  if item[0] == obj.name:
+                     return False, 'Validation failed. Not unique offer'
+            elif group == []:
+               pass
+            elif group == 0:
+               return False, 'Validation SELECT FROM failed'
+
+      return True, 'OK'
+
+   def get_db_data(self, table, target, field, value, second_field, second_value):
+      cursor = self.conn.cursor()
+      if second_field:
+         try:
+            cursor.execute(f"SELECT {target} FROM {table} WHERE {field} {value} AND {second_field} {second_value}")
+            qs = cursor.fetchall()
+         except Exception as ex:
+            print(ex)
+            self.conn.rollback()
+            qs = 0
+         return qs
+      try:
+         cursor.execute(f"SELECT {target} FROM {table} WHERE {field} {value}")
+         qs = cursor.fetchall()
+      except Exception as ex:
+         print(ex)
+         self.conn.rollback()
+         qs = 0
+      return qs
+
+
+# db_manager = DbManager()
 
 
 class Item:
@@ -39,7 +152,6 @@ class Item:
    def __init__(self, name, home_name, url, location, offer_start_date, offer_end_date,
                 owner, ownercontact, offer_price, additional_data, organisation, from_id,
                 short_cat, owner_id):
-      self.conn = conn
       self.name = name
       self.home_name = home_name
       self.location = location
@@ -65,85 +177,6 @@ class Item:
                      "url": self.url, "location": self.location,
                      "home_name": self.home_name, "name": self.name, "views": self.views}
 
-   def post(self):
-      successful, message = self.validate()
-      print(f'[{self.home_name}]', successful, message)
-      if successful:
-         arg_string = ''
-         val_string = ''
-         for key, value in self.arg_list.items():
-            if self.arg_list[f'{key}'] is not None and self.arg_list[f'{key}'] != '':
-               arg_string += f'{key},'
-               val_string += f"'{self.arg_list[f'{key}']}',"
-            else:
-               if key == 'offer_start_date':
-                  custom_start_date = one_month = datetime.date.today() + relativedelta(months=-1)
-                  arg_string += f'offer_start_date,'
-                  val_string += f"'{custom_start_date}',"
-         arg_string, val_string = arg_string[:-1], val_string[:-1]
-         cursor = self.conn.cursor()
-         try:
-            cursor.execute(f"INSERT INTO synrate_main_offer "
-                           f"({arg_string}) "
-                           f"VALUES({val_string})")
-            self.conn.commit()
-            return True
-         except:
-            self.conn.rollback()
-      return False
-
-   def validate(self):
-
-      if self.name == '' or self.name is None:
-         return False, 'Failed name validation'
-
-      if self.home_name == 'tenderpro':
-            group = self.get_db_data("synrate_main_offer", 'name', 'home_name', "= 'tenderpro'", False, False)
-            if group:
-               for item in group:
-                  if item[0] == self.name:
-                     return False, 'Tenderpro validation failed. Not unique'
-            else:
-               return False, 'Validation SELECT FROM failed'
-
-      if self.owner_id:
-            group = self.get_db_data("synrate_main_offer", 'additional_data', 'owner_id', f"= '{self.owner_id}'", False, False)
-            if group:
-               for item in group:
-                  if item[0] == self.additional_data:
-                     return False, 'VK/TG validation failed. Not unique'
-            else:
-               return False, 'Validation SELECT FROM failed'
-            if self.home_name == 'telegram':
-               save_from_id(self.owner_id, 'synrate_main_tguser')
-            elif self.home_name == 'vk.com':
-               save_from_id(self.owner_id, 'synrate_main_vkuser')
-
-      else:
-            group = self.get_db_data("synrate_main_offer", 'name', 'url', f"= '{self.url}'", False, False)
-            if group:
-               for item in group:
-                  if item[0] == self.name:
-                     return False, 'Validation failed. Not unique offer'
-            else:
-               return False, 'Validation SELECT FROM failed'
-
-      return True, 'OK'
-
-   def get_db_data(self, table, target, field, value, second_field, second_value):
-      cursor = self.conn.cursor()
-      if second_field:
-         try:
-            cursor.execute(f"SELECT {target} FROM {table} WHERE {field} {value} AND {second_field} {second_value}")
-            qs = cursor.fetchall()
-         except:
-            self.conn.rollback()
-            qs = 0
-         return qs
-      try:
-         cursor.execute(f"SELECT {target} FROM {table} WHERE {field} {value}")
-         qs = cursor.fetchall()
-      except:
-         self.conn.rollback()
-         qs = 0
-      return qs
+   def post(self, db_manager):
+      db_manager.tasks.append(self)
+      print(f'[{self.home_name}] Saved in tasks')

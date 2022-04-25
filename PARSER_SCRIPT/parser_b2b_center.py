@@ -4,7 +4,7 @@ import time
 from datetime import datetime
 from fake_useragent import UserAgent
 from requests.adapters import HTTPAdapter, Retry
-from connector import change_parser_status, Item
+from connector import change_parser_status, Item, DbManager
 from ENGINE import Parser
 import requests
 from bs4 import BeautifulSoup
@@ -25,6 +25,7 @@ class ParserCenter(Parser):
         self.proxy = False
         self.last_page = end
         self.current_proxy_ip = 0
+        self.db_manager = DbManager()
 
     def parse(self):
         # делаем запрос, получаем суп и отдаем функции, получающей номер последней страницы
@@ -172,44 +173,8 @@ class ParserCenter(Parser):
 
     def post_result(self, data):
         for offer in data:
-            offer.post()
-            # z = requests.post("https://synrate.ru/api/offers/create",
-            #                   json=offer)
-            # today = datetime.today().strftime('%d-%m %H:%M')
-            # try:
-            #     print(f'[b2b-center] {z.json()}\n{offer}')
-            #     # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
-            #     #     # ...
-            #     #     f.seek(0, 2)
-            #     #     f.write(f'[{today}] {z.json()}\n{offer}')
-            #     #     f.close()
-            # except:
-            #     print(f'[b2b-center] {z}\n{offer}')
-            #     # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
-            #     #     # ...
-            #     #     f.seek(0, 2)
-            #     #     f.write(f'[{today}] {z}\n{offer}')
-            #     #     f.close()
-            # try:
-            #     id = z.json()['unique_error'][0]
-            #     z = requests.put(f"https://synrate.ru/api/offer/update/{id}/",
-            #                       json=offer)
-            # except:
-            #     pass
-            # try:
-            #     print(f'[b2b-center] {z.json()}\n{offer}')
-            #     # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
-            #     #     # ...
-            #     #     f.seek(0, 2)
-            #     #     f.write(f'[{today}] {z.json()}\n{offer}')
-            #     #     f.close()
-            # except:
-            #     print(f'[b2b-center] {z}\n{offer}')
-            #     # with open('/var/www/synrate_dir/b2b-center.txt', 'r+') as f:
-            #     #     # ...
-            #     #     f.seek(0, 2)
-            #     #     f.write(f'[{today}] {z}\n{offer}')
-            #     #     f.close()
+            offer.post(self.db_manager)
+        self.db_manager.task_manager()
 
 
 if __name__ == '__main__':

@@ -5,7 +5,7 @@ from fake_useragent import UserAgent
 from requests.adapters import HTTPAdapter
 from urllib3 import Retry
 
-from connector import change_parser_status, Item
+from connector import change_parser_status, Item, DbManager
 from ENGINE import Parser
 import time
 import random
@@ -22,6 +22,7 @@ class RoseltorgParser(Parser):
         self.current_proxy_ip = 0
         self.start_page = 1
         self.last_page = end
+        self.db_manager = DbManager()
 
     def parse(self):
         successful = 0
@@ -57,7 +58,8 @@ class RoseltorgParser(Parser):
 
     def send_result(self, data):
         for offer in data:
-            offer.post()
+            offer.post(self.db_manager)
+        self.db_manager.task_manager()
 
     def get_offers_from_page(self, soup):
         try:

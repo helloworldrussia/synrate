@@ -7,7 +7,7 @@ from fake_useragent import UserAgent
 from requests.adapters import HTTPAdapter
 from urllib3 import Retry
 
-from connector import change_parser_status, Item
+from connector import change_parser_status, Item, DbManager
 from ENGINE import Parser
 import time
 import random
@@ -25,6 +25,7 @@ class ProstankiParser(Parser):
         self.last_page = end
         self.target_list = []
         self.cur_cat = None
+        self.db_manager = DbManager()
 
     def get_target_url(self):
         successful = 0
@@ -146,7 +147,8 @@ class ProstankiParser(Parser):
 
     def post(self, result):
         for x in result:
-            x.post()
+            x.post(self.db_manager)
+        self.db_manager.task_manager()
 
 
 if __name__ == '__main__':

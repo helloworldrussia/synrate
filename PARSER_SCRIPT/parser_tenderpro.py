@@ -4,7 +4,7 @@ import time
 from fake_useragent import UserAgent
 from requests.adapters import HTTPAdapter
 from urllib3 import Retry
-from connector import change_parser_status, Item
+from connector import change_parser_status, Item, DbManager
 from ENGINE import Parser
 import requests
 from bs4 import BeautifulSoup
@@ -23,22 +23,13 @@ class ParserTender(Parser):
         self.current_proxy_ip = 0
         self.start_page = 0
         self.last_page = end
+        self.db_manager = DbManager()
 
     def parse(self):
         successful = 0
 
         while not successful:
             time.sleep(random.randint(1, 7))
-            # try:
-            #     self.soup = self.get_page_soup(self.url.format(0))
-            #     pages = self.soup.find("div", attrs={"class": "pager"}).find_all('a')
-            #     pages_num = pages[len(pages)-2].getText()
-            #     successful = 1
-            #     print(f'[tenderpro] pages count {pages_num}')
-            # except Exception as ex:
-            #     print(ex)
-            #     self.change_proxy()
-
             self.soup = self.get_page_soup(self.url.format(0))
             pages = self.soup.find("div", attrs={"class": "pager"}).find_all('a')
             pages_num = pages[len(pages)-2].getText()
@@ -92,9 +83,10 @@ class ParserTender(Parser):
                     offer = Item(name, "tenderpro", url, "РФ", str(start_date), str(fin_date),
                         None, None, None, None, company.replace('"', ''), from_id,
                         None, None)
-                    offer.post()
+                    offer.post(self.db_manager)
                     time.sleep(random.randint(1, 5) / 10)
                     # ---------------------
+            self.db_manager.task_manager()
         change_parser_status('tenderpro', 'Выкл')
         sys.exit()
 
