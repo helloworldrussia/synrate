@@ -38,13 +38,11 @@ class DbManager:
       self.tasks = []
 
    def task_manager(self):
-      print(self.tasks)
       if self.tasks != []:
          if self.do_tasks():
             return True
 
    def do_tasks(self):
-      print(self.tasks)
       while self.tasks != []:
          cur_task = self.tasks[0]
          self.tasks.remove(cur_task)
