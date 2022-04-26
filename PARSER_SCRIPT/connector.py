@@ -43,12 +43,27 @@ class DbManager:
             return True
 
    def do_tasks(self):
-      for x in self.tasks:
-         th = threading.Thread(target=self.post, args=(x,))
-         th.start()
-      th.join()
-      self.tasks = []
-      # print(f'[{self.home_name}] tasks saved')
+      while self.tasks != []:
+         try:
+            one, two, three = self.tasks[0], self.tasks[1], self.tasks[2]
+            th_1 = threading.Thread(target=self.post, args=(one,))
+            th_1.start()
+            th_2 = threading.Thread(target=self.post, args=(two,))
+            th_2.start()
+            th_3 = threading.Thread(target=self.post, args=(three,))
+            th_3.start()
+            th_1.join()
+            th_2.join()
+            th_3.join()
+            self.tasks.remove(one)
+            self.tasks.remove(two)
+            self.tasks.remove(three)
+         except:
+            try:
+               self.post(self.tasks[0])
+               self.tasks.remove(self.tasks[0])
+            except:
+               pass
       return True
 
    # def do_tasks(self):

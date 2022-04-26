@@ -96,8 +96,10 @@ class ParserMetaprom(Parser):
             name = name.getText()
         else:
             return 0
+        a_data = None
         if url:
             url = self.core+url.attrs['href']
+            # a_data = self.get_a_data(url)
         if price:
             price = self.validate_price(price.getText())
         if start_date:
@@ -108,18 +110,20 @@ class ParserMetaprom(Parser):
             region = self.validate_region(region.getText())
             if region == 'na':
                 return 0
-        # print(name)
-        # print(url)
-        # print(price)
-        # print(start_date)
-        # print(company)
-        # print(region)
-        # print('--------------------')
         obj = Item(name, 'metaprom', url, region, start_date, None,
-                None, None, price, None, company, None,
+                None, None, price, a_data, company, None,
                 None, None)
 
         return obj
+
+    def get_a_data(self, url):
+        soup = self.get_page_soup(url)
+        try:
+            main = soup.find("section", attrs={"class": "content"}).find_all("p")[1]
+            a_data = main.getText()
+        except:
+            a_data = None
+        return a_data
 
     @staticmethod
     def validate_region(region):
