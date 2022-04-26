@@ -43,16 +43,25 @@ class DbManager:
             return True
 
    def do_tasks(self):
-      while self.tasks != []:
-         cur_task = self.tasks[0]
-         self.tasks.remove(cur_task)
-         self.post(cur_task)
-         time.sleep(1)
+      for x in self.tasks:
+         th = threading.Thread(target=self.post, args=(x,))
+         th.start()
+      th.join()
+      self.tasks = []
+      # print(f'[{self.home_name}] tasks saved')
       return True
+
+   # def do_tasks(self):
+   #    while self.tasks != []:
+   #       cur_task = self.tasks[0]
+   #       self.tasks.remove(cur_task)
+   #       self.post(cur_task)
+   #       time.sleep(1)
+   #    return True
 
    def post(self, obj):
       successful, message = self.validate(obj)
-      print(f'[{obj.home_name}]', successful, message)
+      # print(f'\n[{obj.home_name}]', successful, message, '\n')
       if successful:
          arg_string = ''
          val_string = ''
