@@ -5,11 +5,6 @@ from telethon import TelegramClient
 from connector import conn
 from tg_backend import TelegramItem
 
-api_id = 5355298
-api_hash = '41f6f5015c036f4bae33ae51d4d7c835'
-client = TelegramClient('app_synrate_session', api_id, api_hash)
-client.start()
-
 
 def go(client, target, target_name):
     obj = TelegramItem(client, target, target_name)
@@ -25,7 +20,14 @@ def main():
         th.start()
 
 
+api_id = 5355298
+api_hash = '41f6f5015c036f4bae33ae51d4d7c835'
+client = TelegramClient('app_synrate_session', api_id, api_hash)
+# client.start()
+
+
 while True:
+    client.connect()
     cursor = conn.cursor()
     cursor.execute(f"UPDATE synrate_main_parserdetail SET status = 'В работе' WHERE name = 'telegram'")
     conn.commit()
@@ -36,3 +38,4 @@ while True:
     conn.commit()
     # conn.close()
     time.sleep(1200)
+    client.disconnect()

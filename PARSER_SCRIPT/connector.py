@@ -52,7 +52,7 @@ class DbManager:
 
    def post(self, obj):
       successful, message = self.validate(obj)
-      # print(f'\n[{obj.home_name}]', successful, message, '\n')
+      print(f'[{obj.home_name}]', successful, message)
       if successful:
          arg_string = ''
          val_string = ''
