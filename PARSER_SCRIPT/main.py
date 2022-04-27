@@ -1,3 +1,4 @@
+from parser_promportal import ParserPromportal
 from parser_metaprom import ParserMetaprom
 from parser_etp_aktiv import ParserEtpActiv
 from parser_b2b_center import ParserCenter
@@ -82,6 +83,7 @@ def server_listener():
         b2b_center_obj = ParserCenter(True, 10)
         etp_activ_obj = ParserEtpActiv(True, 120)
         metaprom_obj = ParserMetaprom(False, 10)
+        promportal_obj = ParserPromportal(False, 10)
 
     else:
         print('server listener: Start.. Parsing mode - long')
@@ -96,7 +98,8 @@ def server_listener():
         fabrikant_obj = ParserFabrikant(True, False)
         b2b_center_obj = ParserCenter(True, False)
         etp_activ_obj = ParserEtpActiv(True, False)
-        metaprom_obj = ParserMetaprom(False, 10)
+        metaprom_obj = ParserMetaprom(False, False)
+        promportal_obj = ParserPromportal(False, False)
 
     parser_roseltorg = ParserThread("parser_roseltorg", roseltorg_obj)
     parser_tender = ParserThread("parser_tender", tender_obj)
@@ -110,6 +113,7 @@ def server_listener():
     parser_etp_aktiv = ParserThread("parser_etp_aktiv", etp_activ_obj)
     parser_prostanki = ParserThread("parser_prostanki", prostanki_obj)
     parser_metaprom = ParserThread("parser_metaprom", metaprom_obj)
+    parser_promportal = ParserThread("parser_promportal", promportal_obj)
 
     #DEBUG OPTIONS
     #check_thread_1 = CheckThread('parser_roseltorg')
@@ -127,6 +131,7 @@ def server_listener():
     parser_b2b_center.start()
     parser_etp_aktiv.start()
     parser_metaprom.start()
+    parser_promportal.start()
 
 
 if __name__ == '__main__':
