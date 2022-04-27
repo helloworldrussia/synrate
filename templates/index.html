@@ -3,69 +3,69 @@
 {% load static %}
 {% block content %}
 
-    <section class="synrate" id="synrate">
-        <div class="container">
-            <div class="synrate-wrapper">
-                <div class="synrate-offer">
-                    <h1 class="synrate-title">
-                        SYNRATE.RU
-                    </h1>
-                    <p class="synrate-text">
-                        Сервис, охватывающий рынок. Система поиска по профильным ресурсам, социальным сетям по различным направлениям бизнеса.
-                    </p>
-                </div>
+<section class="synrate" id="synrate">
+    <div class="container">
+        <div class="synrate-wrapper">
+            <div class="synrate-offer">
+                <h1 class="synrate-title">
+                    SYNRATE.RU
+                </h1>
+                <p class="synrate-text">
+                    Сервис, охватывающий рынок. Система поиска по профильным ресурсам, социальным сетям по различным
+                    направлениям бизнеса.
+                </p>
             </div>
         </div>
-    </section>
-    <section class="offers" id="offers">
-        <div class="container">
-            <div class="offers-title-block">
-                <div class="offers-title-block-img">
-                    <img src="{% static 'synrate_static/img/offers-title-img.svg' %}" alt="wrapper">
-                </div>
-                <h3 class="offers-title">
-                    Складские остатки предприятий
-                </h3>
+    </div>
+</section>
+<section class="offers" id="offers">
+    <div class="container">
+        <div class="offers-title-block">
+            <div class="offers-title-block-img">
+                <img src="{% static 'synrate_static/img/offers-title-img.svg' %}" alt="wrapper">
             </div>
-            <div class="offers-count-block">
-                <h4 class="offers-count">
-                    Всего объявлений{% if all_count != 0 %}
-                    {{ all_count }}{% else %} 0,{% endif %}
-                    в т.ч. за последний месяц {% if month_count != 0 %}{{ month_count }}{% else %}0{% endif %}
-                    {% if today_count != 0 %}, день {{ today_count }}{% endif %}
-                </h4>
-            </div>
-            <div class="offers-block">
-                {% for offer in offers %}
-                <div class="offers-block">
+            <h3 class="offers-title">
+                Складские остатки предприятий
+            </h3>
+        </div>
+        <div class="offers-count-block">
+            <h4 class="offers-count">
+                Всего объявлений{% if all_count != 0 %}
+                {{ all_count }}{% else %} 0,{% endif %}
+                в т.ч. за последний месяц {% if month_count != 0 %}{{ month_count }}{% else %}0{% endif %}
+                {% if today_count != 0 %}, день {{ today_count }}{% endif %}
+            </h4>
+        </div>
+        <div class="offers-block">
+            {% for offer in offers %}
                 <div class="offer-block">
                     <div class="offer-block-img">
                         {% if offer.home_name == "nelikvidi" %}
-                            <img src="{% static 'img/nelikvidi.png' %}" class="offer-block__img" alt="">
+                        <img src="{% static 'img/nelikvidi.png' %}" class="offer-block__img" alt="">
                         {% endif %}
                         {% if offer.home_name == "tektorg" %}
-                            <img src="{% static 'img/tectorg.png' %}" class="offer-block__img" alt="">
+                        <img src="{% static 'img/tectorg.png' %}" class="offer-block__img" alt="">
                         {% endif %}
                         {% if offer.home_name == "tenderpro" %}
-                            <img src="{% static 'img/tender.png' %}" class="offer-block__img" alt="">
+                        <img src="{% static 'img/tender.png' %}" class="offer-block__img" alt="">
                         {% endif %}
                         {% if offer.home_name == "isource" %}
-                            <img src="{% static 'img/isource.png' %}" class="offer-block__img" alt="">
+                        <img src="{% static 'img/isource.png' %}" class="offer-block__img" alt="">
                         {% endif %}
                         {% if offer.home_name == "onlinecontract" %}
-                            <img src="{% static 'img/onlinecontract.png' %}" class="offer-block__img" alt="">
+                        <img src="{% static 'img/onlinecontract.png' %}" class="offer-block__img" alt="">
                         {% endif %}
                         {% if offer.home_name == "roseltorg" %}
-                            <img src="{% static 'img/roseltorg.png' %}" class="offer-block__img" alt="">
+                        <img src="{% static 'img/roseltorg.png' %}" class="offer-block__img" alt="">
                         {% endif %}
                         {% if offer.home_name == "etpgpb" %}
-                            <img src="{% static 'img/etpgpb_1.png' %}" class="offer-block__img" alt="">
+                        <img src="{% static 'img/etpgpb_1.png' %}" class="offer-block__img" alt="">
                         {% endif %}
                         {% if offer.home_name == "fabrikant" %}
-                            <img src="{% static 'img/fabrikant_1.png' %}" class="offer-block__img" alt="">
+                        <img src="{% static 'img/fabrikant_1.png' %}" class="offer-block__img" alt="">
                         {% endif %}
                         {% if offer.home_name == "etp-activ" %}
-                            <img src="{% static 'img/etp-activ.png' %}" class="offer-block__img" alt="">
+                        <img src="{% static 'img/etp-activ.png' %}" class="offer-block__img" alt="">
                         {% endif %}
                         {% if offer.home_name == "b2b-center" %}
                         <img src="{% static 'img/b2b-center.png' %}" class="offer-block__img" alt="">
@@ -78,7 +78,7 @@
                         {% endif %}
                         {% if offer.home_name == "prostanki" %}
                         <img src="{% static 'img/prostanki.png' %}" class="offer-block__img" alt="">
-                        {% endif %}promportal
+                        {% endif %}
                         {% if offer.home_name == "metaprom" %}
                         <img src="{% static 'img/metaprom.png' %}" class="offer-block__img" alt="">
                         {% endif %}
@@ -123,12 +123,11 @@
                     </a>
                 </div>
 
-            </div>
-                {% endfor %}
-            </div>
-
-            <div class="page-numbers">
-            </div>  
+            {% endfor %}
         </div>
-    </section>
+
+        <div class="page-numbers">
+        </div>
+    </div>
+</section>
 {% endblock content %}

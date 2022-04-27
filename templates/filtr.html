@@ -269,8 +269,8 @@
                     {% if today_count != 0 %}, день {{ today_count }}{% endif %}
                 </h4>
             </div>
-            {% for offer in offers %}
             <div class="offers-block">
+            {% for offer in offers %}
                 <div class="offer-block">
                     <div class="offer-block-img">
                         {% if offer.home_name == "nelikvidi" %}
@@ -357,9 +357,9 @@
                         </div>
                     </a>
                 </div>
+            {% endfor %}
 
             </div>
-            {% endfor %}
             <style>
                 .page_square_btn{
                     display:inline-block;

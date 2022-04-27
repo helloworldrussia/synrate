@@ -2,18 +2,12 @@
 {% load static %}
 {% block title %}{{ offer.name|truncatechars:120 }}{% endblock title %}
 {% block content %}
-    <style>
-        .offer-block__img {
-            width: 190px !important;
-            height: 200px !important;
-        }
-    </style>
     <section class="product-card">
         <div class="container">
-            <div style="text-align: center; margin-left: 120px; margin-right: 100px;">
-                <p class="product-offer__text">
+            <div style="text-align: center; ">
+                <div class="product-offer__text">
                     <h1>{{ offer.name|truncatechars:120 }}</h1>
-                </p>
+                </div>
             </div>
             <div class="product-card__wrapper">
                 <div class="product-card__img">
@@ -159,8 +153,8 @@
                     Подобные объявления:
                 </h2>
                 <div class="ads-block">
+                    <div class="offers-block">
                     {% for offer in offers %}
-            <div class="offers-block">
                 <div class="offer-block">
                     <div class="offer-block-img">
                             {% if offer.home_name == "nelikvidi" %}
@@ -248,8 +242,8 @@
                         </a>
                     </div>
 
-                </div>
                 {% endfor %}
+                    </div>
                 </div>
             </div>
         </div>

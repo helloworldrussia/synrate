@@ -232,8 +232,43 @@ def listing(request):
         queryset = Offer.objects.all().order_by('-offer_start_date')
     else:
         if len(or_dict):
-            # queryset = Offer.objects.filter(**and_dict).filter(reduce(operator.or_,
-            #                         (Q(**d) for d in [dict([i]) for i in or_dict.items()]))).order_by('-offer_start_date')
+
+            # короче сначала ищем полное совпадение
+            qlist = []
+            for i in or_dict.items():
+                qlist.append(dict([i]))
+
+            queryset = Offer.objects.filter(**and_dict).filter(reduce(operator.or_,
+                                     (Q(**d) for d in qlist))).order_by('-offer_start_date')
+
+            if(queryset.count()==0):
+
+                #пробуем нижний регистр всей фразы
+                for i in or_dict.items():
+                    qlist.append({i[0]:i[1].lower()})
+
+                queryset = Offer.objects.filter(**and_dict).filter(reduce(operator.or_,(Q(**d) for d in qlist))).order_by('-offer_start_date')
+
+                if(queryset.count()==0):
+                    # все слова, че
+                    for i in or_dict.items():
+                        for word in word_list:
+                            qlist.append({i[0]:word})
+
+                    queryset = Offer.objects.filter(**and_dict).filter(reduce(operator.or_,
+                                         (Q(**d) for d in qlist))).order_by('-offer_start_date')
+
+
+                    if(queryset.count()==0):
+                        # все слова, че
+                        for i in or_dict.items():
+                            for word in word_list:
+                                qlist.append({i[0]:word.lower()})
+
+                        queryset = Offer.objects.filter(**and_dict).filter(reduce(operator.or_,
+                                             (Q(**d) for d in qlist))).order_by('-offer_start_date')
+
+            '''
             search_vector = SearchVector('name', 'location', 'owner',
                                          'ownercontact', 'additional_data',
                                          'organisation')
@@ -249,6 +284,7 @@ def listing(request):
             queryset = Offer.objects.filter(**and_dict).annotate(search=search_vector).filter(search=search_query).order_by('-offer_start_date')
             # rank = Offer.objects.annotate(rank=search_rank).order_by('-rank')#.order_by('-offer_start_date')
             # queryset = rank.filter(rank__gte=0)
+            '''
         else:
             queryset = Offer.objects.filter(**and_dict).order_by('-offer_start_date')
 
