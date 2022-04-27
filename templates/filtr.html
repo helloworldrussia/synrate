@@ -224,6 +224,7 @@
                               <option {% if from_filter == 'telegram' %}selected{% endif%} value="telegram">telegram</option>
                               <option {% if from_filter == 'prostanki' %}selected{% endif%} value="prostanki">prostanki.com</option>
                               <option {% if from_filter == 'metaprom' %}selected{% endif%} value="metaprom">metaprom.ru</option>
+                              <option {% if from_filter == 'promportal' %}selected{% endif%} value="promportal">promportal.su</option>
                             </select>
                        </li>
                         <li>
@@ -313,6 +314,9 @@
                         {% endif %}
                         {% if offer.home_name == "metaprom" %}
                         <img src="{% static 'img/metaprom.png' %}" class="offer-block__img" alt="">
+                        {% endif %}
+                        {% if offer.home_name == "promportal" %}
+                        <img src="{% static 'img/promportal.png' %}" class="offer-block__img" alt="">
                         {% endif %}
                     </div>
                     <a href="{% url 'synrate_main:detail_view' id=offer.id %}" class="detailhref">

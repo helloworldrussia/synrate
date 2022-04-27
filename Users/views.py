@@ -81,6 +81,8 @@ class CabinetTariffView(TemplateView):
 
 
 def stat_view(request):
+    today = datetime.datetime.today().date()
+
     b2b = Offer.objects.filter(home_name='b2b-center').order_by('-created_at')
     b2b_center_all, b2b_center_month, b2b_center_day = get_counts(b2b)
 
@@ -121,8 +123,13 @@ def stat_view(request):
     prostanki = Offer.objects.filter(home_name='prostanki')
     prostanki_all, prostanki_month, prostanki_day = get_counts(prostanki)
 
-    metaprom = Offer.objects.filter(home_name='metaprom')
-    metaprom_all, metaprom_month, metaprom_day = get_counts(metaprom)
+    metaprom_all = Offer.objects.filter(home_name='metaprom').count()
+    metaprom_month = Offer.objects.filter(home_name='metaprom', created_at__month=today.month).count()
+    metaprom_day = Offer.objects.filter(home_name='metaprom', created_at__day=today.day).count()
+
+    promportal_all = Offer.objects.filter(home_name='promportal').count()
+    promportal_month = Offer.objects.filter(home_name='promportal', created_at__month=today.month).count()
+    promportal_day = Offer.objects.filter(home_name='promportal', created_at__day=today.day).count()
 
     content = {"all": all,
      "vk_all": vk_all, "vk_month": vk_month, "vk_day": vk_day, 'tenderpro_all': tenderpro_all, "tenderpro_day": tenderpro_day, "tenderpro_month": tenderpro_month,
@@ -137,7 +144,8 @@ def stat_view(request):
      "b2b_center_all": b2b_center_all, "b2b_center_month": b2b_center_month, "b2b_center_day": b2b_center_day,
      "telegram_all": telegram_all, "telegram_day": telegram_day, "telegram_month": telegram_month,
      "prostanki_all": prostanki_all, "prostanki_month": prostanki_month, "prostanki_day": prostanki_day,
-     "metaprom_all": metaprom_all, "metaprom_month": metaprom_month, "metaprom_day": metaprom_day
+     "metaprom_all": metaprom_all, "metaprom_month": metaprom_month, "metaprom_day": metaprom_day,
+     "promportal_all": metaprom_all, "promportal_month": promportal_month, "promportal_day": promportal_day
     }
 
     qs = ParserDetail.objects.all()

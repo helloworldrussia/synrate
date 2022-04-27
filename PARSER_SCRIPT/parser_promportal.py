@@ -42,9 +42,6 @@ class ParserPromportal(Parser):
         print('Good. We get it.', len(self.cat_list))
         self.categories_scanner()
 
-        # change_parser_status('nelikvidy', 'Выкл')
-        # sys.exit()
-
     def categories_scanner(self):
         while self.cat_list != []:
             for cat in self.cat_list:
@@ -63,10 +60,8 @@ class ParserPromportal(Parser):
                         successful = 1
                     except:
                         pass
-        print('cats:', self.cat_list)
-        print('targets:')
-        for x in self.target_urls:
-            print(x)
+        change_parser_status('promportal', 'Выкл')
+        sys.exit()
 
     def scan_sub_in_cat(self, obj):
         self.cat_list.remove(obj)

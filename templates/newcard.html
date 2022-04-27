@@ -60,6 +60,9 @@
                         {% if offer.home_name == "metaprom" %}
                         <a href="{{ offer.url }}" target="_blank"><img src="{% static 'img/metaprom.png' %}" class="offer-block__img" alt=""></a>
                         {% endif %}
+                        {% if offer.home_name == "promportal" %}
+                        <a href="{{ offer.url }}" target="_blank"><img src="{% static 'img/promportal.png' %}" class="offer-block__img" alt=""></a>
+                        {% endif %}
                     </div>
                     <a href="{{ offer.url }}" target="_blank">Перейти на источник</a>
                 </div>
@@ -201,6 +204,9 @@
                             {% endif %}
                             {% if offer.home_name == "metaprom" %}
                             <img src="{% static 'img/metaprom.png' %}" class="offer-block__img" alt="">
+                            {% endif %}
+                            {% if offer.home_name == "promportal" %}
+                            <img src="{% static 'img/promportal.png' %}" class="offer-block__img" alt="">
                             {% endif %}
                         </div>
                         <a href="{% url 'synrate_main:detail_view' id=offer.id %}" class="detailhref">
