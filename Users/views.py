@@ -83,45 +83,61 @@ class CabinetTariffView(TemplateView):
 def stat_view(request):
     today = datetime.datetime.today().date()
 
-    b2b = Offer.objects.filter(home_name='b2b-center').order_by('-created_at')
-    b2b_center_all, b2b_center_month, b2b_center_day = get_counts(b2b)
+    b2b_center_all = Offer.objects.filter(home_name='b2b-center').count()
+    b2b_center_month = Offer.objects.filter(home_name='b2b-center', created_at__month=today.month).count()
+    b2b_center_day = Offer.objects.filter(home_name='b2b-center', created_at__day=today.day).count()
 
-    etp_aktiv = Offer.objects.filter(home_name='etp-activ').order_by('-created_at')
-    etp_aktiv_all, etp_aktiv_month, etp_aktiv_day = get_counts(etp_aktiv)
+    etp_aktiv_all = Offer.objects.filter(home_name='etp-activ').count()
+    etp_aktiv_month = Offer.objects.filter(home_name='etp-activ', created_at__month=today.month).count()
+    etp_aktiv_day = Offer.objects.filter(home_name='etp-activ', created_at__day=today.day).count()
 
-    etpgpb = Offer.objects.filter(home_name='etpgpb').order_by('-created_at')
-    etpgpb_all, etpgpb_month, etpgpb_day = get_counts(etpgpb)
 
-    fabrikant = Offer.objects.filter(home_name='fabrikant').order_by('-created_at')
-    fabrikant_all, fabrikant_month, fabrikant_day = get_counts(fabrikant)
+    etpgpb_all = Offer.objects.filter(home_name='etpgpb').count()
+    etpgpb_month = Offer.objects.filter(home_name='etpgpb', created_at__month=today.month).count()
+    etpgpb_day = Offer.objects.filter(home_name='etpgpb', created_at__day=today.day).count()
 
-    isource = Offer.objects.filter(home_name='isource').order_by('-created_at')
-    isource_all, isource_month, isource_day = get_counts(isource)
+    fabrikant_all = Offer.objects.filter(home_name='fabrikant').count()
+    fabrikant_month = Offer.objects.filter(home_name='fabrikant', created_at__month=today.month).count()
+    fabrikant_day = Offer.objects.filter(home_name='fabrikant', created_at__day=today.day).count()
 
-    nelikvidy = Offer.objects.filter(home_name='nelikvidi').order_by('created_at')
-    nelikvidy_all, nelikvidy_month, nelikvidy_day = get_counts(nelikvidy)
 
-    onlinecontract = Offer.objects.filter(home_name='onlinecontract').order_by('-created_at')
-    onlinecontract_all, onlinecontract_month, onlinecontract_day = get_counts(onlinecontract)
+    isource_all = Offer.objects.filter(home_name='isource').count()
+    isource_month = Offer.objects.filter(home_name='isource', created_at__month=today.month).count()
+    isource_day = Offer.objects.filter(home_name='isource', created_at__day=today.day).count()
 
-    roseltorg = Offer.objects.filter(home_name='roseltorg').order_by('-created_at')
-    roseltorg_all, roseltorg_month, roseltorg_day = get_counts(roseltorg)
+    nelikvidy_all = Offer.objects.filter(home_name='nelikvidi').count()
+    nelikvidy_month = Offer.objects.filter(home_name='nelikvidi', created_at__month=today.month).count()
+    nelikvidy_day = Offer.objects.filter(home_name='nelikvidi', created_at__day=today.day).count()
 
-    tektorg = Offer.objects.filter(home_name='tektorg').order_by('-created_at')
-    tektorg_all, tektorg_month, tektorg_day = get_counts(tektorg)
+    onlinecontract_all = Offer.objects.filter(home_name='onlinecontract').count()
+    onlinecontract_month = Offer.objects.filter(home_name='onlinecontract', created_at__month=today.month).count()
+    onlinecontract_day = Offer.objects.filter(home_name='onlinecontract', created_at__day=today.day).count()
 
-    tenderpro = Offer.objects.filter(home_name='tenderpro').order_by('-created_at')
-    tenderpro_all, tenderpro_month, tenderpro_day = get_counts(tenderpro)
+    roseltorg_all = Offer.objects.filter(home_name='roseltorg').count()
+    roseltorg_month = Offer.objects.filter(home_name='roseltorg', created_at__month=today.month).count()
+    roseltorg_day = Offer.objects.filter(home_name='roseltorg', created_at__day=today.day).count()
+
+    tektorg_all = Offer.objects.filter(home_name='tektorg').count()
+    tektorg_month = Offer.objects.filter(home_name='tektorg', created_at__month=today.month).count()
+    tektorg_day = Offer.objects.filter(home_name='tektorg', created_at__day=today.day).count()
+
+    tenderpro_all = Offer.objects.filter(home_name='tenderpro').count()
+    tenderpro_month = Offer.objects.filter(home_name='tenderpro', created_at__month=today.month).count()
+    tenderpro_day = Offer.objects.filter(home_name='tenderpro', created_at__day=today.day).count()
+
     all = Offer.objects.all().count()
 
-    vk = Offer.objects.filter(home_name='vk.com')
-    vk_all, vk_month, vk_day = get_counts(vk)
+    vk_all = Offer.objects.filter(home_name='vk.com').count()
+    vk_month = Offer.objects.filter(home_name='vk.com', created_at__month=today.month).count()
+    vk_day = Offer.objects.filter(home_name='vk.com', created_at__day=today.day).count()
 
-    telegram = Offer.objects.filter(home_name='telegram')
-    telegram_all, telegram_month, telegram_day = get_counts(telegram)
+    telegram_all = Offer.objects.filter(home_name='telegram').count()
+    telegram_month = Offer.objects.filter(home_name='telegram', created_at__month=today.month).count()
+    telegram_day = Offer.objects.filter(home_name='telegram', created_at__day=today.day).count()
 
-    prostanki = Offer.objects.filter(home_name='prostanki')
-    prostanki_all, prostanki_month, prostanki_day = get_counts(prostanki)
+    prostanki_all = Offer.objects.filter(home_name='prostanki').count()
+    prostanki_month = Offer.objects.filter(home_name='prostanki', created_at__month=today.month).count()
+    prostanki_day = Offer.objects.filter(home_name='prostanki', created_at__day=today.day).count()
 
     metaprom_all = Offer.objects.filter(home_name='metaprom').count()
     metaprom_month = Offer.objects.filter(home_name='metaprom', created_at__month=today.month).count()
@@ -145,7 +161,7 @@ def stat_view(request):
      "telegram_all": telegram_all, "telegram_day": telegram_day, "telegram_month": telegram_month,
      "prostanki_all": prostanki_all, "prostanki_month": prostanki_month, "prostanki_day": prostanki_day,
      "metaprom_all": metaprom_all, "metaprom_month": metaprom_month, "metaprom_day": metaprom_day,
-     "promportal_all": metaprom_all, "promportal_month": promportal_month, "promportal_day": promportal_day
+     "promportal_all": promportal_all, "promportal_month": promportal_month, "promportal_day": promportal_day
     }
 
     qs = ParserDetail.objects.all()
