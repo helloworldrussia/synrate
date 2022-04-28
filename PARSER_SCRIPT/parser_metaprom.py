@@ -27,21 +27,31 @@ class ParserMetaprom(Parser):
         self.cat_list = []
 
     def parse(self):
-        self.get_cat_list()
+        successful = 0
+        while not successful:
+            try:
+                self.get_cat_list()
+                successful = 1
+            except:
+                self.change_proxy()
+                time.sleep(3)
         self.category_disp()
-        # change_parser_status('nelikvidy', 'Выкл')
-        # sys.exit()
+        change_parser_status('metaprom', 'Выкл')
+        sys.exit()
 
     def get_cat_list(self):
         soup = self.get_page_soup(self.url+'/board/')
         all = soup.find("div", attrs={"class": "rubrics"}).find_all("div", attrs={"class": "rubrics__group"})
         for cat in all:
             ul = cat.find("ul", attrs={"class": "rubrics__list"}).find_all("li")
+            cat_name = cat.find("div", attrs={"class": "rubrics__group-caption"}).find("a").getText()
             for li in ul:
-                link = li.find("a").attrs['href']
+                link = li.find("a")
+                sub_name = link.getText()
+                link = link.attrs['href']
                 offers_count = li.find("span").getText().replace('(', '').replace(')', '')
                 link = self.update_cat_url(self.url+link)
-                self.cat_list.append({"url": link, "offers": int(offers_count)})
+                self.cat_list.append({"url": link, "offers": int(offers_count), "cat": f"{cat_name}/{sub_name}"})
 
     def category_disp(self):
         if self.cat_list == []:
@@ -54,11 +64,17 @@ class ParserMetaprom(Parser):
         if pages_count == 0:
             return 0
         for page in range(0, pages_count):
-            page_url = obj['url']+f'{page*50}'
-            soup = self.get_page_soup(page_url)
-            offers = self.get_offers_from_page(soup)
-            self.send_result(offers)
-
+            successful = 0
+            while not successful:
+                try:
+                    page_url = obj['url']+f'{page*50}'
+                    soup = self.get_page_soup(page_url)
+                    offers = self.get_offers_from_page(soup, obj)
+                    self.send_result(offers)
+                    successful = 1
+                except:
+                    self.change_proxy()
+                    time.sleep(3)
     @staticmethod
     def get_pages_count(obj):
         if obj['offers'] == 0:
@@ -73,7 +89,7 @@ class ParserMetaprom(Parser):
         url = url.replace(f'{cat_name}/', f'?podrazdel={cat_name}&start=')
         return url
 
-    def get_offers_from_page(self, soup):
+    def get_offers_from_page(self, soup, obj):
         res = []
         offers = soup.find("table", attrs={"class": "maintable"}).find_all("tr")
         offers = self.check_trs(offers)
@@ -85,13 +101,13 @@ class ParserMetaprom(Parser):
             start_date = tds[1].find_all("div")[-1]
             company = tds[2].find("a")
             region = tds[2].find("div")
-            offer = self.validate(name, url, price, start_date, company, region)
+            offer = self.validate(name, url, price, start_date, company, region, obj)
             if offer:
                 res.append(offer)
 
         return res
 
-    def validate(self, name, url, price, start_date, company, region):
+    def validate(self, name, url, price, start_date, company, region, obj):
         if name:
             name = name.getText()
         else:
@@ -112,7 +128,7 @@ class ParserMetaprom(Parser):
                 return 0
         obj = Item(name, 'metaprom', url, region, start_date, None,
                 None, None, price, a_data, company, None,
-                None, None)
+                obj['cat'], None)
 
         return obj
 
