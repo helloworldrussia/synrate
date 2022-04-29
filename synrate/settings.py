@@ -12,7 +12,7 @@ SECRET_KEY = 'django-insecure-knlrtz6ws_wbw_%$uo0wrozvbzk!h5vy6c76k9l3dee(n#nx%2
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', '5.63.152.3', 'synrate.ru', 'www.synrate.ru']
+ALLOWED_HOSTS = ['127.0.0.1', '81.177.6.103', 'synrate.ru', 'www.synrate.ru']
 
 # Application definition
 
@@ -116,10 +116,10 @@ WSGI_APPLICATION = 'synrate.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'synrate_db',
+        'NAME': 'synrate',
         'USER': 'synrate',
-        'PASSWORD': '0M3p8M1e',
-        'HOST': '91.221.70.92',
+        'PASSWORD': '-Fs7Aj~K#uiA',
+        'HOST': '81.177.6.103',
         'PORT': '5432'
     }
 }

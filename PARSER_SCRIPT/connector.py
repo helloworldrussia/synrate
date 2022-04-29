@@ -9,10 +9,10 @@ from dateutil.relativedelta import relativedelta
 """ Импортируйте conn для использования соединения с базой """
 
 conn = psycopg2.connect(
-   database="synrate_db",
+   database="synrate",
    user="synrate",
-   password="0M3p8M1e",
-   host="91.221.70.92",
+   password="-Fs7Aj~K#uiA",
+   host="81.177.6.103",
    port="5432")
 
 
