@@ -2,6 +2,9 @@ import random
 import sys
 import time
 from datetime import datetime
+from selenium.webdriver.chrome.service import Service
+from selenium_stealth import stealth
+import webdriver_manager
 from fake_useragent import UserAgent
 from requests.adapters import HTTPAdapter, Retry
 from connector import change_parser_status, Item, DbManager
@@ -9,10 +12,14 @@ from ENGINE import Parser
 import requests
 from bs4 import BeautifulSoup
 from mixins import get_proxy
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+
+# селениум должен быть ниже 4 версии. Запускал на 3.14.1
 
 
 class ParserCenter(Parser):
-
     def __init__(self, verify, end):
         super.__init__
         self.url = "https://www.b2b-center.ru/market/?searching=1&company_type=2&price_currency=0&date=1&trade=sell&lot_type=0"
@@ -26,6 +33,17 @@ class ParserCenter(Parser):
         self.last_page = end
         self.current_proxy_ip = 0
         self.db_manager = DbManager()
+        self.driver = self.get_driver()
+
+    def get_driver(self):
+        driver_location = '/usr/bin/chromedriver'
+        binary_location = '/usr/bin/google-chrome'
+        options = webdriver.ChromeOptions()
+        options.binary_location = binary_location
+        options.add_argument('--headless')
+        options.add_argument('--no-sandbox')
+        driver = webdriver.Chrome(executable_path=driver_location, options=options)
+        return driver
 
     def parse(self):
         # делаем запрос, получаем суп и отдаем функции, получающей номер последней страницы
@@ -125,24 +143,36 @@ class ParserCenter(Parser):
         return start_date, end_date
 
     def get_page_soup(self, url):
-        if self.current_proxy_ip:
-            # proxy_status = check_proxy(proxy)
-            try:
-                session = requests.Session()
-                retry = Retry(connect=3, backoff_factor=0.5)
-                adapter = HTTPAdapter(max_retries=retry)
-                session.mount('http://', adapter)
-                session.mount('https://', adapter)
-                response = session.get(url, headers={
-                    'User-Agent': UserAgent().chrome}, proxies=self.proxy, timeout=5).content.decode("utf8")
-                soup = BeautifulSoup(response, 'html.parser')
-            except:
-                print('get_page_soup: не получилось сделать запрос с прокси. спим, меняем прокси и снова..')
-                return False
-        else:
-            response = requests.get(url, headers={
-                'User-Agent': UserAgent().chrome}).content.decode("utf8")
-            soup = BeautifulSoup(response, 'html.parser')
+        # if self.current_proxy_ip:
+        #     # proxy_status = check_proxy(proxy)
+        #     try:
+        #         session = requests.Session()
+        #         retry = Retry(connect=3, backoff_factor=0.5)
+        #         adapter = HTTPAdapter(max_retries=retry)
+        #         session.mount('http://', adapter)
+        #         session.mount('https://', adapter)
+        #         response = session.get(url, headers={
+        #             'User-Agent': UserAgent().chrome}, proxies=self.proxy, timeout=5).content.decode("utf8")
+        #         soup = BeautifulSoup(response, 'html.parser')
+        #     except:
+        #         print('get_page_soup: не получилось сделать запрос с прокси. спим, меняем прокси и снова..')
+        #         return False
+        # else:
+        #     response = requests.get(url, headers={
+        #         'User-Agent': UserAgent().chrome}).content.decode("utf8")
+        #     soup = BeautifulSoup(response, 'html.parser')
+        stealth(self.driver,
+                languages=["en-US", "en"],
+                vendor="Google Inc.",
+                platform="Win32",
+                webgl_vendor="Intel Inc.",
+                renderer="Intel Iris OpenGL Engine",
+                fix_hairline=True,
+                )
+        self.driver.get(url)
+        soup = BeautifulSoup(self.driver.page_source, 'html.parser')
+        print(soup)
+        print(url)
         return soup
 
     def change_proxy(self):
