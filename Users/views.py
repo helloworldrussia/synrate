@@ -140,7 +140,8 @@ def stat_view(request):
      "b2b_center_all": b2b_center_all, "b2b_center_month": b2b_center_month, "b2b_center_day": b2b_center_day,
      "telegram_all": telegram_all, "telegram_day": telegram_day, "telegram_month": telegram_month,
      "prostanki_all": prostanki_all, "prostanki_month": prostanki_month, "prostanki_day": prostanki_day,
-     "metaprom_all": metaprom_all, "metaprom_month": metaprom_month, "metaprom_day": metaprom_day
+     "metaprom_all": metaprom_all, "metaprom_month": metaprom_month, "metaprom_day": metaprom_day,
+     "promportal_all": promportal_all, "promportal_month": promportal_month, "promportal_day": promportal_day
     }
 
     qs = ParserDetail.objects.all()
