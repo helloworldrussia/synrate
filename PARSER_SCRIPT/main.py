@@ -74,7 +74,7 @@ def server_listener():
         nelikvidy_obj = ParserNelikvidy(False, 300)
         tender_obj = ParserTender(12)
         roseltorg_obj = RoseltorgParser(10)
-        prostanki_obj = ProstankiParser(10)
+        prostanki_obj = ProstankiParser(5)
         isource_obj = ParserSource(10)
         tectorg_obj = ParserTektorg()
         onlinecontract_obj = ParserOnlineContract(125)
@@ -82,8 +82,8 @@ def server_listener():
         fabrikant_obj = ParserFabrikant(True, 10)
         b2b_center_obj = ParserCenter(True, 10)
         etp_activ_obj = ParserEtpActiv(True, 120)
-        metaprom_obj = ParserMetaprom(False, 10)
-        promportal_obj = ParserPromportal(False, 10)
+        metaprom_obj = ParserMetaprom(False, 3)
+        promportal_obj = ParserPromportal(False, 2)
 
     else:
         print('server listener: Start.. Parsing mode - long')

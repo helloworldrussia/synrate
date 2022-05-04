@@ -28,6 +28,7 @@ class ParserPromportal(Parser):
         self.cat_list = []
         self.target_urls = []
         self.current_category = None
+        self.last_page = end
 
     def parse(self):
         successful = 0
@@ -38,7 +39,9 @@ class ParserPromportal(Parser):
             else:
                 self.change_proxy()
                 time.sleep(3)
-
+        # delete this line after debug
+        l = len(self.cat_list)
+        del self.cat_list[int(l/2):l]
         print('Good. We get it.', len(self.cat_list))
         self.categories_scanner()
 
@@ -60,6 +63,7 @@ class ParserPromportal(Parser):
                         successful = 1
                     except:
                         pass
+
         change_parser_status('promportal', 'Выкл')
         sys.exit()
 
@@ -101,7 +105,8 @@ class ParserPromportal(Parser):
                 successful = 1
             except:
                 self.change_proxy()
-
+        if self.last_page:
+            if last_page > self.last_page: pages_count = self.last_page
         for page in range(1, last_page+1):
             successful = 0
             while not successful:

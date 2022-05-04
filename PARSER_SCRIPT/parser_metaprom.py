@@ -25,6 +25,7 @@ class ParserMetaprom(Parser):
         self.current_proxy_ip = 0
         self.start_page = 1
         self.cat_list = []
+        self.last_page = end
 
     def parse(self):
         successful = 0
@@ -63,6 +64,8 @@ class ParserMetaprom(Parser):
         pages_count = self.get_pages_count(obj)
         if pages_count == 0:
             return 0
+        if self.last_page:
+            if pages_count > self.last_page: pages_count = self.last_page
         for page in range(0, pages_count):
             successful = 0
             while not successful:
@@ -75,6 +78,7 @@ class ParserMetaprom(Parser):
                 except:
                     self.change_proxy()
                     time.sleep(3)
+
     @staticmethod
     def get_pages_count(obj):
         if obj['offers'] == 0:

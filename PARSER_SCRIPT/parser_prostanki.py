@@ -54,6 +54,8 @@ class ProstankiParser(Parser):
 
     def parse_cat(self, url):
         last_page = self.get_last_page(url)
+        if self.last_page:
+            last_page = self.last_page
         for page in range(1, last_page+1):
             successful = 0
             while not successful:

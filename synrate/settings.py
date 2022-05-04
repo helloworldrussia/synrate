@@ -116,10 +116,10 @@ WSGI_APPLICATION = 'synrate.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'synrate',
+        'NAME': 'synrate_db',
         'USER': 'synrate',
-        'PASSWORD': '-Fs7Aj~K#uiA',
-        'HOST': '81.177.6.103',
+        'PASSWORD': '0M3p8M1e',
+        'HOST': '91.221.70.92',
         'PORT': '5432'
     }
 }

@@ -39,10 +39,10 @@ class ParserCenter(Parser):
         driver_location = '/usr/bin/chromedriver'
         binary_location = '/usr/bin/google-chrome'
         options = webdriver.ChromeOptions()
-        options.binary_location = binary_location
+        # options.binary_location = binary_location
         options.add_argument('--headless')
         options.add_argument('--no-sandbox')
-        driver = webdriver.Chrome(executable_path=driver_location, options=options)
+        driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
         return driver
 
     def parse(self):
@@ -171,8 +171,8 @@ class ParserCenter(Parser):
                 )
         self.driver.get(url)
         soup = BeautifulSoup(self.driver.page_source, 'html.parser')
-        print(soup)
-        print(url)
+        # print(soup)
+        # print(url)
         return soup
 
     def change_proxy(self):

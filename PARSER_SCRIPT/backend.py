@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date
 import random
 import time
 
@@ -24,6 +24,7 @@ class VkGroup:
         self.i_count = None
         self.last_i = 1
         self.db_manager = DbManager()
+        self.thats_all = False
 
     def check_connect(self):
         wall = self.api.wall.get(owner_id=self.id, count=1)
@@ -73,6 +74,9 @@ class VkGroup:
                          "offer_start_date": start_date, "additional_data": text,
                          "url": url, "from_id": offer['id'], "owner_id": offer['from_id']
                          }
+            if start_date.split('-')[0] != str(date.today().year):
+                self.thats_all = True
+
             offer = Item(name, self.home_name, url, None, start_date, None,
                 None, None, None, text, None, offer['id'],
                 self.name, offer['from_id'])

@@ -42,7 +42,6 @@ class ParserEtpgpb(Parser):
                     successful = 1
                     self.send_result(result)
         change_parser_status('etpgpb', 'Выкл')
-        print(f'Закончили len = {results}')
         sys.exit()
 
     def get_page_soup(self, url):

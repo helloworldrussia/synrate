@@ -9,10 +9,10 @@ from dateutil.relativedelta import relativedelta
 """ Импортируйте conn для использования соединения с базой """
 
 conn = psycopg2.connect(
-   database="synrate",
+   database="synrate_db",
    user="synrate",
-   password="-Fs7Aj~K#uiA",
-   host="81.177.6.103",
+   password="0M3p8M1e",
+   host="91.221.70.92",
    port="5432")
 
 
@@ -47,7 +47,6 @@ class DbManager:
          cur_task = self.tasks[0]
          self.tasks.remove(cur_task)
          self.post(cur_task)
-         time.sleep(1)
       return True
 
    def post(self, obj):
@@ -177,4 +176,3 @@ class Item:
 
    def post(self, db_manager):
       db_manager.tasks.append(self)
-      print(f'[{self.home_name}] Saved in tasks')

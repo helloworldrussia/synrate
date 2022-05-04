@@ -63,11 +63,16 @@ def parse(data):
         obj = obj['obj']
         info = obj.wall_info()
         time.sleep(1)
-    while True:
+    while data != []:
         for obj in data:
-            obj = obj['obj']
-            # print('START', obj.name)
-            parse_iteration(obj)
+            print(f"Group with", data)
+            print(f"SOLDIERS:", len(data))
+            parse_iteration(obj['obj'])
+            if obj['obj'].thats_all:
+                data.remove(obj)
+    print('Z')
+    change_parser_status('vk.com', 'Выкл')
+    sys.exit()
 
 
 def get_vk_models():
@@ -111,9 +116,9 @@ def main():
         for object in obj_list:
             if object['token'] == token:
                 soldiers.append(object)
-        for x in soldiers:
-            print(x)
-        print('---------')
+        # for x in soldiers:
+        #     print(x)
+        # print('---------')
         th = threading.Thread(target=parse, args=(soldiers,))
         th.start()
         # time.sleep(2)
@@ -128,7 +133,7 @@ def check_situation():
         if threading.active_count() <= 1:
             change_parser_status('vk.com', 'Выкл')
             sys.exit()
-        # print('[vk.com]Активны:', threading.active_count())
+        print('[vk.com]Активны:', threading.active_count())
         time.sleep(15)
 
 
