@@ -59,4 +59,4 @@ def check_proxy(proxy):
 
 
 # auth = HTTPProxyDigestAuth('s493199', 'Gb3YXwAmsL')
-print(check_proxy({'https': 'https://s493199:Gb3YXwAmsL@94.45.182.6:51523'}))
+# print(check_proxy({'https': 'https://s493199:Gb3YXwAmsL@94.45.182.6:51523'}))
