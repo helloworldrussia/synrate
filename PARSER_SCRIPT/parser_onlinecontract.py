@@ -23,6 +23,7 @@ class ParserOnlineContract(Parser):
         self.core = 'https://onlinecontract.ru'
         self.start_page = 1
         self.last_page = end
+        print('self.last_page =', self.last_page)
         self.db_manager = DbManager()
 
     def parse(self):
@@ -38,6 +39,7 @@ class ParserOnlineContract(Parser):
         if self.last_page:
             last_page = int(self.last_page)
         pause_signal = 1
+        print('last page ======', last_page)
         for i in range(self.start_page, last_page+1):
             time.sleep(random.randint(1, 5))
             pause_signal += 1
@@ -63,6 +65,8 @@ class ParserOnlineContract(Parser):
     def get_last_page(self):
         soup = self.get_page_soup(self.url.format(1))
         last_page = soup.find("li", attrs={"class": "pagination-last page-item"}).find("a").attrs["href"]
+        print(last_page)
+        print(self.url.format(1))
         last_page = last_page.split('=')[-1]
         return int(last_page)
 

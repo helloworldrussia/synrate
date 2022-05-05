@@ -70,7 +70,6 @@ def parse(data):
             parse_iteration(obj['obj'])
             if obj['obj'].thats_all:
                 data.remove(obj)
-    print('Z')
     change_parser_status('vk.com', 'Выкл')
     sys.exit()
 

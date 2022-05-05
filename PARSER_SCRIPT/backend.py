@@ -74,7 +74,7 @@ class VkGroup:
                          "offer_start_date": start_date, "additional_data": text,
                          "url": url, "from_id": offer['id'], "owner_id": offer['from_id']
                          }
-            if start_date.split('-')[0] != str(date.today().year):
+            if start_date.split('-')[0] != str(date.today().year) and int(start_date.split('-')[1]) > date.today().month:
                 self.thats_all = True
 
             offer = Item(name, self.home_name, url, None, start_date, None,

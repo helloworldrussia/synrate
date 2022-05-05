@@ -33,15 +33,19 @@ class ParserPromportal(Parser):
     def parse(self):
         successful = 0
         while not successful:
-            self.get_cat_list()
-            if self.cat_list != []:
-                successful = 1
-            else:
+            try:
+                self.get_cat_list()
+                if self.cat_list != []:
+                    successful = 1
+                else:
+                    self.change_proxy()
+                    time.sleep(3)
+            except:
                 self.change_proxy()
                 time.sleep(3)
         # delete this line after debug
         l = len(self.cat_list)
-        del self.cat_list[int(l/2):l]
+        del self.cat_list[int(l/4):int(l/2)]
         print('Good. We get it.', len(self.cat_list))
         self.categories_scanner()
 
