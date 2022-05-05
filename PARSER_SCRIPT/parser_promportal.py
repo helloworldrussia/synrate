@@ -124,6 +124,7 @@ class ParserPromportal(Parser):
                         self.send_result(offers)
                 except:
                     self.change_proxy()
+
     def get_offers_from_page(self, soup, category):
         res = []
         offers = soup.find("div", attrs={"class": "gallery-block"}).find_all("div", attrs={"class": "gb-item"})

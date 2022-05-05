@@ -42,8 +42,8 @@ class ParserCenter(Parser):
         # options.binary_location = binary_location
         options.add_argument('--headless')
         options.add_argument('--no-sandbox')
-        driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
-        return driver
+        # driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+        return 0 #driver
 
     def parse(self):
         # делаем запрос, получаем суп и отдаем функции, получающей номер последней страницы

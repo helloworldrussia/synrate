@@ -3,13 +3,43 @@ import random
 import requests
 from connector import conn
 
-proxy_data = {
-    1: {"https": "https://Selerickmambergermail:R0h0CoX@94.45.164.1:45785"},
-    2: {"https": "https://Selerickmambergermail:R0h0CoX@93.88.77.246:45785"},
-    3: {"https": "https://Selerickmambergermail:R0h0CoX@92.62.115.113:45785"},
-    4: {"https": "https://Selerickmambergermail:R0h0CoX@212.60.22.251:45785"},
-    5: {"https": "https://Selerickmambergermail:R0h0CoX@193.233.72.66:45785"}
-}
+import requests
+import requests.auth
+
+proxy_data = 0
+
+
+class HTTPProxyDigestAuth(requests.auth.HTTPDigestAuth):
+    def handle_407(self, r):
+        """Takes the given response and tries digest-auth, if needed."""
+
+        num_407_calls = r.request.hooks['response'].count(self.handle_407)
+
+        s_auth = r.headers.get('Proxy-authenticate', '')
+
+        if 'digest' in s_auth.lower() and num_407_calls < 2:
+
+            self.chal = requests.auth.parse_dict_header(s_auth.replace('Digest ', ''))
+
+            # Consume content and release the original connection
+            # to allow our new request to reuse the same one.
+            r.content
+            r.raw.release_conn()
+
+            r.request.headers['Authorization'] = self.build_digest_header(r.request.method, r.request.url)
+            r.request.send(anyway=True)
+            _r = r.request.response
+            _r.history.append(r)
+
+            return _r
+
+        return r
+
+    def __call__(self, r):
+        if self.last_nonce:
+            r.headers['Proxy-Authorization'] = self.build_digest_header(r.method, r.url)
+        r.register_hook('response', self.handle_407)
+        return r
 
 
 def get_proxy(current):
@@ -27,26 +57,6 @@ def check_proxy(proxy):
     r = requests.get(url, proxies=proxy, timeout=5)
     print(r.json(), r.status_code)
 
-    # try:
-    #     ip = r.json()['origin']
-    #     https_ip = proxy['https'].replace('https://', '')
-    #     https_ip = https_ip.split(':')[0]
-    #
-    #     # http_ip = proxy['http'].replace('http://', '')
-    #     # http_ip = http_ip.split(':')[0]
-    #
-    #     if ip == https_ip:
-    #         return True
-    #     else:
-    #         return False
-    #
-    # except Exception as error:
-    #     print(error)
-    #     return False
 
-
-# for key in proxy_data:
-#     proxy = get_proxy(key)
-#     print(check_proxy(proxy))
-
-get_proxy('93.88.77.246')
+# auth = HTTPProxyDigestAuth('s493199', 'Gb3YXwAmsL')
+print(check_proxy({'https': 'https://s493199:Gb3YXwAmsL@94.45.182.6:51523'}))

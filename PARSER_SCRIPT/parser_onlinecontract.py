@@ -8,7 +8,7 @@ from connector import change_parser_status, Item, DbManager
 from ENGINE import Parser
 import requests
 from bs4 import BeautifulSoup
-from mixins import get_proxy, proxy_data
+from mixins import get_proxy
 import sys
 
 
