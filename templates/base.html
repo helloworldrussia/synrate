@@ -39,7 +39,7 @@
                             <a href="#" class="nav__link nav__link_mobile" id="nav__link_list">Категории</a>
                         </li>-->
                         <li class="nav__item">
-                            <a href="{% url 'synrate_main:filtration' %}" class="nav__link">Остатки</a>
+                            <a href="{% url 'synrate_main:filtration' %}" class="nav__link">Объявления</a>
                         </li>
                         <li class="nav__item">
                             <a href="https://synrate.ru/info/tarify" class="nav__link">Тарифы</a>
@@ -51,10 +51,6 @@
                             <a href="https://synrate.ru/info" class="nav__link">FAQ</a>
                         </li>
                     </ul>
-                </div>
-                <div class="mobile-menu">
-                    <button type="button" class="mobile-menu__btn"></button>
-
                 </div>
                 {% if request.user.is_authenticated %}
                 <div class="user-block">
@@ -108,6 +104,11 @@
                 <div class="btns">
                     <a href="{% url 'Users:register' %}" class="btn-registration"><img src="{% static 'synrate_static/img/registr.svg' %}" alt="regist"></a>
                     <a href="{% url 'Users:login' %}" class="btn-enter">Вход</a>
+
+                    <div class="mobile-menu">
+                        <button type="button" class="mobile-menu__btn"></button>
+
+                    </div>
                 </div>
                 {% endif %}
                 <div class="mobile-menu-block">
@@ -116,7 +117,7 @@
                             <a href="#" class="nav__link nav__link_mobile" id="nav__link_list">Категории</a>
                         </li>-->
                         <li class="nav__item">
-                            <a href="{% url 'synrate_main:filtration' %}" class="nav__link">Складские остатки  предприятий</a>
+                            <a href="{% url 'synrate_main:filtration' %}" class="nav__link">Объявления</a>
                         </li>
                         <li class="nav__item">
                             <a href="https://synrate.ru/info/tarify" class="nav__link">Тарифы</a>

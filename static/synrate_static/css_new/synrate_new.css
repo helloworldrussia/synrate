@@ -2094,3 +2094,14 @@ nav{
         margin-top: 10px;
     }
 }
+
+@media (max-width: 320px) {
+    .logo {
+        width: 97px;
+        height: 25px;
+        margin-top: 19px !important;
+        margin-bottom: 5px !important;
+    }
+}
+
+
