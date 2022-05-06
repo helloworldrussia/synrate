@@ -170,86 +170,7 @@
     }
 </style>
 
-    <section class="filtrs" id="filtrs">
-        <div class="container">
-            {% csrf_token %}
-            <form action="{% url 'synrate_main:filtration' %}">
-
-                <div class="input-group mb-3">
-                    <div id="search_filter" class="input-group mb-3">
-                      <input type="text" name="search_filter" class="form-control" {% if search_filter %}value="{{ search_filter }}"{% else %} placeholder="Поиск.."{% endif %} aria-label="Recipient's username" aria-describedby="button-addon2">
-                      <button type="submit" id="search_filter_button" class="btn btn-light">Поиск</button>
-                        <!--<button  class="filtrs-btn filter-btn submit-button">Поиск</button>-->
-                    </div>
-                    <ul id="other_filters" class="filtr-list">
-                        <li>
-                            <div class="filtrs-btns-wrapper">
-                                <!--<div class="filtrs-btns__title">
-                                    <span>Фильтры:</span>
-                                </div>-->
-
-                                <div class="btn-group" role="group" id="time_buttons" aria-label="Basic radio toggle button group">
-
-                                      <input type="radio" class="btn-check" {% if time_filter == 'all' %}checked{% endif%} value="all" name="time_filter" id="btnradio1" autocomplete="off">
-                                      <label class="btn btn-outline-secondary" for="btnradio1">Все время</label>
-
-                                      <input type="radio" class="btn-check" {% if time_filter == '1' %}checked{% endif%} value="1" name="time_filter" id="btnradio2" autocomplete="off">
-                                      <label class="btn btn-outline-secondary" for="btnradio2">Сутки</label>
-
-                                      <input type="radio" class="btn-check" {% if time_filter == '7' %}checked{% endif%} value="7" name="time_filter" id="btnradio3" autocomplete="off">
-                                      <label class="btn btn-outline-secondary" for="btnradio3">Неделя</label>
-
-                                      <input type="radio" class="btn-check" {% if time_filter == '31' %}checked{% endif%} value="31" name="time_filter" id="btnradio5" autocomplete="off">
-                                      <label class="btn btn-outline-secondary" for="btnradio5">Месяц</label>
-                                </div>
-                            </div>
-                        </li>
-                        <li>
-                             <button type="button" class="filtrs-btn filter-btn">Выбрать даты</button>
-                        </li>
-                        <li>
-                            <select name="from_filter" id="from_filter_select" aria-label="Источник" class="filtrs-btn filter-btn filter-btn_arrow">
-                              <option value="" disabled selected>Источник</option>
-                              <option {% if from_filter == 'nelikvidi' %}selected{% endif%} value="nelikvidi">nelikvidi.com</option>
-                              <option {% if from_filter == 'onlinecontract' %}selected{% endif%} value="onlinecontract">onlinecontract.ru</option>
-                              <option {% if from_filter == 'tektorg' %}selected{% endif%} value="tektorg">tektorg.ru</option>
-                              <option {% if from_filter == 'tenderpro' %}selected{% endif%} value="tenderpro">tender.pro</option>
-                              <option {% if from_filter == 'roseltorg' %}selected{% endif%} value="roseltorg">roseltorg.ru</option>
-                              <option {% if from_filter == 'isource' %}selected{% endif%} value="isource">reserve.isource.ru</option>
-                              <option {% if from_filter == 'etpgpb' %}selected{% endif%} value="etpgpb">etpgpb.ru</option>
-                              <option {% if from_filter == 'fabrikant' %}selected{% endif%} value="fabrikant">fabrikant.ru</option>
-                              <option {% if from_filter == 'etp-activ' %}selected{% endif%} value="etp-activ">etp-activ.ru</option>
-                              <option {% if from_filter == 'b2b-center' %}selected{% endif%} value="b2b-center">b2b-center.ru</option>
-                              <option {% if from_filter == 'vk.com' %}selected{% endif%} value="vk.com">vk.com</option>
-                              <option {% if from_filter == 'telegram' %}selected{% endif%} value="telegram">telegram</option>
-                              <option {% if from_filter == 'prostanki' %}selected{% endif%} value="prostanki">prostanki.com</option>
-                              <option {% if from_filter == 'metaprom' %}selected{% endif%} value="metaprom">metaprom.ru</option>
-                              <option {% if from_filter == 'promportal' %}selected{% endif%} value="promportal">promportal.su</option>
-                            </select>
-                       </li>
-                        <li>
-                             <button type="button" class="filtrs-btn filter-btn filter-btn_arrow">Локации</button>
-                        </li>
-                        <li>
-                            <button type="button" class="filtrs-btn filter-btn filter-btn_arrow">Дополнительно</button>
-                       </li>
-                        <!--<li>
-                             <button type="button" class="filtrs-btn filter-btn filter-btn_plus">Ключевые слова</button>
-                        </li>
-                        <li>
-                            <button type="button" class="filtrs-btn filter-btn filter-btn_cross">полный</button>
-                       </li>-->
-                        <!--<li>
-                            <button type="submit" class="filtrs-btn filter-btn submit-button">Поиск</button>
-                       </li>-->
-
-                    </ul>
-                </div>
-            </form>
-
-            <!--<div class="ad-unit"></div>-->
-        </div>
-    </section>
+    {% include 'filtr_form.html' %}
 
     <section class="offers" id="offers">
         <div class="container">
@@ -269,134 +190,147 @@
                     {% if today_count != 0 %}, день {{ today_count }}{% endif %}
                 </h4>
             </div>
-            <div class="offers-block">
-            {% for offer in offers %}
-                <div class="offer-block">
-                    <div class="offer-block-img">
-                        {% if offer.home_name == "nelikvidi" %}
-                        <img src="{% static 'img/nelikvidi.png' %}" class="offer-block__img" alt="">
-                        {% endif %}
-                        {% if offer.home_name == "tektorg" %}
-                        <img src="{% static 'img/tectorg.png' %}" class="offer-block__img" alt="">
-                        {% endif %}
-                        {% if offer.home_name == "tenderpro" %}
-                        <img src="{% static 'img/tender.png' %}" class="offer-block__img" alt="">
-                        {% endif %}
-                        {% if offer.home_name == "isource" %}
-                        <img src="{% static 'img/isource.png' %}" class="offer-block__img" alt="">
-                        {% endif %}
-                        {% if offer.home_name == "onlinecontract" %}
-                        <img src="{% static 'img/onlinecontract.png' %}" class="offer-block__img" alt="">
-                        {% endif %}
-                        {% if offer.home_name == "roseltorg" %}
-                        <img src="{% static 'img/roseltorg.png' %}" class="offer-block__img" alt="">
-                        {% endif %}
-                        {% if offer.home_name == "etpgpb" %}
-                        <img src="{% static 'img/etpgpb_1.png' %}" class="offer-block__img" alt="">
-                        {% endif %}
-                        {% if offer.home_name == "fabrikant" %}
-                        <img src="{% static 'img/fabrikant_1.png' %}" class="offer-block__img" alt="">
-                        {% endif %}
-                        {% if offer.home_name == "etp-activ" %}
-                        <img src="{% static 'img/etp-activ.png' %}" class="offer-block__img" alt="">
-                        {% endif %}
-                        {% if offer.home_name == "b2b-center" %}
-                        <img src="{% static 'img/b2b-center.png' %}" class="offer-block__img" alt="">
-                        {% endif %}
-                        {% if offer.home_name == "vk.com" %}
-                        <img src="{% static 'img/vk.png' %}" class="offer-block__img" alt="">
-                        {% endif %}
-                        {% if offer.home_name == "telegram" %}
-                        <img src="{% static 'img/telegram.png' %}" class="offer-block__img" alt="">
-                        {% endif %}
-                        {% if offer.home_name == "prostanki" %}
-                        <img src="{% static 'img/prostanki.png' %}" class="offer-block__img" alt="">
-                        {% endif %}
-                        {% if offer.home_name == "metaprom" %}
-                        <img src="{% static 'img/metaprom.png' %}" class="offer-block__img" alt="">
-                        {% endif %}
-                        {% if offer.home_name == "promportal" %}
-                        <img src="{% static 'img/promportal.png' %}" class="offer-block__img" alt="">
-                        {% endif %}
-                    </div>
-                    <a href="{% url 'synrate_main:detail_view' id=offer.id %}" class="detailhref">
-                        <div class="offer-wrapper">
-                            <p class="offer-wrapper__text">
-                                {{ offer.name }}
-                            </p>
-                            <div class="offer-number">
-                                <span class="number-offer">№ процедуры - {{ offer.id }}</span>
-                                {% if offer.price != 0 %}
-                                    <span class="number-procedure">{{ offer.price }}</span>
+
+
+
+            <div class="row">
+                <div class="col-12 col-lg-9">
+
+
+                    <div class="offers-block">
+                    {% for offer in offers %}
+                        <div class="offer-block">
+                            <div class="offer-block-img">
+                                {% if offer.home_name == "nelikvidi" %}
+                                <img src="{% static 'img/nelikvidi.png' %}" class="offer-block__img" alt="">
+                                {% endif %}
+                                {% if offer.home_name == "tektorg" %}
+                                <img src="{% static 'img/tectorg.png' %}" class="offer-block__img" alt="">
+                                {% endif %}
+                                {% if offer.home_name == "tenderpro" %}
+                                <img src="{% static 'img/tender.png' %}" class="offer-block__img" alt="">
+                                {% endif %}
+                                {% if offer.home_name == "isource" %}
+                                <img src="{% static 'img/isource.png' %}" class="offer-block__img" alt="">
+                                {% endif %}
+                                {% if offer.home_name == "onlinecontract" %}
+                                <img src="{% static 'img/onlinecontract.png' %}" class="offer-block__img" alt="">
+                                {% endif %}
+                                {% if offer.home_name == "roseltorg" %}
+                                <img src="{% static 'img/roseltorg.png' %}" class="offer-block__img" alt="">
+                                {% endif %}
+                                {% if offer.home_name == "etpgpb" %}
+                                <img src="{% static 'img/etpgpb_1.png' %}" class="offer-block__img" alt="">
+                                {% endif %}
+                                {% if offer.home_name == "fabrikant" %}
+                                <img src="{% static 'img/fabrikant_1.png' %}" class="offer-block__img" alt="">
+                                {% endif %}
+                                {% if offer.home_name == "etp-activ" %}
+                                <img src="{% static 'img/etp-activ.png' %}" class="offer-block__img" alt="">
+                                {% endif %}
+                                {% if offer.home_name == "b2b-center" %}
+                                <img src="{% static 'img/b2b-center.png' %}" class="offer-block__img" alt="">
+                                {% endif %}
+                                {% if offer.home_name == "vk.com" %}
+                                <img src="{% static 'img/vk.png' %}" class="offer-block__img" alt="">
+                                {% endif %}
+                                {% if offer.home_name == "telegram" %}
+                                <img src="{% static 'img/telegram.png' %}" class="offer-block__img" alt="">
+                                {% endif %}
+                                {% if offer.home_name == "prostanki" %}
+                                <img src="{% static 'img/prostanki.png' %}" class="offer-block__img" alt="">
+                                {% endif %}
+                                {% if offer.home_name == "metaprom" %}
+                                <img src="{% static 'img/metaprom.png' %}" class="offer-block__img" alt="">
+                                {% endif %}
+                                {% if offer.home_name == "promportal" %}
+                                <img src="{% static 'img/promportal.png' %}" class="offer-block__img" alt="">
                                 {% endif %}
                             </div>
-                            <div class="offer-organization">
-                                <div class="offer-organization-wrapper">
-                                    {% if offer.organisation != None and offer.organisation != '' %}
-                                    <div class="offer-organization__name">
-                                        <p>{{ offer.organisation }}</p>
+                            <a href="{% url 'synrate_main:detail_view' id=offer.id %}" class="detailhref">
+                                <div class="offer-wrapper">
+                                    <p class="offer-wrapper__text">
+                                        {{ offer.name }}
+                                    </p>
+                                    <div class="offer-number">
+                                        <span class="number-offer">№ процедуры - {{ offer.id }}</span>
+                                        {% if offer.price != 0 %}
+                                            <span class="number-procedure">{{ offer.price }}</span>
+                                        {% endif %}
                                     </div>
-                                    {% endif %}
-                                    {% if offer.location != None and offer.location != '' %}
-                                    <div class="offer-organization__address">
-                                        <p>{{ offer.location }}</p>
+                                    <div class="offer-organization">
+                                        <div class="offer-organization-wrapper">
+                                            {% if offer.organisation != None and offer.organisation != '' %}
+                                            <div class="offer-organization__name">
+                                                <p>{{ offer.organisation }}</p>
+                                            </div>
+                                            {% endif %}
+                                            {% if offer.location != None and offer.location != '' %}
+                                            <div class="offer-organization__address">
+                                                <p>{{ offer.location }}</p>
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                        {% if offer.offer_start_date != None %}
+                                        <div class="offer-organization__time">
+                                            <span class="offer-organization__time__number"> {{ offer.offer_start_date }}</span>
+                                        </div>
+                                        {% endif %}
+                                        {% if offer.offer_end_date != None %}
+                                        <div class="offer-organization__time">
+                                            <span class="offer-organization__time__number"> {{ offer.offer_end_date }}</span>
+                                        </div>
+                                        {% endif %}
                                     </div>
-                                    {% endif %}
                                 </div>
-                                {% if offer.offer_start_date != None %}
-                                <div class="offer-organization__time">
-                                    <span class="offer-organization__time__number"> {{ offer.offer_start_date }}</span>
-                                </div>
-                                {% endif %}
-                                {% if offer.offer_end_date != None %}
-                                <div class="offer-organization__time">
-                                    <span class="offer-organization__time__number"> {{ offer.offer_end_date }}</span>
-                                </div>
-                                {% endif %}
-                            </div>
+                            </a>
                         </div>
-                    </a>
+                    {% endfor %}
+
+                    </div>
+                    <style>
+                        .page_square_btn{
+                            display:inline-block;
+                            min-width: 50px;
+                            padding-left: 9px;
+                            padding-right: 9px;
+                            text-align:center;
+                            padding-top: 5px;
+                            height: 34px;
+                            font-weight:800;
+                            font-size:18px;
+                            border: 1px solid rgba(0,0,0,0.6);
+                            border-radius: 3px;
+                            color: #F37E09;
+                            margin-left: 10px;
+                            margin-right: 10px;
+                        }
+                        .page_square_btn__current{
+                            background-color: #F37E09;
+                            color: #fff;
+                        }
+                        @media(max-width:920px){
+                            .page_square_btn{
+                                min-width: 30px;
+                                padding-left: 3px;
+                                padding-right: 3px;
+                                margin-top: 5px;
+                                padding-top: 5px;
+                                height: 26px;
+                                font-weight:800;
+                                font-size:12px;
+                                margin-left: 3px;
+                                margin-right: 3px;
+                            }
+
+                        }
+                    </style>
+
                 </div>
-            {% endfor %}
-
+                <div class="col-12 col-lg-3">
+                    {% include 'sidebar.html' %}
+                </div>
             </div>
-            <style>
-                .page_square_btn{
-                    display:inline-block;
-                    min-width: 50px;
-                    padding-left: 9px;
-                    padding-right: 9px;
-                    text-align:center;
-                    padding-top: 5px;
-                    height: 34px;
-                    font-weight:800;
-                    font-size:18px;
-                    border: 1px solid rgba(0,0,0,0.6);
-                    border-radius: 3px;
-                    color: #F37E09;
-                    margin-left: 10px;
-                    margin-right: 10px;
-                }
-                .page_square_btn__current{
-                    background-color: #F37E09;
-                    color: #fff;
-                }
-                @media(max-width:920px){
-                    .page_square_btn{
-                        min-width: 30px;
-                        padding-left: 3px;
-                        padding-right: 3px;
-                        margin-top: 5px;
-                        padding-top: 5px;
-                        height: 26px;
-                        font-weight:800;
-                        font-size:12px;
-                        margin-left: 3px;
-                        margin-right: 3px;
-                    }
-
-                }
-            </style>
             <br>
             <hr>
             <br>
