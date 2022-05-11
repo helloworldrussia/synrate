@@ -17,7 +17,7 @@ from django.http import HttpResponse
 class SignUpView(CreateView):
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated:
-            return redirect("Users:cabinet")
+            return redirect("Users:cabinet_lk")
         self.object = None
         return super().get(request, *args, **kwargs)
     form_class = UserForm
@@ -34,7 +34,7 @@ def user_login(request):
             if user is not None:
                 if user.is_active:
                     login(request, user)
-                    return redirect("Users:cabinet")
+                    return redirect("Users:cabinet_lk")
                 else:
                     return HttpResponse('Disabled account')
             else:
