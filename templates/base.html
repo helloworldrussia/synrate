@@ -35,9 +35,11 @@
                 {% endcomment %}
                 <div class="nav">
                     <ul class="nav__list topmenu">
-                        <!--<li class="nav__item ">
+                        <!--
+                        <li class="nav__item ">
                             <a href="#" class="nav__link nav__link_mobile" id="nav__link_list">Категории</a>
-                        </li>-->
+                        </li>
+                        -->
                         <li class="nav__item">
                             <a href="{% url 'synrate_main:filtration' %}" class="nav__link">Объявления</a>
                         </li>
@@ -86,9 +88,14 @@
                         <li>
                             <a href="{% url 'Users:cabinet_lk' %}">Категории</a>
                         </li>
+                        {% if request.user.is_superuser %}
                         <li>
                             <a href="{% url 'Users:cabinet_stat' %}">Статистика</a>
                         </li>
+                        <li>
+                            <a href="https://synrate.ru/admin">Админка</a>
+                        </li>
+                        {% endif %}
                         <li>
                             <a href="{% url 'Users:cabinet_fav' %}">Избранное</a>
                         </li>
