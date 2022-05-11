@@ -118,7 +118,11 @@ class ParserMetaprom(Parser):
             return 0
         a_data = None
         if url:
-            url = self.core+url.attrs['href']
+            data = url.attrs['href'].split('/')
+            if data[0] == '':
+                url = self.core+url.attrs['href']
+            else:
+                url = url.attrs['href']
             # a_data = self.get_a_data(url)
         if price:
             price = self.validate_price(price.getText())
