@@ -20,6 +20,8 @@
 </section>
 <section class="offers" id="offers">
     <div class="container">
+
+
         <div class="offers-title-block">
             <div class="offers-title-block-img">
                 <img src="{% static 'synrate_static/img/offers-title-img.svg' %}" alt="wrapper">
@@ -28,6 +30,7 @@
                 Складские остатки предприятий
             </h3>
         </div>
+        {% include 'filtr_form.html' %}
         <div class="offers-count-block">
             <h4 class="offers-count">
                 Всего объявлений{% if all_count != 0 %}
@@ -36,94 +39,106 @@
                 {% if today_count != 0 %}, день {{ today_count }}{% endif %}
             </h4>
         </div>
-        <div class="offers-block">
-            {% for offer in offers %}
-                <div class="offer-block">
-                    <div class="offer-block-img">
-                        {% if offer.home_name == "nelikvidi" %}
-                        <img src="{% static 'img/nelikvidi.png' %}" class="offer-block__img" alt="">
-                        {% endif %}
-                        {% if offer.home_name == "tektorg" %}
-                        <img src="{% static 'img/tectorg.png' %}" class="offer-block__img" alt="">
-                        {% endif %}
-                        {% if offer.home_name == "tenderpro" %}
-                        <img src="{% static 'img/tender.png' %}" class="offer-block__img" alt="">
-                        {% endif %}
-                        {% if offer.home_name == "isource" %}
-                        <img src="{% static 'img/isource.png' %}" class="offer-block__img" alt="">
-                        {% endif %}
-                        {% if offer.home_name == "onlinecontract" %}
-                        <img src="{% static 'img/onlinecontract.png' %}" class="offer-block__img" alt="">
-                        {% endif %}
-                        {% if offer.home_name == "roseltorg" %}
-                        <img src="{% static 'img/roseltorg.png' %}" class="offer-block__img" alt="">
-                        {% endif %}
-                        {% if offer.home_name == "etpgpb" %}
-                        <img src="{% static 'img/etpgpb_1.png' %}" class="offer-block__img" alt="">
-                        {% endif %}
-                        {% if offer.home_name == "fabrikant" %}
-                        <img src="{% static 'img/fabrikant_1.png' %}" class="offer-block__img" alt="">
-                        {% endif %}
-                        {% if offer.home_name == "etp-activ" %}
-                        <img src="{% static 'img/etp-activ.png' %}" class="offer-block__img" alt="">
-                        {% endif %}
-                        {% if offer.home_name == "b2b-center" %}
-                        <img src="{% static 'img/b2b-center.png' %}" class="offer-block__img" alt="">
-                        {% endif %}
-                        {% if offer.home_name == "vk.com" %}
-                        <img src="{% static 'img/vk.png' %}" class="offer-block__img" alt="">
-                        {% endif %}
-                        {% if offer.home_name == "telegram" %}
-                        <img src="{% static 'img/telegram.png' %}" class="offer-block__img" alt="">
-                        {% endif %}
-                        {% if offer.home_name == "prostanki" %}
-                        <img src="{% static 'img/prostanki.png' %}" class="offer-block__img" alt="">
-                        {% endif %}
-                        {% if offer.home_name == "metaprom" %}
-                        <img src="{% static 'img/metaprom.png' %}" class="offer-block__img" alt="">
-                        {% endif %}
-                        {% if offer.home_name == "promportal" %}
-                        <img src="{% static 'img/promportal.png' %}" class="offer-block__img" alt="">
-                        {% endif %}
-                    </div>
-                    <a href="{% url 'synrate_main:detail_view' id=offer.id %}" class="detailhref">
-                        <div class="offer-wrapper">
-                            <p class="offer-wrapper__text">
-                                {{ offer.name }}
-                            </p>
-                            <div class="offer-number">
-                                <span class="number-offer">№ процедуры - {{ offer.id }}</span>
-                                <span class="number-procedure"><!--{{ offer.id }}---></span>
-                            </div>
-                            <div class="offer-organization">
-                                <div class="offer-organization-wrapper">
-                                    {% if offer.organisation != None and offer.organisation != '' %}
-                                    <div class="offer-organization__name">
-                                        <p>{{ offer.organisation }}</p>
-                                    </div>
-                                    {% endif %}
-                                    {% if offer.location != None and offer.location != '' %}
-                                    <div class="offer-organization__address">
-                                        <p>{{ offer.location }}</p>
-                                    </div>
-                                    {% endif %}
-                                </div>
-                                {% if offer.offer_start_date != None %}
-                                <div class="offer-organization__time">
-                                    <span class="offer-organization__time__number"> {{ offer.offer_start_date }}</span>
-                                </div>
+
+        <div class="row">
+            <div class="col-12 col-lg-9">
+
+
+
+                <div class="offers-block">
+                    {% for offer in offers %}
+                        <div class="offer-block">
+                            <div class="offer-block-img">
+                                {% if offer.home_name == "nelikvidi" %}
+                                <img src="{% static 'img/nelikvidi.png' %}" class="offer-block__img" alt="">
                                 {% endif %}
-                                {% if offer.offer_end_date != None %}
-                                <div class="offer-organization__time">
-                                    <span class="offer-organization__time__number"> {{ offer.offer_end_date }}</span>
-                                </div>
+                                {% if offer.home_name == "tektorg" %}
+                                <img src="{% static 'img/tectorg.png' %}" class="offer-block__img" alt="">
+                                {% endif %}
+                                {% if offer.home_name == "tenderpro" %}
+                                <img src="{% static 'img/tender.png' %}" class="offer-block__img" alt="">
+                                {% endif %}
+                                {% if offer.home_name == "isource" %}
+                                <img src="{% static 'img/isource.png' %}" class="offer-block__img" alt="">
+                                {% endif %}
+                                {% if offer.home_name == "onlinecontract" %}
+                                <img src="{% static 'img/onlinecontract.png' %}" class="offer-block__img" alt="">
+                                {% endif %}
+                                {% if offer.home_name == "roseltorg" %}
+                                <img src="{% static 'img/roseltorg.png' %}" class="offer-block__img" alt="">
+                                {% endif %}
+                                {% if offer.home_name == "etpgpb" %}
+                                <img src="{% static 'img/etpgpb_1.png' %}" class="offer-block__img" alt="">
+                                {% endif %}
+                                {% if offer.home_name == "fabrikant" %}
+                                <img src="{% static 'img/fabrikant_1.png' %}" class="offer-block__img" alt="">
+                                {% endif %}
+                                {% if offer.home_name == "etp-activ" %}
+                                <img src="{% static 'img/etp-activ.png' %}" class="offer-block__img" alt="">
+                                {% endif %}
+                                {% if offer.home_name == "b2b-center" %}
+                                <img src="{% static 'img/b2b-center.png' %}" class="offer-block__img" alt="">
+                                {% endif %}
+                                {% if offer.home_name == "vk.com" %}
+                                <img src="{% static 'img/vk.png' %}" class="offer-block__img" alt="">
+                                {% endif %}
+                                {% if offer.home_name == "telegram" %}
+                                <img src="{% static 'img/telegram.png' %}" class="offer-block__img" alt="">
+                                {% endif %}
+                                {% if offer.home_name == "prostanki" %}
+                                <img src="{% static 'img/prostanki.png' %}" class="offer-block__img" alt="">
+                                {% endif %}
+                                {% if offer.home_name == "metaprom" %}
+                                <img src="{% static 'img/metaprom.png' %}" class="offer-block__img" alt="">
+                                {% endif %}
+                                {% if offer.home_name == "promportal" %}
+                                <img src="{% static 'img/promportal.png' %}" class="offer-block__img" alt="">
                                 {% endif %}
                             </div>
+                            <a href="{% url 'synrate_main:detail_view' id=offer.id %}" class="detailhref">
+                                <div class="offer-wrapper">
+                                    <p class="offer-wrapper__text">
+                                        {{ offer.name }}
+                                    </p>
+                                    <div class="offer-number">
+                                        <span class="number-offer">№ процедуры - {{ offer.id }}</span>
+                                        <span class="number-procedure"><!--{{ offer.id }}---></span>
+                                    </div>
+                                    <div class="offer-organization">
+                                        <div class="offer-organization-wrapper">
+                                            {% if offer.organisation != None and offer.organisation != '' %}
+                                            <div class="offer-organization__name">
+                                                <p>{{ offer.organisation }}</p>
+                                            </div>
+                                            {% endif %}
+                                            {% if offer.location != None and offer.location != '' %}
+                                            <div class="offer-organization__address">
+                                                <p>{{ offer.location }}</p>
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                        {% if offer.offer_start_date != None %}
+                                        <div class="offer-organization__time">
+                                            <span class="offer-organization__time__number"> {{ offer.offer_start_date }}</span>
+                                        </div>
+                                        {% endif %}
+                                        {% if offer.offer_end_date != None %}
+                                        <div class="offer-organization__time">
+                                            <span class="offer-organization__time__number"> {{ offer.offer_end_date }}</span>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </a>
                         </div>
-                    </a>
+
+                    {% endfor %}
                 </div>
 
-            {% endfor %}
+            </div>
+            <div class="col-12 col-lg-3">
+                {% include 'sidebar.html' %}
+            </div>
         </div>
 
         <div class="page-numbers">

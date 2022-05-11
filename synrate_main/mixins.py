@@ -32,12 +32,19 @@ def get_filter_qs(data):
         filtering = 1
 
     if data.get('search_filter') is not None and data.get('search_filter') != '':
-        or_dict['name__icontains'] = data.get('search_filter')
-        or_dict['location__icontains'] = data.get('search_filter')
-        or_dict['owner__icontains'] = data.get('search_filter')
-        or_dict['ownercontact__icontains'] = data.get('search_filter')
-        or_dict['additional_data__icontains'] = data.get('search_filter')
-        or_dict['organisation__icontains'] = data.get('search_filter')
+
+        if data.get('include_org') is not None and data.get('include_org') != '':
+            or_dict['organisation__icontains'] = data.get('search_filter')
+
+        if data.get('include_region') is not None and data.get('include_region') != '':
+            or_dict['location__icontains'] = data.get('search_filter')
+
+        if (data.get('include_text') is not None and data.get('include_text') != '') or (data.get('include_org') is None and data.get('include_region') is None):
+            or_dict['additional_data__icontains'] = data.get('search_filter')
+
+        #or_dict['name__icontains'] = data.get('search_filter')
+        #or_dict['owner__icontains'] = data.get('search_filter')
+        #or_dict['ownercontact__icontains'] = data.get('search_filter')
         word_list = []
         word_list.append(data.get('search_filter'))
         word_list = word_list+data.get('search_filter').replace('.', '').replace(',', '').split(' ')
@@ -50,7 +57,7 @@ def get_filter_qs(data):
 
 
 def get_filters(data):
-    from_filter, search_filter, time_filter = 0, 0, 0
+    from_filter, search_filter, time_filter, include_text, include_region, include_org = 0, 0, 0, 0, 0, 0
 
     filtering = 0
     if data.get('time_filter'):
@@ -65,7 +72,23 @@ def get_filters(data):
         search_filter = data.get('search_filter')
         filtering = 1
 
+    if data.get('include_text') is not None and data.get('include_text') != '':
+        include_text = data.get('include_text')
+        filtering = 1
+
+    if data.get('include_region') is not None and data.get('include_region') != '':
+        include_region = data.get('include_region')
+        filtering = 1
+
+    if data.get('include_org') is not None and data.get('include_org') != '':
+        include_org = data.get('include_org')
+        filtering = 1
+
+    if not include_org and not include_region:
+        include_text = 'on'
+        filtering = 1
+
     if filtering:
-        return from_filter, search_filter, time_filter
+        return from_filter, search_filter, time_filter, include_text, include_region, include_org
     else:
         return 0

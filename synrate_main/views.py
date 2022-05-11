@@ -219,7 +219,7 @@ def listing(request):
     and_dict, or_dict, word_list = get_filter_qs(request.GET)
     filtering = 0
     try:
-        from_filter, search_filter, time_filter = get_filters(request.GET)
+        from_filter, search_filter, time_filter, include_text, include_region, include_org = get_filters(request.GET)
         filtering = 1
     except:
         pass
@@ -302,11 +302,11 @@ def listing(request):
                                           "month_count": month_count, "today_count": today_count,
                                           "qs": qs, "filtering": filtering,
                                           "from_filter": from_filter, "search_filter": search_filter,
-                                          "time_filter": time_filter})
+                                          "time_filter": time_filter, "include_text":include_text, "include_region":include_region, "include_org":include_org})
 
     return render(request, 'filtr.html', {'offers': page_obj, "all_count": all_count,
                                           "month_count": month_count, "today_count": today_count,
-                                          "qs": qs, "filtering": filtering})
+                                          "qs": qs, "filtering": filtering, "include_text":include_text, "include_region":include_region, "include_org":include_org})
 
 # class OffersView(ListView):
 #     paginate_by = 10
