@@ -1,4 +1,3 @@
-
 <section class="filtrs" id="filtrs">
     <div class="container">
         {% csrf_token %}
@@ -6,11 +5,30 @@
 
             <div class="input-group mb-3">
                 <div id="search_filter" class="input-group mb-3">
+                     <select name="from_filter" id="from_filter_select" aria-label="Источник" class="filtrs-btn filter-btn filter-btn_arrow">
+                            <option value="" disabled selected>Источник</option>
+                            <option {% if from_filter == 'nelikvidi' %}selected{% endif%} value="nelikvidi">nelikvidi.com</option>
+                            <option {% if from_filter == 'onlinecontract' %}selected{% endif%} value="onlinecontract">onlinecontract.ru</option>
+                            <option {% if from_filter == 'tektorg' %}selected{% endif%} value="tektorg">tektorg.ru</option>
+                            <option {% if from_filter == 'tenderpro' %}selected{% endif%} value="tenderpro">tender.pro</option>
+                            <option {% if from_filter == 'roseltorg' %}selected{% endif%} value="roseltorg">roseltorg.ru</option>
+                            <option {% if from_filter == 'isource' %}selected{% endif%} value="isource">reserve.isource.ru</option>
+                            <option {% if from_filter == 'etpgpb' %}selected{% endif%} value="etpgpb">etpgpb.ru</option>
+                            <option {% if from_filter == 'fabrikant' %}selected{% endif%} value="fabrikant">fabrikant.ru</option>
+                            <option {% if from_filter == 'etp-activ' %}selected{% endif%} value="etp-activ">etp-activ.ru</option>
+                            <option {% if from_filter == 'b2b-center' %}selected{% endif%} value="b2b-center">b2b-center.ru</option>
+                            <option {% if from_filter == 'prostanki' %}selected{% endif%} value="prostanki">prostanki.com</option>
+                            <option {% if from_filter == 'metaprom' %}selected{% endif%} value="metaprom">metaprom.ru</option>
+                            <option {% if from_filter == 'promportal' %}selected{% endif%} value="promportal">promportal.su</option>
+                            <option {% if from_filter == 'vk.com' %}selected{% endif%} value="vk.com">vk.com</option>
+                            <option {% if from_filter == 'telegram' %}selected{% endif%} value="telegram">telegram</option>
+                        </select>
                     <input type="text" name="search_filter" class="form-control" {% if search_filter %}value="{{ search_filter }}"{% else %} placeholder="Поиск.."{% endif %} aria-label="Recipient's username" aria-describedby="button-addon2">
                     <button type="submit" id="search_filter_button" class="btn btn-light">Поиск</button>
                     <!--<button  class="filtrs-btn filter-btn submit-button">Поиск</button>-->
                 </div>
                 <ul id="other_filters" class="filtr-list">
+                 {% comment %}
                     <li>
                         <div class="filtrs-btns-wrapper">
                             <!--<div class="filtrs-btns__title">
@@ -33,11 +51,11 @@
                             </div>
                         </div>
                     </li>
-                    {% comment %}
+
                     <li>
                         <button type="button" class="filtrs-btn filter-btn">Выбрать даты</button>
                     </li>
-                    {% endcomment %}
+
                     <li>
                         <select name="from_filter" id="from_filter_select" aria-label="Источник" class="filtrs-btn filter-btn filter-btn_arrow">
                             <option value="" disabled selected>Источник</option>
@@ -51,19 +69,19 @@
                             <option {% if from_filter == 'fabrikant' %}selected{% endif%} value="fabrikant">fabrikant.ru</option>
                             <option {% if from_filter == 'etp-activ' %}selected{% endif%} value="etp-activ">etp-activ.ru</option>
                             <option {% if from_filter == 'b2b-center' %}selected{% endif%} value="b2b-center">b2b-center.ru</option>
-                            <option {% if from_filter == 'vk.com' %}selected{% endif%} value="vk.com">vk.com</option>
-                            <option {% if from_filter == 'telegram' %}selected{% endif%} value="telegram">telegram</option>
                             <option {% if from_filter == 'prostanki' %}selected{% endif%} value="prostanki">prostanki.com</option>
                             <option {% if from_filter == 'metaprom' %}selected{% endif%} value="metaprom">metaprom.ru</option>
                             <option {% if from_filter == 'promportal' %}selected{% endif%} value="promportal">promportal.su</option>
+                            <option {% if from_filter == 'vk.com' %}selected{% endif%} value="vk.com">vk.com</option>
+                            <option {% if from_filter == 'telegram' %}selected{% endif%} value="telegram">telegram</option> 
                         </select>
                     </li>
-
+                    {% endcomment %}
                     <li>
-                        Искать в:
-                        <input type="checkbox" name="include_text" {% if include_text == 'on' %}checked{% endif%}/>&nbsp;Объявление
-                        <input type="checkbox" name="include_region" {% if include_region == 'on' %}checked{% endif%}/>&nbsp;Регион
-                        <input type="checkbox" name="include_org" {% if include_org == 'on' %}checked{% endif%}/>&nbsp;Организация
+                        Искать:
+                        <input type="checkbox" name="include_text" {% if include_text == 'on' %}checked{% endif%}/>&nbsp;Объявления
+                        <input type="checkbox" name="include_region" {% if include_region == 'on' %}checked{% endif%}/>&nbsp;Регионы
+                        <input type="checkbox" name="include_org" {% if include_org == 'on' %}checked{% endif%}/>&nbsp;Организации
                     </li>
 
                     {% comment %}

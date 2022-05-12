@@ -178,16 +178,14 @@
                 <div class="offers-title-block-img">
                     <img src="{% static 'synrate_static/img/offers-title-img.svg' %}" alt="wrapper">
                 </div>
-                <h3 class="offers-title">
-                    Складские остатки предприятий
-                </h3>
+                <h1 class="offers-title">
+                    Объявления о продаже складских остатков
+                </h1>
             </div>
             <div class="offers-count-block">
                 <h4 class="offers-count">
                     Всего объявлений{% if all_count != 0 %}
                     {{ all_count }}{% else %} 0,{% endif %}
-                    в т.ч. за последний месяц {% if month_count != 0 %}{{ month_count }}{% else %}0{% endif %}
-                    {% if today_count != 0 %}, день {{ today_count }}{% endif %}
                 </h4>
             </div>
 
