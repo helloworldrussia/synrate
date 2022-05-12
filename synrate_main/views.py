@@ -195,7 +195,8 @@ def detail_info(request, id):
     slug = 0
     try:
         id = int(id)
-    except:
+    except Exception as ex:
+        print(ex)
         slug = 1
     if slug:
         t = Offer.objects.get(slug=id)
