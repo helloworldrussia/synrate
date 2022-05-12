@@ -192,7 +192,15 @@ def search_all(request):
 
 
 def detail_info(request, id):
-    t = Offer.objects.get(id=id)
+    slug = 0
+    try:
+        id = int(id)
+    except:
+        slug = 1
+    if slug:
+        t = Offer.objects.get(slug=id)
+    else:
+        t = Offer.objects.get(id=id)
     t.views += 1
     t.save()
     random = Offer.objects.order_by('?')[:5]

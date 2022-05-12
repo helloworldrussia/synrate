@@ -95,7 +95,11 @@
                                 <img src="{% static 'img/promportal.png' %}" class="offer-block__img" alt="">
                                 {% endif %}
                             </div>
+                            {% if offer.slug is not None and offer.slug != '' %}
+                            <a href="{% url 'synrate_main:detail_view' id=offer.slug %}" class="detailhref">
+                            {% else %}
                             <a href="{% url 'synrate_main:detail_view' id=offer.id %}" class="detailhref">
+                            {% endif %}
                                 <div class="offer-wrapper">
                                     <p class="offer-wrapper__text">
                                         {{ offer.name }}
