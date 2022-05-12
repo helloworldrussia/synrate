@@ -2,6 +2,7 @@
 import datetime
 import threading
 import time
+from pytils.translit import slugify
 
 import psycopg2
 from dateutil.relativedelta import relativedelta
@@ -53,28 +54,45 @@ class DbManager:
       successful, message = self.validate(obj)
       print(f'[{obj.home_name}]', successful, message)
       if successful:
-         arg_string = ''
-         val_string = ''
-         for key, value in obj.arg_list.items():
-            if obj.arg_list[f'{key}'] is not None and obj.arg_list[f'{key}'] != '':
-               arg_string += f'{key},'
-               val_string += f"'{obj.arg_list[f'{key}']}',"
-            else:
-               if key == 'offer_start_date':
-                  custom_start_date = one_month = datetime.date.today() + relativedelta(months=-1)
-                  arg_string += f'offer_start_date,'
-                  val_string += f"'{custom_start_date}',"
-         arg_string, val_string = arg_string[:-1], val_string[:-1]
+         arg_string, val_string = self.get_strs(obj)
          cursor = self.conn.cursor()
          try:
             cursor.execute(f"INSERT INTO synrate_main_offer "
                            f"({arg_string}) "
                            f"VALUES({val_string})")
             self.conn.commit()
+            self.add_slug(obj)
             return True
          except:
             self.conn.rollback()
       return False
+
+   def add_slug(self, obj):
+      cursor = self.conn.cursor()
+      cursor.execute(f"SELECT id FROM synrate_main_offer WHERE name = '{obj.name}' AND home_name = '{obj.home_name}' "
+                     f"AND url = '{obj.url}'")
+      id = cursor.fetchone()[0]
+
+      slug = slugify(obj.name[:50]) + f'-{id}'
+      slug = slug.replace('-', '_')
+
+      cursor.execute(f"UPDATE synrate_main_offer SET slug = '{slug}' WHERE id = '{id}'")
+      self.conn.commit()
+
+   @staticmethod
+   def get_strs(obj):
+      arg_string = ''
+      val_string = ''
+      for key, value in obj.arg_list.items():
+         if obj.arg_list[f'{key}'] is not None and obj.arg_list[f'{key}'] != '':
+            arg_string += f'{key},'
+            val_string += f"'{obj.arg_list[f'{key}']}',"
+         else:
+            if key == 'offer_start_date':
+               custom_start_date = one_month = datetime.date.today() + relativedelta(months=-1)
+               arg_string += f'offer_start_date,'
+               val_string += f"'{custom_start_date}',"
+      return arg_string[:-1], val_string[:-1]
 
    def validate(self, obj):
       if obj.name == '' or obj.name is None:
@@ -165,14 +183,13 @@ class Item:
       # для заявок с вк и тг
       self.short_cat = short_cat
       self.owner_id = owner_id
-      self.views = 1
       self.arg_list = {"owner_id": self.owner_id, "short_cat": self.short_cat, "from_id": self.from_id,
                      "created_at": self.created_at, "organisation": self.organisation,
                      "additional_data": self.additional_data,
                      "offer_price": self.offer_price, "ownercontact": self.ownercontact,
                      "owner": self.owner, "offer_end_date": self.offer_end_date, "offer_start_date": self.offer_start_date,
                      "url": self.url, "location": self.location,
-                     "home_name": self.home_name, "name": self.name, "views": self.views}
+                     "home_name": self.home_name, "name": self.name, "views": 1}
 
    def post(self, db_manager):
       db_manager.tasks.append(self)

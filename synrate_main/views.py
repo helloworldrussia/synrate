@@ -195,7 +195,6 @@ def detail_info(request, id):
     t = Offer.objects.get(id=id)
     t.views += 1
     t.save()
-    t = Offer.objects.get(id=id)
     random = Offer.objects.order_by('?')[:5]
     return render(request, 'newcard.html', {"offer": t, "offers": random})
 
