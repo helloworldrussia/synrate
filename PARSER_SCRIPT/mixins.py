@@ -85,8 +85,11 @@ def check_proxy(proxy):
     adapter = HTTPAdapter(max_retries=retry)
     session.mount('http://', adapter)
     session.mount('https://', adapter)
-    r = session.get(url, proxies=proxy, timeout=5)
-    if r.status_code == 200:
-        return check_origin(proxy, r.json()['origin'])
-    else:
+    try:
+        r = session.get(url, proxies=proxy, timeout=5)
+        if r.status_code == 200:
+            return check_origin(proxy, r.json()['origin'])
+        else:
+            return False
+    except:
         return False
