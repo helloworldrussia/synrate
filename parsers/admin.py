@@ -19,8 +19,8 @@ class VkGroupDetailAdmin(admin.ModelAdmin):
 
 
 class ProxyAdmin(admin.ModelAdmin):
-    list_display = ['ip', 'login', 'password', 'port']
-    search_fields = ['ip', 'login', 'password', 'port']
+    list_display = ['ip', 'login', 'password', 'port', 'status']
+    search_fields = ['ip', 'login', 'password', 'port', 'status']
 
     def render_change_form(self, request, context, *args, **kwargs):
         try:

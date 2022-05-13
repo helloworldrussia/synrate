@@ -23,18 +23,17 @@ def start_vk():
 #     os.system(f"python3 /var/www/synrate_dir/synrate/PARSER_SCRIPT/telegram")
 
 def update_proxy_info(proxy_list: list):
+    print('#### PROXY AUTO-CHECKER ON ####')
     bad, good = [], []
     cursor = conn.cursor()
     for proxy in proxy_list:
         ip = proxy['https'].split('@')[1].split(':')[0]
-        check_res = int(check_proxy(proxy))
+        check_res = check_proxy(proxy)
         cursor.execute(f"UPDATE parsers_proxy SET status = {check_res} WHERE ip = '{ip}'")
         conn.commit()
         print(ip, check_res)
-
-
-def set_proxy_status():
-    pass
+    print('#### PROXY AUTO-CHECKER OFF ####')
+    print('More info on synrate.ru admin page')
 
 
 def start():
@@ -69,4 +68,3 @@ def change_status_for_all():
 
 
 start()
-# change_status_for_all()

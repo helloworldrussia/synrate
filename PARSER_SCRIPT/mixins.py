@@ -72,7 +72,6 @@ def check_origin(proxy: dict, origin_ip: str):
         res = False
         if proxy_ip == origin_ip:
             res = True
-        print(proxy_ip, origin_ip, res)
         return res
     except:
         raise TypeError(
