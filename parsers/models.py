@@ -96,6 +96,7 @@ class Proxy(models.Model):
     password = models.CharField(max_length=255, null=False, verbose_name='Пароль')
     port = models.IntegerField(null=False, verbose_name='Порт')
     ip = models.CharField(max_length=255, null=True, unique=True, verbose_name='IP адрес')
+    status = models.BooleanField(default=True, blank=True, verbose_name="Состояние")
 
     def __str__(self):
         return self.ip

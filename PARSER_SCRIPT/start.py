@@ -1,5 +1,7 @@
 import os
 import threading
+
+from mixins import get_all_proxies, check_proxy
 from connector import conn
 
 """ Диспетчер всех парсеров, запустите скрипт для начала работы.
@@ -7,8 +9,6 @@ from connector import conn
     TG main - telegram.py 
     VK main - parser_vk
     www-main - main.py """
-# телеграм временно запускается отдельно из-за проблем с автоматической авторизацией
-# при работе через cron
 
 
 def start_default(mode):
@@ -22,9 +22,25 @@ def start_vk():
 # def start_tg():
 #     os.system(f"python3 /var/www/synrate_dir/synrate/PARSER_SCRIPT/telegram")
 
+def update_proxy_info(proxy_list: list):
+    bad, good = [], []
+    cursor = conn.cursor()
+    for proxy in proxy_list:
+        ip = proxy['https'].split('@')[1].split(':')[0]
+        check_res = int(check_proxy(proxy))
+        cursor.execute(f"UPDATE parsers_proxy SET status = {check_res} WHERE ip = '{ip}'")
+        conn.commit()
+        print(ip, check_res)
+
+
+def set_proxy_status():
+    pass
+
 
 def start():
     change_status_for_all()
+    proxy_list = get_all_proxies()
+    update_proxy_info(proxy_list)
 
     th = threading.Thread(target=start_default, args=(' --m short',))
     th.start()
@@ -50,6 +66,7 @@ def change_status_for_all():
         name = name[0]
         cursor.execute(f"UPDATE synrate_main_parserdetail SET status = 'В работе' WHERE name = '{name}'")
         conn.commit()
+
 
 start()
 # change_status_for_all()

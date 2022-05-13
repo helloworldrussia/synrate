@@ -5,6 +5,8 @@ from connector import conn
 
 import requests
 import requests.auth
+from requests.adapters import HTTPAdapter
+from urllib3 import Retry
 
 proxy_data = 0
 
@@ -52,11 +54,40 @@ def get_proxy(current):
     return proxy, ip
 
 
+def get_all_proxies():
+    response = []
+    cursor = conn.cursor()
+    cursor.execute(f"SELECT * FROM parsers_proxy")
+    proxies = cursor.fetchall()
+    for new in proxies:
+        id, login, password, port, ip = new[0], new[1], new[2], new[3], new[4]
+        response.append({"https": f'https://{login}:{password}@{ip}:{port}'})
+    return response
+
+
+def check_origin(proxy: dict, origin_ip: str):
+    try:
+        proxy = proxy['https']
+        proxy_ip = proxy.split('@')[1].split(':')[0]
+        res = False
+        if proxy_ip == origin_ip:
+            res = True
+        print(proxy_ip, origin_ip, res)
+        return res
+    except:
+        raise TypeError(
+            'Wrong proxy key. This func can work only with HTTPS auth(login, pass) proxy. proxy param must be dict.')
+
+
 def check_proxy(proxy):
     url = 'https://httpbin.org/ip'
-    r = requests.get(url, proxies=proxy, timeout=5)
-    print(r.json(), r.status_code)
-
-
-# auth = HTTPProxyDigestAuth('s493199', 'Gb3YXwAmsL')
-# print(check_proxy({'https': 'https://s493199:Gb3YXwAmsL@94.45.182.6:51523'}))
+    session = requests.Session()
+    retry = Retry(connect=3, backoff_factor=0.5)
+    adapter = HTTPAdapter(max_retries=retry)
+    session.mount('http://', adapter)
+    session.mount('https://', adapter)
+    r = session.get(url, proxies=proxy, timeout=5)
+    if r.status_code == 200:
+        return check_origin(proxy, r.json()['origin'])
+    else:
+        return False

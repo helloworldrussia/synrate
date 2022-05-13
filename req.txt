@@ -48,8 +48,8 @@ pluggy==0.13.1
 prompt-toolkit==3.0.20
 psycopg2-binary==2.9.1
 py==1.10.0
-pyaes==1.6.1
-pyasn==10.4.8
+pyaes
+pyasn
 pyparsing==2.4.7
 pytest==6.2.4
 python-crontab==2.5.1
@@ -67,8 +67,8 @@ sqlparse==0.4.1
 Telethon==0.19
 toml==0.10.2
 Unidecode==1.1.2
-urllib==31.26.6
 vine==5.0.0
 vk==2.0.2
 wcwidth==0.2.5
 webencodings==0.5.1
+urllib3==1.25.11
