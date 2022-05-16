@@ -23,7 +23,7 @@
                             <option {% if from_filter == 'vk.com' %}selected{% endif%} value="vk.com">vk.com</option>
                             <option {% if from_filter == 'telegram' %}selected{% endif%} value="telegram">telegram</option>
                         </select>
-                    <input type="text" name="search_filter" class="form-control" {% if search_filter %}value="{{ search_filter }}"{% else %} placeholder="Поиск.."{% endif %} aria-label="Recipient's username" aria-describedby="button-addon2">
+                    <input type="text" name="search_filter" class="form-control" {% if search_filter %} value="{{ search_filter }}"{% else %} placeholder="Поиск.."{% endif %} aria-label="Recipient's username" aria-describedby="button-addon2">
                     <button type="submit" id="search_filter_button" class="btn btn-light">Поиск</button>
                     <!--<button  class="filtrs-btn filter-btn submit-button">Поиск</button>-->
                 </div>

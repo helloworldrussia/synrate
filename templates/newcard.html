@@ -1,9 +1,10 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}{{ offer.name|truncatechars:120 }}{% endblock title %}
+{% block title %}{{ offer.name|truncatechars:120 }} - купить, цена продажи {% endblock title %}
 {% block content %}
+    {% include 'filtr_form.html' %}
     <section class="product-card">
-        <div class="container">
+        <div class="container">    
             <div style="text-align: center; ">
                 <div class="product-offer__text">
                     <h1>{{ offer.name|truncatechars:120 }}</h1>
@@ -118,7 +119,7 @@
                             <div class="product-organization-deal-price">
                                 <p class="product-organization-price">
                                     {% if offer.offer_price != None and offer.offer_price != 0 %}
-                                  <span>Цена (руб):</span> {{ offer.offer_price }}
+                                  <span>Цена продажи(руб):</span> {{ offer.offer_price }}
                                     {% endif %}
                                 </p>
                             </div>
@@ -129,10 +130,10 @@
                             <div class="product-date">
                             <p class="product-date-time">
                                 {% if offer.offer_start_date != None %}
-                                <span>Размещено:</span> {{ offer.offer_start_date }} <br>
+                                <span>Размещено объявление:</span> {{ offer.offer_start_date }} <br>
                                 {% endif %}
                                 {% if offer.offer_end_date != None %}
-                                <span>Актуально до:</span> {{ offer.offer_end_date }} <br>
+                                <span>Актуально до:</span> {{ offer.offer_end_date }} <br><br>
                                 {% endif %}
                                 <span>Просмотров: {{ offer.views }}</span>
                             </p>
