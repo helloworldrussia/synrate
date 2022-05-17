@@ -37,10 +37,12 @@ def update_proxy_info(proxy_list: list):
 
 
 def start():
+    print('... Запуск программы ...')
     change_status_for_all()
+    print('- Статусы парсеров обновлены')
     proxy_list = get_all_proxies()
     update_proxy_info(proxy_list)
-
+    print('- Проверка прокси завершена, приступаем к работе')
     th = threading.Thread(target=start_default, args=(' --m short',))
     th.start()
 

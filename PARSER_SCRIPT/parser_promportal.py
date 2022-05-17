@@ -46,7 +46,7 @@ class ParserPromportal(Parser):
         # delete this line after debug
         l = len(self.cat_list)
         del self.cat_list[int(l/4):int(l/2)]
-        print('Good. We get it.', len(self.cat_list))
+        # print('Good. We get it.', len(self.cat_list))
         self.categories_scanner()
 
     def categories_scanner(self):
@@ -55,14 +55,14 @@ class ParserPromportal(Parser):
                 successful = 0
                 while not successful:
                     try:
-                        print('checking', cat)
+                        # print('checking', cat)
                         if self.check_page_content_type(cat):
-                            print('good. good list:', len(self.target_urls))
+                            # print('good. good list:', len(self.target_urls))
                             # self.target_urls.append(cat)
                             self.cat_list.remove(cat)
                             self.scanner(cat)
                         else:
-                            print('bad. cat list:', len(self.cat_list))
+                            # print('bad. cat list:', len(self.cat_list))
                             self.scan_sub_in_cat(cat)
                         successful = 1
                     except:

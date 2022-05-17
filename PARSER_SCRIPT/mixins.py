@@ -20,7 +20,6 @@ class HTTPProxyDigestAuth(requests.auth.HTTPDigestAuth):
         s_auth = r.headers.get('Proxy-authenticate', '')
 
         if 'digest' in s_auth.lower() and num_407_calls < 2:
-
             self.chal = requests.auth.parse_dict_header(s_auth.replace('Digest ', ''))
 
             # Consume content and release the original connection
@@ -46,11 +45,17 @@ class HTTPProxyDigestAuth(requests.auth.HTTPDigestAuth):
 
 def get_proxy(current):
     cursor = conn.cursor()
-    cursor.execute(f"SELECT * FROM parsers_proxy WHERE ip != '{current}'")
-    new = cursor.fetchall()
-    new = new[random.randint(0, len(new)-1)]
-    id, login, password, port, ip = new[0], new[1], new[2], new[3], new[4]
-    proxy = {"https": f'https://{login}:{password}@{ip}:{port}'}
+    successful = 0
+    while not successful:
+        try:
+            cursor.execute(f"SELECT * FROM parsers_proxy WHERE ip != '{current}'")
+            new = cursor.fetchall()
+            new = new[random.randint(0, len(new) - 1)]
+            id, login, password, port, ip = new[0], new[1], new[2], new[3], new[4]
+            proxy = {"https": f'https://{login}:{password}@{ip}:{port}'}
+            successful = 1
+        except:
+            conn.rollback()
     return proxy, ip
 
 

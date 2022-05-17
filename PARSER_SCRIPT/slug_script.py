@@ -5,6 +5,11 @@ import threading
 from connector import conn
 from pytils.translit import slugify
 
+"""
+    Скрипт для принудительного назначения ЧПУ для заявок
+    Может понадобиться при сбое в автозаполнении поля slug в модели - synrate_main.models.Offer    
+"""
+
 
 def main(offers, group_id):
     count = len(offers)
@@ -24,11 +29,11 @@ def main(offers, group_id):
         i += 1
 
 
-home_name = input('Введите источник: ')
+# home_name = input('Введите источник: ')
 thr_count = int(input('Потоки?: '))
 
 cursor = conn.cursor()
-cursor.execute(f"SELECT id, name FROM synrate_main_offer WHERE home_name = '{home_name}' AND slug is NULL")
+cursor.execute(f"SELECT id, name FROM synrate_main_offer WHERE slug is NULL")
 offers = cursor.fetchall()
 
 i_count = math.ceil(len(offers) / thr_count)

@@ -56,6 +56,8 @@ class Offer(models.Model):
     from_id = models.TextField(blank=True, null=True, default='', verbose_name='ID от источника')
     short_cat = models.TextField(blank=True, null=True, default=None)
     owner_id = models.IntegerField(blank=True, null=True, default=None, db_index=True)
+    # True - заявка опубликована, False - не опубликована и показывать ее не нужно.
+    active = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
