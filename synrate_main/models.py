@@ -1,6 +1,6 @@
 from django.db import models
 from cms.models import CMSPlugin
-
+from datetime import datetime, timedelta
 
 class OfferCategory(models.Model):
     name = models.CharField(max_length=1000, null=False, unique=True, verbose_name="Название")
@@ -66,6 +66,59 @@ class Offer(models.Model):
         verbose_name = "Объявление"
         verbose_name_plural = "Объявления"
 
+
+class OffersCounter(models.Model):
+    """ Модель для хранения количества офферов для разных источников """
+    HOME_CHOICES = (
+        ("all", "Все"),
+        ("b2b-center", "b2b-center.ru"),
+        ("etp-activ", "etp-activ.ru"),
+        ("etpgpb", "etpgpb.ru"),
+        ("fabrikant", "fabrikant.ru"),
+        ("isource", "reserve.isource.ru"),
+        ("nelikvidi", "nelikvidi.com"),
+        ("onlinecontract", "onlinecontract.ru"),
+        ("roseltorg", "roseltorg.ru"),
+        ("tektorg", "tektorg.ru"),
+        ("tenderpro", "tender.pro"),
+        ("vk.com", "vk.com"),
+        ("telegram", "telegram"),
+        ("prostanki", "prostanki.com"),
+        ("metaprom", "metaprom.ru"),
+        ("promportal", "promportal.su"),
+    )
+    # source = models.ForeignKey(ParserDetail)
+    home_lilter = models.CharField(choices=HOME_CHOICES, default="all", max_length=50, verbose_name="Фильтр по источнику предложений")
+    all_count = models.PositiveIntegerField(default=0)
+    month_count = models.PositiveIntegerField(default=0)
+    today_count = models.PositiveIntegerField(default=0)
+
+    @staticmethod
+    def reaculculate_all_counts():
+        for home_filter_slug, home_filter_name in OffersCounter.home_lilter.field.choices:
+            counter, created = OffersCounter.objects.get_or_create(home_lilter=home_filter_slug)
+            counter.recalculate_count()
+
+    @staticmethod
+    def get_counts(filter):
+        counter, created = OffersCounter.objects.get_or_create(home_lilter=filter)
+        return counter.all_count, counter.month_count, counter.today_count
+    
+    # def recalculate_by_filter(filter):
+    #     counter, created = OffersCounter.objects.get_or_create(home_lilter=filter)
+    #     counter.recalculate_count()
+
+    def recalculate_count(self):
+        if self.home_lilter == "all":
+            offers = Offer.objects.filter().order_by('created_at')   
+        else: 
+            offers = Offer.objects.filter(home_name=self.home_lilter).order_by('created_at')
+        today = datetime.today().date()
+        self.all_count = offers.count()
+        self.month_count = offers.filter(created_at__month=today.month).count()
+        self.day_count = offers.filter(created_at__day=today.day).count()
+        self.save()
+    
 
 class FAQ(CMSPlugin):
     title = models.CharField(max_length=1000, null=False, default=None, verbose_name="FAQ title")

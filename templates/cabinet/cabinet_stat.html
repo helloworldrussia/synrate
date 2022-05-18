@@ -13,111 +13,15 @@
     </tr>
   </thead>
   <tbody>
-    <tr>
-      <th scope="row">b2b-center.ru</th>
-      <td>{{ b2b_center_all }}</td>
-      <td>{{ b2b_center_month }}</td>
-      <td>{{ b2b_center_day }}</td>
-      <td>{{ b2b_center_status }}</td>
-    </tr>
-    <tr>
-      <th scope="row">etp-activ.ru</th>
-      <td>{{ etp_aktiv_all }}</td>
-      <td>{{ etp_aktiv_month }}</td>
-      <td>{{ etp_aktiv_day }}</td>
-      <td>{{ etp_aktiv_status }}</td>
-    </tr>
-    <tr>
-      <th scope="row">etpgpb.ru</th>
-      <td>{{ etpgpb_all }}</td>
-      <td>{{ etpgpb_month }}</td>
-      <td>{{ etpgpb_day }}</td>
-      <td>{{ etpgpb_status }}</td>
-    </tr>
-    <tr>
-      <th scope="row">fabrikant.ru</th>
-      <td>{{ fabrikant_all }}</td>
-      <td>{{ fabrikant_month }}</td>
-      <td>{{ fabrikant_day }}</td>
-      <td>{{ fabrikant_status }}</td>
-    </tr>
-    <tr>
-      <th scope="row">reserve.isource.ru</th>
-      <td>{{ isource_all }}</td>
-      <td>{{ isource_month }}</td>
-      <td>{{ isource_day }}</td>
-      <td>{{ isource_status }}</td>
-    </tr>
-    <tr>
-      <th scope="row">nelikvidi.com</th>
-      <td>{{ nelikvidy_all }}</td>
-      <td>{{ nelikvidy_month }}</td>
-      <td>{{ nelikvidy_day }}</td>
-      <td>{{ nelikvidy_status }}</td>
-    </tr>
-    <tr>
-      <th scope="row">onlinecontract.ru</th>
-      <td>{{ onlinecontract_all }}</td>
-      <td>{{ onlinecontract_month }}</td>
-      <td>{{ onlinecontract_day }}</td>
-      <td>{{ onlinecontract_status }}</td>
-    </tr>
-    <tr>
-      <th scope="row">roseltorg.ru</th>
-      <td>{{ roseltorg_all }}</td>
-      <td>{{ roseltorg_month }}</td>
-      <td>{{ roseltorg_day }}</td>
-      <td>{{ roseltorg_status }}</td>
-    </tr>
-    <tr>
-      <th scope="row">tektorg.ru</th>
-      <td>{{ tektorg_all }}</td>
-      <td>{{ tektorg_month }}</td>
-      <td>{{ tektorg_day }}</td>
-      <td>{{ tektorg_status }}</td>
-    </tr>
-    <tr>
-      <th scope="row">tender.pro</th>
-      <td>{{ tenderpro_all }}</td>
-      <td>{{ tenderpro_month }}</td>
-      <td>{{ tenderpro_day }}</td>
-      <td>{{ tenderpro_status }}</td>
-    </tr>
-    <tr>
-      <th scope="row">vk.com</th>
-      <td>{{ vk_all }}</td>
-      <td>{{ vk_month }}</td>
-      <td>{{ vk_day }}</td>
-      <td>{{ vk_status }}</td>
-    </tr>
-    <tr>
-      <th scope="row">telegram</th>
-      <td>{{ telegram_all }}</td>
-      <td>{{ telegram_month }}</td>
-      <td>{{ telegram_day }}</td>
-      <td>{{ telegram_status }}</td>
-    </tr>
-    <tr>
-      <th scope="row">prostanki.com</th>
-      <td>{{ prostanki_all }}</td>
-      <td>{{ prostanki_month }}</td>
-      <td>{{ prostanki_day }}</td>
-      <td>{{ prostanki_status }}</td>
-    </tr>
-    <tr>
-      <th scope="row">metaprom.ru</th>
-      <td>{{ metaprom_all }}</td>
-      <td>{{ metaprom_month }}</td>
-      <td>{{ metaprom_day }}</td>
-      <td>{{ metaprom_status }}</td>
-    </tr>
-    <tr>
-      <th scope="row">promportal.su</th>
-      <td>{{ promportal_all }}</td>
-      <td>{{ promportal_month }}</td>
-      <td>{{ promportal_day }}</td>
-      <td>{{ promportal_status }}</td>
-    </tr>
+    {% for offer_source in offer_sources %}
+      <tr>
+        <th scope="row">{{ offer_source.name }}</th>
+        <td>{{ offer_source.all_count }}</td>
+        <td>{{ offer_source.month_count }}</td>
+        <td>{{ offer_source.day_count }}</td>
+        <td>{{ offer_source.status }}</td>
+      </tr>
+    {% endfor %}
   </tbody>
 </table>
 {% endblock content %}

@@ -10,7 +10,7 @@ from django.http import HttpResponse
 from django.views.generic import ListView
 
 from .mixins import get_counts, get_filter_qs, get_filters
-from .models import Offer, OfferCategory, OfferSubcategory
+from .models import Offer, OfferCategory, OfferSubcategory, OffersCounter
 from parsers.models import Parser, ENGINE
 from .forms import ParserForm, EngineForm
 from rest_framework import generics
@@ -236,8 +236,9 @@ def listing(request):
     if '&page' in url or 'filter' in url:
         qs = 1
 
+    year_ago_date = datetime.datetime.now() - datetime.timedelta(days=365)
     if and_dict == 0:
-        queryset = Offer.objects.all().order_by('-offer_start_date')
+        queryset = Offer.objects.filter(offer_start_date__gte=year_ago_date).order_by('-offer_start_date')
     else:
         if len(or_dict):
 
@@ -296,7 +297,8 @@ def listing(request):
         else:
             queryset = Offer.objects.filter(**and_dict).order_by('-offer_start_date')
 
-    all_count, month_count, today_count = get_counts(queryset)
+    all_count, month_count, today_count = OffersCounter.get_counts('all')
+    # all_count, month_count, today_count = get_counts(queryset)
     paginator = Paginator(queryset, 30)
 
     if request.GET.get('page'):

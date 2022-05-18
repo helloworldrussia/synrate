@@ -8,7 +8,7 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView, TemplateView
 
 from synrate_main.mixins import get_counts
-from synrate_main.models import Offer, ParserDetail
+from synrate_main.models import Offer, ParserDetail, OffersCounter
 from .forms import UserForm, LogInForm
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse
@@ -81,70 +81,38 @@ class CabinetTariffView(TemplateView):
 
 
 def stat_view(request):
-    b2b = Offer.objects.filter(home_name='b2b-center').order_by('-created_at')
-    b2b_center_all, b2b_center_month, b2b_center_day = get_counts(b2b)
-
-    etp_aktiv = Offer.objects.filter(home_name='etp-activ').order_by('-created_at')
-    etp_aktiv_all, etp_aktiv_month, etp_aktiv_day = get_counts(etp_aktiv)
-
-    etpgpb = Offer.objects.filter(home_name='etpgpb').order_by('-created_at')
-    etpgpb_all, etpgpb_month, etpgpb_day = get_counts(etpgpb)
-
-    fabrikant = Offer.objects.filter(home_name='fabrikant').order_by('-created_at')
-    fabrikant_all, fabrikant_month, fabrikant_day = get_counts(fabrikant)
-
-    isource = Offer.objects.filter(home_name='isource').order_by('-created_at')
-    isource_all, isource_month, isource_day = get_counts(isource)
-
-    nelikvidy = Offer.objects.filter(home_name='nelikvidi').order_by('created_at')
-    nelikvidy_all, nelikvidy_month, nelikvidy_day = get_counts(nelikvidy)
-
-    onlinecontract = Offer.objects.filter(home_name='onlinecontract').order_by('-created_at')
-    onlinecontract_all, onlinecontract_month, onlinecontract_day = get_counts(onlinecontract)
-
-    roseltorg = Offer.objects.filter(home_name='roseltorg').order_by('-created_at')
-    roseltorg_all, roseltorg_month, roseltorg_day = get_counts(roseltorg)
-
-    tektorg = Offer.objects.filter(home_name='tektorg').order_by('-created_at')
-    tektorg_all, tektorg_month, tektorg_day = get_counts(tektorg)
-
-    tenderpro = Offer.objects.filter(home_name='tenderpro').order_by('-created_at')
-    tenderpro_all, tenderpro_month, tenderpro_day = get_counts(tenderpro)
-    all = Offer.objects.all().count()
-
-    vk = Offer.objects.filter(home_name='vk.com')
-    vk_all, vk_month, vk_day = get_counts(vk)
-
-    telegram = Offer.objects.filter(home_name='telegram')
-    telegram_all, telegram_month, telegram_day = get_counts(telegram)
-
-    prostanki = Offer.objects.filter(home_name='prostanki')
-    prostanki_all, prostanki_month, prostanki_day = get_counts(prostanki)
-
-    metaprom = Offer.objects.filter(home_name='metaprom')
-    metaprom_all, metaprom_month, metaprom_day = get_counts(metaprom)
-    
-    promportal = Offer.objects.filter(home_name='promportal')
-    promportal_all, promportal_month, promportal_day = get_counts(promportal)
-
-    content = {"all": all,
-     "vk_all": vk_all, "vk_month": vk_month, "vk_day": vk_day, 'tenderpro_all': tenderpro_all, "tenderpro_day": tenderpro_day, "tenderpro_month": tenderpro_month,
-     "tektorg_day": tektorg_day, "tektorg_month": tektorg_month, "tektorg_all": tektorg_all,
-     "roseltorg_all": roseltorg_all, "roseltorg_month": roseltorg_month, "roseltorg_day": roseltorg_day,
-     "onlinecontract_all": onlinecontract_all, "onlinecontract_month": onlinecontract_month, "onlinecontract_day": onlinecontract_day,
-     "nelikvidy_all": nelikvidy_all, "nelikvidy_month": nelikvidy_month, "nelikvidy_day": nelikvidy_day,
-     "isource_all": isource_all, "isource_month": isource_month, "isource_day": isource_day,
-     "fabrikant_all": fabrikant_all, "fabrikant_month": fabrikant_month, "fabrikant_day": fabrikant_day,
-     "etpgpb_all": etpgpb_all, "etpgpb_month": etpgpb_month, "etpgpb_day": etpgpb_day,
-     "etp_aktiv_all": etp_aktiv_all, "etp_aktiv_month": etp_aktiv_month, "etp_aktiv_day": etp_aktiv_day,
-     "b2b_center_all": b2b_center_all, "b2b_center_month": b2b_center_month, "b2b_center_day": b2b_center_day,
-     "telegram_all": telegram_all, "telegram_day": telegram_day, "telegram_month": telegram_month,
-     "prostanki_all": prostanki_all, "prostanki_month": prostanki_month, "prostanki_day": prostanki_day,
-     "metaprom_all": metaprom_all, "metaprom_month": metaprom_month, "metaprom_day": metaprom_day,
-     "promportal_all": promportal_all, "promportal_month": promportal_month, "promportal_day": promportal_day
+    context = { "offer_sources": []}
+    translation_dict = {
+        "all": "all",
+        "b2b-center": "b2b_center",
+        "etp-activ": "etp_aktiv",
+        "etpgpb": "etpgpb",
+        "fabrikant": "fabrikant",
+        "isource": "isource",
+        "nelikvidi": "nelikvidy",
+        "onlinecontract": "onlinecontract",
+        "roseltorg": "roseltorg",
+        "tektorg": "tektorg",
+        "tenderpro": "tenderpro",
+        "vk.com": "vk",
+        "telegram": "telegram",
+        "prostanki": "prostanki",
+        "metaprom": "metaprom",
+        "promportal": "promportal",
     }
 
-    qs = ParserDetail.objects.all()
-    for parser in qs:
-        content[f'{parser.name}_status'] = parser.status
-    return render(request, 'cabinet/cabinet_stat.html', content)
+    for source_slug, source_name in OffersCounter.home_lilter.field.choices:
+        try:
+            status = ParserDetail.objects.get(name=translation_dict.get(source_slug)).status
+        except ParserDetail.DoesNotExist:
+            status = "Не известен"
+        
+        all_count, month_count, day_count = OffersCounter.get_counts(source_slug)
+        context["offer_sources"].append({
+            "name": source_name, 
+            "all_count": all_count,
+            "month_count": month_count,
+            "day_count": day_count,
+            "status": status
+        })
+    return render(request, 'cabinet/cabinet_stat.html', context)

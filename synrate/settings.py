@@ -124,7 +124,6 @@ DATABASES = {
     }
 }
 
-
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
@@ -192,3 +191,23 @@ THUMBNAIL_PROCESSORS = (
     'easy_thumbnails.processors.filters'
 )
 
+# Пытаемся получить локальные настройки если они есть подключаем django debug toolbar
+try:
+    from .local_settings import *
+    LOCAL_SETTINGS_ESISTS = True
+    INSTALLED_APPS += ['debug_toolbar']
+    MIDDLEWARE += [
+        'debug_toolbar.middleware.DebugToolbarMiddleware',
+    ]
+    INTERNAL_IPS = [
+        "127.0.0.1",
+    ]
+    DEBUG_TOOLBAR_CONFIG = {
+        # Toolbar options
+        'RESULTS_CACHE_SIZE': 200,
+        'SHOW_COLLAPSED': False,
+        # # Panel options
+        # 'SQL_WARNING_THRESHOLD': 100,   # milliseconds
+    }
+except ImportError:
+    pass
