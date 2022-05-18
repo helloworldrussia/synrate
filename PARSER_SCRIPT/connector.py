@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import datetime
 import threading
 import time
@@ -36,6 +35,7 @@ class DbManager:
 
     def __init__(self):
         self.conn = conn
+
         self.tasks = []
 
     def task_manager(self):
@@ -54,39 +54,39 @@ class DbManager:
         successful, message = self.validate(obj)
         # print(f'[{obj.home_name}]', successful, message)
         if successful:
+            succ = 0
             arg_string, val_string = self.get_strs(obj)
             cursor = self.conn.cursor()
-            try:
-                cursor.execute(f"INSERT INTO synrate_main_offer "
-                               f"({arg_string}) "
-                               f"VALUES({val_string})")
-                self.conn.commit()
-                self.add_slug(obj)
-                return True
-            except:
-                self.conn.rollback()
-        return False
+            while not succ:
+                try:
+                    cursor.execute(f"INSERT INTO synrate_main_offer "
+                                   f"({arg_string}, active) "
+                                   f"VALUES({val_string}, false) RETURNING id")
+                    offer_id = cursor.fetchone()[0]
+                    self.conn.commit()
+                    self.add_slug(obj, offer_id)
+                    succ = 1
+                except:
+                    # self.conn.rollback()
+                    time.sleep(0.3)
+        return True
 
-    def add_slug(self, obj):
+    def add_slug(self, obj, offer_id):
+        slug = slugify(obj.name[:50]) + f'-{offer_id}'
+        slug = slug.replace('-', '_')
+
         cursor = self.conn.cursor()
         successful = 0
-        i = 1
         while not successful:
             try:
-                cursor.execute(
-                    f"SELECT id FROM synrate_main_offer WHERE name = '{obj.name}' AND home_name = '{obj.home_name}' "
-                    f"AND url = '{obj.url}'")
-                id = cursor.fetchone()[0]
-
-                slug = slugify(obj.name[:50]) + f'-{id}'
-                slug = slug.replace('-', '_')
-
-                cursor.execute(f"UPDATE synrate_main_offer SET slug = '{slug}' WHERE id = '{id}'")
+                cursor.execute(f"UPDATE synrate_main_offer SET slug = '{slug}', active = true WHERE id = '{offer_id}'")
                 self.conn.commit()
                 successful = 1
+                print(f'Заявка {offer_id} | {slug} сохранена')
             except Exception as ex:
-                self.conn.rollback()
-            i += 1
+                cursor.execute('END TRANSACTION;')
+                # self.conn.rollback()
+                time.sleep(0.4)
 
     @staticmethod
     def get_strs(obj):
@@ -160,7 +160,9 @@ class DbManager:
                 qs = cursor.fetchall()
             except Exception as ex:
                 print(ex)
-                self.conn.rollback()
+                cursor.execute('END TRANSACTION;')
+                # self.conn.rollback()
+                time.sleep(0.2)
                 qs = 0
             return qs
         try:
@@ -168,7 +170,9 @@ class DbManager:
             qs = cursor.fetchall()
         except Exception as ex:
             print(ex)
-            self.conn.rollback()
+            # self.conn.rollback()
+            cursor.execute('END TRANSACTION;')
+            time.sleep(0.2)
             qs = 0
         return qs
 
