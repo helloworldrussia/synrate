@@ -122,7 +122,8 @@ class ParserPromportal(Parser):
                     successful = 1
                     if offers:
                         self.send_result(offers)
-                except:
+                except Exception as ex:
+                    print(ex)
                     self.change_proxy()
 
     def get_offers_from_page(self, soup, category):
@@ -147,7 +148,6 @@ class ParserPromportal(Parser):
                 price = self.validate_price(price.replace(' ', ''))
             if company:
                 company = company.replace('"', '').replace("'", '')
-
             offer = Item(name, 'promportal', url, region, None, None,
                 None, None, price, None, company, None,
                 category, None)
@@ -213,6 +213,21 @@ class ParserPromportal(Parser):
         price = price.replace(' ', '').replace(' ', '')
         if price == '':
             return None
+        try:
+            price = price.split('\n')
+            for x in price:
+                if x == '' or x == ' ' or x == '\n':
+                    price.remove(x)
+        except:
+            pass
+        if price[0] == '':
+            price = None
+        else:
+            price = price[0]
+        try:
+            test = int(price)
+        except:
+            price = None
         return price
 
     def send_result(self, result):
@@ -242,7 +257,8 @@ class ParserPromportal(Parser):
             response = requests.get(url, headers={
                 'User-Agent': UserAgent().chrome}).content#.decode("utf8")
         soup = BeautifulSoup(response, 'html.parser')
-        # print(response)
+
+        # print(soup)
         return soup
 
 
