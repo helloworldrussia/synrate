@@ -1,4 +1,5 @@
 import datetime
+import sys
 import threading
 import time
 from pytils.translit import slugify
@@ -52,7 +53,7 @@ class DbManager:
 
     def post(self, obj):
         successful, message = self.validate(obj)
-        # print(f'[{obj.home_name}]', successful, message)
+        print(f'[{obj.home_name}]', successful, message)
         if successful:
             succ = 0
             arg_string, val_string = self.get_strs(obj)
@@ -60,13 +61,14 @@ class DbManager:
             while not succ:
                 try:
                     cursor.execute(f"INSERT INTO synrate_main_offer "
-                                   f"({arg_string}, active) "
-                                   f"VALUES({val_string}, false) RETURNING id")
+                                   f"({arg_string},active) "
+                                   f"VALUES({val_string},false) RETURNING id")
                     offer_id = cursor.fetchone()[0]
                     self.conn.commit()
                     self.add_slug(obj, offer_id)
                     succ = 1
-                except:
+                except Exception as ex:
+                    print(ex)
                     # self.conn.rollback()
                     time.sleep(0.3)
         return True
@@ -84,8 +86,9 @@ class DbManager:
                 successful = 1
                 print(f'Заявка {offer_id} | {slug} сохранена')
             except Exception as ex:
+                print(ex)
                 cursor.execute('END TRANSACTION;')
-                # self.conn.rollback()
+                print(f"{offer_id} slug fail")
                 time.sleep(0.4)
 
     @staticmethod
@@ -93,7 +96,8 @@ class DbManager:
         arg_string = ''
         val_string = ''
         for key, value in obj.arg_list.items():
-            if obj.arg_list[f'{key}'] is not None and obj.arg_list[f'{key}'] != '':
+            if obj.arg_list[f'{key}'] is not None and obj.arg_list[f'{key}'] != '' and obj.arg_list[f'{key}'] != ' \
+                                                                                                                 ':
                 arg_string += f'{key},'
                 val_string += f"'{obj.arg_list[f'{key}']}',"
             else:
