@@ -247,11 +247,15 @@ def listing(request):
             for i in or_dict.items():
                 qlist.append(dict([i]))
 
-            queryset = Offer.objects.filter(**and_dict).filter(reduce(operator.or_,
-                                     (Q(**d) for d in qlist))).order_by('-offer_start_date')
+            queryset = Offer.objects.filter(
+                offer_start_date__gte=year_ago_date
+            ).filter(
+                **and_dict
+            ).filter(
+                reduce(operator.or_,(Q(**d) for d in qlist))
+            ).order_by('-offer_start_date')
 
             if(queryset.count()==0):
-
                 #пробуем нижний регистр всей фразы
                 for i in or_dict.items():
                     qlist.append({i[0]:i[1].lower()})
@@ -299,14 +303,16 @@ def listing(request):
 
     all_count, month_count, today_count = OffersCounter.get_counts('all')
     # all_count, month_count, today_count = get_counts(queryset)
+    
     paginator = Paginator(queryset, 30)
-
     if request.GET.get('page'):
         page_number = request.GET.get('page')
     else:
         page_number = 1
 
     page_obj = paginator.page(page_number)
+    # queryset = queryset[:30]
+
     if filtering:
         return render(request, 'filtr.html', {'offers': page_obj, "all_count": all_count,
                                           "month_count": month_count, "today_count": today_count,

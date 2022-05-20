@@ -1,6 +1,8 @@
 from django.db import models
 from cms.models import CMSPlugin
 from datetime import datetime, timedelta
+from django.contrib.postgres.indexes import GinIndex, OpClass, Index
+from django.db.models.functions import Upper
 
 class OfferCategory(models.Model):
     name = models.CharField(max_length=1000, null=False, unique=True, verbose_name="Название")
@@ -47,7 +49,7 @@ class Offer(models.Model):
     ownercontact = models.CharField(max_length=250, null=True, blank=True, default="Не указан",
                                     verbose_name="Контакт владельцы")
     offer_price = models.FloatField(null=True, blank=True, default=None, verbose_name="Цена")
-    additional_data = models.TextField(null=True, blank=True, default=None, verbose_name="Дополнительные данные")
+    additional_data = models.TextField(null=True, blank=True, default=None, verbose_name="Дополнительные данные", db_index=True)
     organisation = models.CharField(max_length=250, null=True, blank=True, default=None, verbose_name="Организация")
     views = models.IntegerField(default=0, blank=True, verbose_name="Просмотры")
     category = models.ForeignKey(OfferSubcategory, on_delete=models.CASCADE, verbose_name="Подкатегория",
@@ -61,7 +63,6 @@ class Offer(models.Model):
 
     def __str__(self):
         return self.name
-
     class Meta:
         verbose_name = "Объявление"
         verbose_name_plural = "Объявления"
