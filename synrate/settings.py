@@ -192,10 +192,11 @@ THUMBNAIL_PROCESSORS = (
     'easy_thumbnails.processors.filters'
 )
 
+LOCAL_SETTINGS_EXISTS = False
 # Пытаемся получить локальные настройки если они есть подключаем django debug toolbar
 try:
     from .local_settings import *
-    LOCAL_SETTINGS_ESISTS = True
+    LOCAL_SETTINGS_EXISTS = True
     INSTALLED_APPS += ['debug_toolbar']
     MIDDLEWARE += [
         'debug_toolbar.middleware.DebugToolbarMiddleware',
