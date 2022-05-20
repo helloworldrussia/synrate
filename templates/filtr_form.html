@@ -1,11 +1,46 @@
+<style>
+    #search_filter {
+        display: flex;
+        gap: 7px;
+        margin-bottom: 20px;
+        flex-direction: row;
+    }
+    #search_filter select {
+        border-radius: 0.25rem;
+    }
+    .filtr-list {
+        display: flex;
+        justify-content: center;
+    }
+
+    @media (max-width: 990px) {
+        #search_filter {
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        #from_filter_select {
+            width: 100%;
+            margin-bottom: 0px;
+            /* height: 36px; */
+        }
+        #search_filter_button {
+            margin-top: 10px;
+            
+        }
+        #other_filters {
+            margin-left: 0px;
+        }
+    }
+</style>
+
 <section class="filtrs" id="filtrs">
     <div class="container">
         {% csrf_token %}
         <form action="{% url 'synrate_main:filtration' %}">
 
-            <div class="input-group mb-3">
-                <div id="search_filter" class="input-group mb-3">
-                     <select name="from_filter" id="from_filter_select" aria-label="Источник" class="filtrs-btn filter-btn filter-btn_arrow">
+            <div>
+                <div id="search_filter" >
+                    <select name="from_filter" id="from_filter_select" aria-label="Источник" class="filtrs-btn filter-btn filter-btn_arrow">
                             <option value="" disabled selected>Источник</option>
                             <option {% if from_filter == 'nelikvidi' %}selected{% endif%} value="nelikvidi">nelikvidi.com</option>
                             <option {% if from_filter == 'onlinecontract' %}selected{% endif%} value="onlinecontract">onlinecontract.ru</option>
@@ -22,8 +57,8 @@
                             <option {% if from_filter == 'promportal' %}selected{% endif%} value="promportal">promportal.su</option>
                             <option {% if from_filter == 'vk.com' %}selected{% endif%} value="vk.com">vk.com</option>
                             <option {% if from_filter == 'telegram' %}selected{% endif%} value="telegram">telegram</option>
-                        </select>
-                    <input type="text" name="search_filter" class="form-control" {% if search_filter %} value="{{ search_filter }}"{% else %} placeholder="Поиск.."{% endif %} aria-label="Recipient's username" aria-describedby="button-addon2">
+                    </select>
+                    <input id="search_field" type="text" name="search_filter" class="form-control" {% if search_filter %} value="{{ search_filter }}"{% else %} placeholder="Поиск.."{% endif %} aria-label="Recipient's username" aria-describedby="button-addon2">
                     <button type="submit" id="search_filter_button" class="btn btn-light">Поиск</button>
                     <!--<button  class="filtrs-btn filter-btn submit-button">Поиск</button>-->
                 </div>
