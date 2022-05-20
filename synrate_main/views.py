@@ -262,24 +262,24 @@ def listing(request):
 
                 queryset = Offer.objects.filter(**and_dict).filter(reduce(operator.or_,(Q(**d) for d in qlist))).order_by('-offer_start_date')
 
-                # if(queryset.count()==0):
-                #     # все слова, че
-                #     for i in or_dict.items():
-                #         for word in word_list:
-                #             qlist.append({i[0]:word})
+                if(queryset.count()==0):
+                    # все слова, че
+                    for i in or_dict.items():
+                        for word in word_list:
+                            qlist.append({i[0]:word})
 
-                #     queryset = Offer.objects.filter(**and_dict).filter(reduce(operator.or_,
-                #                          (Q(**d) for d in qlist))).order_by('-offer_start_date')
+                    queryset = Offer.objects.filter(**and_dict).filter(reduce(operator.or_,
+                                         (Q(**d) for d in qlist))).order_by('-offer_start_date')
 
 
-                #     if(queryset.count()==0):
-                #         # все слова, че
-                #         for i in or_dict.items():
-                #             for word in word_list:
-                #                 qlist.append({i[0]:word.lower()})
+                    if(queryset.count()==0):
+                        # все слова, че
+                        for i in or_dict.items():
+                            for word in word_list:
+                                qlist.append({i[0]:word.lower()})
 
-                #         queryset = Offer.objects.filter(**and_dict).filter(reduce(operator.or_,
-                #                              (Q(**d) for d in qlist))).order_by('-offer_start_date')
+                        queryset = Offer.objects.filter(**and_dict).filter(reduce(operator.or_,
+                                             (Q(**d) for d in qlist))).order_by('-offer_start_date')
 
             '''
             search_vector = SearchVector('name', 'location', 'owner',
