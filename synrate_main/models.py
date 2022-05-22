@@ -61,7 +61,7 @@ class Offer(models.Model):
     owner_id = models.IntegerField(blank=True, null=True, default=None, db_index=True)
     # True - заявка опубликована, False - не опубликована и показывать ее не нужно.
     active = models.BooleanField(default=False)
-    home = models.ForeignKey(ParserDetail, on_delete=models.CASCADE)
+    home = models.ForeignKey(ParserDetail, on_delete=models.CASCADE, default=1)
 
     def __str__(self):
         return self.name
