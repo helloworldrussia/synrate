@@ -201,13 +201,20 @@ def detail_info(request, id):
         print(ex)
         slug = 1
     if slug:
-        t = Offer.objects.get(slug=id)
+        offer = Offer.objects.get(slug=id)
     else:
-        t = Offer.objects.get(id=id)
-    t.views += 1
-    t.save()
-    random = Offer.objects.order_by('?')[:5]
-    return render(request, 'newcard.html', {"offer": t, "offers": random})
+        offer = Offer.objects.get(id=id)
+    offer.views += 1
+    offer.save()
+
+    year_ago_date = datetime.datetime.now() - datetime.timedelta(days=365)
+    queryset = Offer.objects.filter(
+        created_at__gte=year_ago_date, 
+        pk__gt=offer.pk - 3, 
+        pk__lte=offer.pk + 3
+    ).exclude(pk=offer.pk)
+
+    return render(request, 'newcard.html', {"offer": offer, "offers": queryset})
 
 
 def category(request):
@@ -241,7 +248,8 @@ def listing(request):
     except:
         pass
     
-    queryset = Offer.objects.filter().order_by('-offer_start_date')
+    queryset = Offer.objects.filter(offer_end_date__gte=year_ago_date).order_by('-offer_start_date')
+
 
     search_filter = request.GET.get('search_filter', '')
     search_target = request.GET.get('search_target', 'additional_data')
