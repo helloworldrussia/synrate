@@ -88,7 +88,8 @@ TEMPLATES = [
                 'cms.context_processors.cms_settings',
             ],
             'libraries': {
-                            'staticfiles': 'django.templatetags.static',
+                'staticfiles': 'django.templatetags.static',
+                'main_tags': 'synrate_main.templatetags.main_tags',
             }
         },
     },

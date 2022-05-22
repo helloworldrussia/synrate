@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block title %} Объявления о продаже - Страница {{ offers.number }} - купить складские остатки, запасы. {% endblock title %}
-{% load static %}
+{% load static main_tags %}
 {% block content %}
 <style>
     .search__line{
@@ -184,10 +184,16 @@
                 </h1>
             </div>
             <div class="offers-count-block">
-                <h4 class="offers-count">
-                    Всего объявлений{% if all_count != 0 %}
-                    {{ all_count }}{% else %} 0,{% endif %}
-                </h4>
+                {% if search_filter %}
+                    <h4 class="offers-count">
+                        Найдено {{ offers.paginator.count }} {{ offers.paginator.count|pluralize:"объявление,объявления,объявлений" }} по запросу: {{ search_filter }}
+                    </h4>
+                {% else %}
+                    <h4 class="offers-count">
+                        Всего объявлений{% if all_count != 0 %}
+                        {{ all_count }}{% else %} 0,{% endif %}
+                    </h4>
+                {% endif %}
             </div>
 
 

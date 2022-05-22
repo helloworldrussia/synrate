@@ -117,7 +117,7 @@ class OffersCounter(models.Model):
         today = datetime.today().date()
         self.all_count = offers.count()
         self.month_count = offers.filter(created_at__month=today.month).count()
-        self.day_count = offers.filter(created_at__day=today.day).count()
+        self.today_count = offers.filter(created_at__day=today.day).count()
         self.save()
     
 

@@ -31,16 +31,18 @@ def get_all_category_names():
 
 
 def index(request):
+    search_target = request.GET.get('search_target', 'additional_data')
+    
     queryset = Offer.objects.all().exclude(offer_start_date__isnull=True).order_by('-offer_start_date')
-    # получаем количество заявок всего, за мес., день
-    all_count, month_count, today_count = get_counts(queryset)
+    all_count, month_count, today_count = OffersCounter.get_counts('all')
 
     # показываем объявления, расчитав количество объяв за месяц, день и за все время,
     # передаем значения в контекст
     return render(request, 'index.html', {"offers": queryset[0:30],
                                           "all_count": all_count,
                                           "month_count": month_count,
-                                          "today_count": today_count})
+                                          "today_count": today_count,
+                                          "search_target": search_target})
 
 
 def parser_admin(request):
@@ -224,6 +226,13 @@ def category(request):
 
 
 def listing(request):
+    url, qs = request.build_absolute_uri(), 0
+    if '&page' in url or 'filter' in url:
+        qs = 1
+    
+    year_ago_date = datetime.datetime.now() - datetime.timedelta(days=365)
+
+
     and_dict, or_dict, word_list = get_filter_qs(request.GET)
     filtering = 0
     try:
@@ -231,78 +240,40 @@ def listing(request):
         filtering = 1
     except:
         pass
+    
+    queryset = Offer.objects.filter().order_by('-offer_start_date')
 
-    url, qs = request.build_absolute_uri(), 0
-    if '&page' in url or 'filter' in url:
-        qs = 1
+    search_filter = request.GET.get('search_filter', '')
+    search_target = request.GET.get('search_target', 'additional_data')
+    from_filter = request.GET.get('from_filter')
 
-    year_ago_date = datetime.datetime.now() - datetime.timedelta(days=365)
-    if and_dict == 0:
-        queryset = Offer.objects.filter(offer_start_date__gte=year_ago_date).order_by('-offer_start_date')
-    else:
-        if len(or_dict):
+    if from_filter:
+        queryset = queryset.filter(home_name=from_filter)
 
-            # короче сначала ищем полное совпадение
-            qlist = []
-            for i in or_dict.items():
-                qlist.append(dict([i]))
+    if search_filter:
+        words = search_filter.replace('.', '').replace(',', '').split(' ')
 
-            queryset = Offer.objects.filter(
-                offer_start_date__gte=year_ago_date
-            ).filter(
-                **and_dict
-            ).filter(
-                reduce(operator.or_,(Q(**d) for d in qlist))
-            ).order_by('-offer_start_date')
+        if search_target == 'additional_data':
+            additional_data_queryset = queryset
+            words = [word  for word in words if word!='']
+            for word in words:
+                additional_data_queryset = additional_data_queryset.filter(additional_data__icontains=word)
+            name_queryset = queryset
+            for word in words:
+                name_queryset = name_queryset.filter(name__icontains=word)
 
-            if(queryset.count()==0):
-                #пробуем нижний регистр всей фразы
-                for i in or_dict.items():
-                    qlist.append({i[0]:i[1].lower()})
+            queryset = name_queryset | additional_data_queryset
 
-                queryset = Offer.objects.filter(**and_dict).filter(reduce(operator.or_,(Q(**d) for d in qlist))).order_by('-offer_start_date')
+        if search_target == 'location':
+            for word in words:
+                queryset = queryset.filter(location__icontains=word)
+        
+        if search_target == 'organisation':
+            for word in words:
+                queryset = queryset.filter(organisation__icontains=word)
 
-                if(queryset.count()==0):
-                    # все слова, че
-                    for i in or_dict.items():
-                        for word in word_list:
-                            qlist.append({i[0]:word})
-
-                    queryset = Offer.objects.filter(**and_dict).filter(reduce(operator.or_,
-                                         (Q(**d) for d in qlist))).order_by('-offer_start_date')
-
-
-                    if(queryset.count()==0):
-                        # все слова, че
-                        for i in or_dict.items():
-                            for word in word_list:
-                                qlist.append({i[0]:word.lower()})
-
-                        queryset = Offer.objects.filter(**and_dict).filter(reduce(operator.or_,
-                                             (Q(**d) for d in qlist))).order_by('-offer_start_date')
-
-            '''
-            search_vector = SearchVector('name', 'location', 'owner',
-                                         'ownercontact', 'additional_data',
-                                         'organisation')
-            # получаем search_query
-            i = 1
-            for x in word_list:
-                if i == 1:
-                    search_query = SearchQuery(x)
-                else:
-                    search_query = search_query & SearchQuery(x)
-                i += 1
-            search_rank = SearchRank(search_vector, search_query)
-            queryset = Offer.objects.filter(**and_dict).annotate(search=search_vector).filter(search=search_query).order_by('-offer_start_date')
-            # rank = Offer.objects.annotate(rank=search_rank).order_by('-rank')#.order_by('-offer_start_date')
-            # queryset = rank.filter(rank__gte=0)
-            '''
-        else:
-            queryset = Offer.objects.filter(**and_dict).order_by('-offer_start_date')
 
     all_count, month_count, today_count = OffersCounter.get_counts('all')
-    # all_count, month_count, today_count = get_counts(queryset)
     
     paginator = Paginator(queryset, 30)
     if request.GET.get('page'):
@@ -311,18 +282,17 @@ def listing(request):
         page_number = 1
 
     page_obj = paginator.page(page_number)
-    # queryset = queryset[:30]
 
     if filtering:
         return render(request, 'filtr.html', {'offers': page_obj, "all_count": all_count,
                                           "month_count": month_count, "today_count": today_count,
                                           "qs": qs, "filtering": filtering,
                                           "from_filter": from_filter, "search_filter": search_filter,
-                                          "time_filter": time_filter, "include_text":include_text, "include_region":include_region, "include_org":include_org})
+                                          "search_target":search_target})
 
     return render(request, 'filtr.html', {'offers': page_obj, "all_count": all_count,
                                           "month_count": month_count, "today_count": today_count,
-                                          "qs": qs, "filtering": filtering, "include_text":include_text, "include_region":include_region, "include_org":include_org})
+                                          "qs": qs, "filtering": filtering, "search_target":search_target})
 
 # class OffersView(ListView):
 #     paginate_by = 10
