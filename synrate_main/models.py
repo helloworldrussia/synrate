@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 from django.contrib.postgres.indexes import GinIndex, OpClass, Index
 from django.db.models.functions import Upper
 
+
 class OfferCategory(models.Model):
     name = models.CharField(max_length=1000, null=False, unique=True, verbose_name="Название")
 
@@ -60,9 +61,11 @@ class Offer(models.Model):
     owner_id = models.IntegerField(blank=True, null=True, default=None, db_index=True)
     # True - заявка опубликована, False - не опубликована и показывать ее не нужно.
     active = models.BooleanField(default=False)
+    home = models.ForeignKey(ParserDetail, on_delete=models.CASCADE, default=1)
 
     def __str__(self):
         return self.name
+
     class Meta:
         verbose_name = "Объявление"
         verbose_name_plural = "Объявления"
