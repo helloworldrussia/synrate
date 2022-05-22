@@ -50,7 +50,7 @@ class Offer(models.Model):
     ownercontact = models.CharField(max_length=250, null=True, blank=True, default="Не указан",
                                     verbose_name="Контакт владельцы")
     offer_price = models.FloatField(null=True, blank=True, default=None, verbose_name="Цена")
-    additional_data = models.TextField(null=True, blank=True, default=None, verbose_name="Дополнительные данные", db_index=True)
+    additional_data = models.TextField(null=True, blank=True, default=None, verbose_name="Дополнительные данные")
     organisation = models.CharField(max_length=250, null=True, blank=True, default=None, verbose_name="Организация")
     views = models.IntegerField(default=0, blank=True, verbose_name="Просмотры")
     category = models.ForeignKey(OfferSubcategory, on_delete=models.CASCADE, verbose_name="Подкатегория",

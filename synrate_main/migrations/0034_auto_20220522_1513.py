@@ -17,11 +17,6 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to='synrate_main.parserdetail'),
         ),
         migrations.AlterField(
-            model_name='offer',
-            name='additional_data',
-            field=models.TextField(blank=True, db_index=True, default=None, null=True, verbose_name='Дополнительные данные'),
-        ),
-        migrations.AlterField(
             model_name='offerscounter',
             name='home_lilter',
             field=models.CharField(choices=[('all', 'Все'), ('b2b-center', 'b2b-center.ru'), ('etp-activ', 'etp-activ.ru'), ('etpgpb', 'etpgpb.ru'), ('fabrikant', 'fabrikant.ru'), ('isource', 'reserve.isource.ru'), ('nelikvidi', 'nelikvidi.com'), ('onlinecontract', 'onlinecontract.ru'), ('roseltorg', 'roseltorg.ru'), ('tektorg', 'tektorg.ru'), ('tenderpro', 'tender.pro'), ('vk.com', 'vk.com'), ('telegram', 'telegram'), ('prostanki', 'prostanki.com'), ('metaprom', 'metaprom.ru'), ('promportal', 'promportal.su')], default='all', max_length=50, verbose_name='Фильтр по источнику предложений'),
