@@ -248,7 +248,7 @@ def listing(request):
     except:
         pass
     
-    queryset = Offer.objects.filter(offer_end_date__gte=year_ago_date).order_by('-offer_start_date')
+    queryset = Offer.objects.filter(offer_start_date__gte=year_ago_date).order_by('-offer_start_date')
 
 
     search_filter = request.GET.get('search_filter', '')
