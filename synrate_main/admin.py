@@ -15,13 +15,12 @@ class TgUserAdmin(admin.ModelAdmin):
 
 # @admin.register(Offer)
 class OfferAdmin(admin.ModelAdmin):
-
-    list_display = ['short_name', 'organisation', 'offer_start_date', 'home',]
+    list_display = ['short_name', 'organisation', 'offer_start_date', 'home', ]
     search_fields = ['name', 'organisation', 'offer_start_date', 'home_name',
                      'home_name', 'url', 'location', 'offer_type',
                      'offer_end_date', 'owner',
                      'ownercontact', 'offer_price', 'additional_data',
-                     'category', 'created_at', 'from_id', 'short_cat', 'owner_id',]
+                     'category', 'created_at', 'from_id', 'short_cat', 'owner_id', ]
 
     def short_name(self, obj):
         return obj.name[:25]
@@ -52,19 +51,23 @@ class OfferAdmin(admin.ModelAdmin):
 
         return nice_home_name
 
+
 # @admin.register(OfferCategory)
 class OfferCategoryAdmin(admin.ModelAdmin):
     pass
-#
-#
+
+
 # @admin.register(OfferSubcategory)
 class OfferSubcategoryAdmin(admin.ModelAdmin):
     pass
+
+
 #
 #
 # @admin.register(FAQ)
 class FAQAdmin(admin.ModelAdmin):
-    pass
+    list_display = ['title', 'text']
+
 
 admin.site.register(OfferSubcategory, OfferSubcategoryAdmin)
 admin.site.register(OfferCategory, OfferCategoryAdmin)

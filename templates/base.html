@@ -17,11 +17,11 @@
     <script src="{% static 'synrate_static/js/jquery-3.6.0.min.js' %} "></script>
 </head>
 <body>
-
+    {% cms_toolbar %}
     <div class="header_padding"></div>
     <header class="header" id="header">
         <div class="container container_relative">
-            <nav>
+            <nav class="nav">
                 <div class="logo">
                     <a href="{% url 'synrate_main:index' %}" class="logo__link"><img src="{% static 'synrate_static/img/logo_synrate.jpg' %}" alt="logo"></a>
                 </div>
