@@ -4,36 +4,39 @@ import threading
 from connector import get_home_id, conn
 
 
-def validate_home_name(hh):
-    if hh == 'b2b-center':
-        hh = 'b2b_center'
-    if 'tektorg':
-        hh = False
-    if hh == 'nelikvidi':
-        hh = 'nelikvidy'
-    if hh == 'vk.com':
-        hh = 'vk'
-    if hh == 'etp-activ':
-        hh = 'etp_aktiv'
-    return hh
+def validate_home_name(hn):
+    if hn == 'b2b-center':
+        hn = 'b2b_center'
+    if hn == 'tektorg':
+        hn = False
+    if hn == 'nelikvidi':
+        hn = 'nelikvidy'
+    if hn == 'vk.com':
+        hn = 'vk'
+    if hn == 'etp-activ':
+        hn = 'etp_aktiv'
+    return hn
 
 
 def main(offers, group_id):
     count = len(offers)
+    print(count)
     i = 1
     for offer in offers:
+
         try:
             offer_id, home_name = offer[0], offer[1]
             home_name = validate_home_name(home_name)
             if not home_name:
                 continue
-            home_id = get_home_id('home_name')
+            print(home_name)
+            home_id = get_home_id(f'{home_name}')
             cursor.execute(f"UPDATE synrate_main_offer SET home_id = '{home_id}' WHERE id = {offer_id}")
             conn.commit()
             print(f'(+) [{group_id}] {i} / {count}')
         except Exception as ex:
             print(f'(!) [{group_id}] {i} / {count}', ex)
-            print('id:', id)
+            print('id:', offer_id)
         i += 1
 
 

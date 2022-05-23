@@ -38,6 +38,8 @@ def get_home_id(home_name):
     home_id = cursor.fetchone()[0]
     return home_id
 
+print(get_home_id('metaprom'))
+
 
 class DbManager:
 
