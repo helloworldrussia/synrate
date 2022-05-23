@@ -9,7 +9,7 @@ from fake_useragent import UserAgent
 import datetime
 from requests.adapters import HTTPAdapter
 from urllib3 import Retry
-from connector import change_parser_status, Item, DbManager
+from connector import change_parser_status, Item, DbManager, get_home_id
 from ENGINE import Parser
 from mixins import get_proxy
 
@@ -18,6 +18,7 @@ class ParserPromportal(Parser):
 
     def __init__(self, verify, end):
         super().__init__()
+        self.home_id = get_home_id('promportal')
         self.db_manager = DbManager()
         self.verify = verify
         self.url = "https://promportal.su/g/"
@@ -150,7 +151,7 @@ class ParserPromportal(Parser):
                 company = company.replace('"', '').replace("'", '')
             offer = Item(name, 'promportal', url, region, None, None,
                 None, None, price, None, company, None,
-                category, None)
+                category, None, home_id=self.home_id)
             res.append(offer)
         return res
 

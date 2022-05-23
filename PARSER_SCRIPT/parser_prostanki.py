@@ -7,7 +7,7 @@ from fake_useragent import UserAgent
 from requests.adapters import HTTPAdapter
 from urllib3 import Retry
 
-from connector import change_parser_status, Item, DbManager
+from connector import change_parser_status, Item, DbManager, get_home_id
 from ENGINE import Parser
 import time
 import random
@@ -18,6 +18,7 @@ from mixins import proxy_data, get_proxy
 class ProstankiParser(Parser):
     def __init__(self, end):
         super().__init__()
+        self.home_id = get_home_id('prostanki')
         self.url = 'https://www.prostanki.com/'
         self.proxy = False
         self.current_proxy_ip = 0
@@ -104,7 +105,7 @@ class ProstankiParser(Parser):
 
             item = Item(name, 'prostanki', url, region, start_date, None,
                 None, None, price, a_data, company, None,
-                None, None)
+                None, None, home_id=self.home_id)
             answer.append(item)
 
         return answer

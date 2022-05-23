@@ -8,7 +8,7 @@ from fake_useragent import UserAgent
 import datetime
 from requests.adapters import HTTPAdapter
 from urllib3 import Retry
-from connector import change_parser_status, Item, DbManager
+from connector import change_parser_status, Item, DbManager, get_home_id
 from ENGINE import Parser
 from mixins import get_proxy
 
@@ -17,6 +17,7 @@ class ParserMetaprom(Parser):
 
     def __init__(self, verify, end):
         super().__init__()
+        self.home_id = get_home_id('metaprom')
         self.db_manager = DbManager()
         self.verify = verify
         self.url = "http://metaprom.ru"
@@ -136,7 +137,7 @@ class ParserMetaprom(Parser):
                 return 0
         obj = Item(name, 'metaprom', url, region, start_date, None,
                 None, None, price, a_data, company, None,
-                obj['cat'], None)
+                obj['cat'], None, home_id=self.home_id)
 
         return obj
 

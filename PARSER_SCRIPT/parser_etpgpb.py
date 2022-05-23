@@ -4,7 +4,7 @@ from datetime import datetime
 import sys
 from fake_useragent import UserAgent
 from requests.adapters import HTTPAdapter, Retry
-from connector import change_parser_status, Item, DbManager
+from connector import change_parser_status, Item, DbManager, get_home_id
 from ENGINE import Parser
 import requests
 from bs4 import BeautifulSoup
@@ -14,6 +14,7 @@ from mixins import get_proxy, proxy_data
 class ParserEtpgpb(Parser):
     def __init__(self, end):
         super.__init__
+        self.home_id = get_home_id('etpgpb')
         self.url = "https://etpgpb.ru/procedures/?procedure%5Bcategory%5D=actual&procedure%5Bsection%5D%5B2%5D=nelikvid"
         self.procedure_id = None
         self.response_item = None
@@ -131,7 +132,7 @@ class ParserEtpgpb(Parser):
                                         "from_id": from_id}
             offer = Item(name, 'etpgpb', link, None, start_date, end_date,
                 None, None, price, text, company, from_id,
-                None, None)
+                None, None, home_id=self.home_id)
 
             cleaned_data.append(offer)
             # cleaned_data.append(data_dict)

@@ -5,7 +5,7 @@ import time
 import requests
 import vk
 
-from connector import Item, DbManager
+from connector import Item, DbManager, get_home_id
 
 
 def get_api(token):
@@ -16,6 +16,7 @@ def get_api(token):
 
 class VkGroup:
     def __init__(self, url, id, name, api):
+        self.home_id = get_home_id('vk')
         self.id = id
         self.api = api
         self.home_name = 'vk.com'
@@ -79,7 +80,7 @@ class VkGroup:
 
             offer = Item(name, self.home_name, url, None, start_date, None,
                 None, None, None, text, None, offer['id'],
-                self.name, offer['from_id'])
+                self.name, offer['from_id'], home_id=self.home_id)
             answer.append(offer)
         return answer
 

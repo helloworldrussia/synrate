@@ -3,7 +3,7 @@ import time
 from datetime import datetime
 from fake_useragent import UserAgent
 from requests.adapters import HTTPAdapter, Retry
-from connector import change_parser_status, Item, DbManager
+from connector import change_parser_status, Item, DbManager, get_home_id
 from ENGINE import Parser
 import requests
 from bs4 import BeautifulSoup
@@ -15,6 +15,7 @@ class ParserFabrikant(Parser):
 
     def __init__(self, verify, end):
         super.__init__
+        self.home_id = get_home_id('fabrikant')
         self.verify = verify
         self.url = "https://www.fabrikant.ru/trades/procedure/search/?type=1&org_type=org&currency=0&date_type=date_publication&ensure=all&filter_id=8&okpd2_embedded=1&okdp_embedded=1&count_on_page=10&order_direction=1&type_hash=1561441166"
         self.procedure_id = None
@@ -151,7 +152,7 @@ class ParserFabrikant(Parser):
                          }
             offer = Item(name, "fabrikant", link, region, start_date, end_date,
                 None, None, price, text, company, from_id,
-                None, None)
+                None, None, home_id=self.home_id)
             offers.append(offer)
 
         return offers

@@ -32,6 +32,13 @@ def change_parser_status(name, status):
     conn.commit()
 
 
+def get_home_id(home_name):
+    cursor = conn.cursor()
+    cursor.execute(f"SELECT id FROM synrate_main_parserdetail WHERE name = '{home_name}'")
+    home_id = cursor.fetchone()[0]
+    return home_id
+
+
 class DbManager:
 
     def __init__(self):
@@ -188,7 +195,8 @@ class Item:
 
     def __init__(self, name, home_name, url, location, offer_start_date, offer_end_date,
                  owner, ownercontact, offer_price, additional_data, organisation, from_id,
-                 short_cat, owner_id):
+                 short_cat, owner_id, home_id):
+        self.home_id = home_id
         self.name = name
         self.home_name = home_name
         self.location = location
@@ -212,7 +220,7 @@ class Item:
                          "owner": self.owner, "offer_end_date": self.offer_end_date,
                          "offer_start_date": self.offer_start_date,
                          "url": self.url, "location": self.location,
-                         "home_name": self.home_name, "name": self.name, "views": 1}
+                         "home_name": self.home_name, "name": self.name, "views": 1, "home_id": self.home_id}
 
     def post(self, db_manager):
         db_manager.tasks.append(self)

@@ -3,7 +3,7 @@ import time
 from datetime import datetime
 from fake_useragent import UserAgent
 from requests.adapters import HTTPAdapter, Retry
-from connector import change_parser_status, Item, DbManager
+from connector import change_parser_status, Item, DbManager, get_home_id
 from ENGINE import Parser
 import requests
 from bs4 import BeautifulSoup
@@ -15,6 +15,7 @@ class ParserEtpActiv(Parser):
 
     def __init__(self, verify, end):
         super.__init__
+        self.home_id = get_home_id('etp_aktiv')
         self.verify = verify
         self.url = "https://etp-aktiv.ru/catalog/"
         self.procedure_id = None
@@ -123,7 +124,7 @@ class ParserEtpActiv(Parser):
                 offer_obj[f'{key}'] = value
             offer = Item(name, "etp-activ", link, offer_obj['location'], None, None,
                          None, None, offer_obj['price'], offer_obj['additional_data'], offer_obj['owner'], from_id,
-                         offer_obj['short_cat'], None)
+                         offer_obj['short_cat'], None, home_id=self.home_id)
             answer.append(offer)
         return answer
 

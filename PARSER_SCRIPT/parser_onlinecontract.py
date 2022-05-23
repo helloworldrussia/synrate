@@ -4,7 +4,7 @@ from datetime import datetime
 from fake_useragent import UserAgent
 from requests.adapters import HTTPAdapter
 from urllib3 import Retry
-from connector import change_parser_status, Item, DbManager
+from connector import change_parser_status, Item, DbManager, get_home_id
 from ENGINE import Parser
 import requests
 from bs4 import BeautifulSoup
@@ -15,6 +15,7 @@ import sys
 class ParserOnlineContract(Parser):
     def __init__(self, end):
         super.__init__
+        self.home_id = get_home_id('onlinecontract')
         self.url = "https://onlinecontract.ru/sale?status=1page={}"
         self.procedure_id = None
         self.response_item = None
@@ -99,7 +100,7 @@ class ParserOnlineContract(Parser):
                          "from_id": from_id
                          }
             offer = Item(name, "onlinecontract", link, None, None, end_date,
-                None, None, None, name, company, from_id, None, None)
+                None, None, None, name, company, from_id, None, None, home_id=self.home_id)
             answer.append(offer)
         return answer
 

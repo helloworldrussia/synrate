@@ -7,7 +7,7 @@ from fake_useragent import UserAgent
 import datetime
 from requests.adapters import HTTPAdapter
 from urllib3 import Retry
-from connector import change_parser_status, Item, DbManager
+from connector import change_parser_status, Item, DbManager, get_home_id
 from ENGINE import Parser
 from mixins import get_proxy
 
@@ -25,6 +25,7 @@ class ParserNelikvidy(Parser):
         :param verify:
         """
         super().__init__()
+        self.home_id = get_home_id('nelikvidy')
         self.db_manager = DbManager()
         self.verify = verify
         self.last_page = end
@@ -157,7 +158,7 @@ class ParserNelikvidy(Parser):
                                         }
             offer = Item(name.replace('"', ''), "nelikvidi", link, region, str(date), None,
                 None, None, price, a_data.replace('"', ''), company, from_id,
-                None, None)
+                None, None, home_id=self.home_id)
             answer.append(offer)
         return answer
 

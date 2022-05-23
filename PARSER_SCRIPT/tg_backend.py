@@ -5,7 +5,7 @@ from telethon import TelegramClient
 import datetime
 from telethon.tl import functions
 
-from connector import Item, DbManager
+from connector import Item, DbManager, get_home_id
 
 """     Класс телеграм группы или канала.
         Для использования создайте экземпляр для канала и запустите .go()  """
@@ -15,6 +15,7 @@ class TelegramItem:
     """ Классу обязательно нужны клиент (телетон) и цель (можете использовать username) """
     def __init__(self, client, target, target_name):
         self.client = client
+        self.home_id = get_home_id('telegram')
         self.target = target
         self.target_name = target_name
         self.limit = 100
@@ -57,7 +58,7 @@ class TelegramItem:
                 continue
             obj = Item(offer.message[:120], 'telegram', self.target, None, str(offer.date).split(' ')[0], None,
                        None, None, None, offer.message, None, offer.id,
-                       self.target_name, offer.from_id)
+                       self.target_name, offer.from_id, home_id=self.home_id)
             obj.post(self.db_manager)
         self.db_manager.task_manager()
         return True

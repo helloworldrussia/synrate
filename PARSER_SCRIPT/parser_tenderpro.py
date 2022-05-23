@@ -4,7 +4,7 @@ import time
 from fake_useragent import UserAgent
 from requests.adapters import HTTPAdapter
 from urllib3 import Retry
-from connector import change_parser_status, Item, DbManager
+from connector import change_parser_status, Item, DbManager, get_home_id
 from ENGINE import Parser
 import requests
 from bs4 import BeautifulSoup
@@ -16,6 +16,7 @@ from mixins import proxy_data, get_proxy
 class ParserTender(Parser):
     def __init__(self, end):
         super().__init__()
+        self.home_id = get_home_id('tenderpro')
         self.url = "http://www.tender.pro/view_tenders_list.shtml?page={}&sid=&lim=25&companyid=0&tendertype=92&tenderstate=1&country=0&basis=0&tender_name=&tender_id=&company_name=&good_name=&dateb=&datee=&dateb2=&datee2="
         self.page_links = []
         self.page_links2 = []
@@ -82,7 +83,7 @@ class ParserTender(Parser):
 
                     offer = Item(name, "tenderpro", url, "РФ", str(start_date), str(fin_date),
                         None, None, None, None, company.replace('"', ''), from_id,
-                        None, None)
+                        None, None, home_id=self.home_id)
                     offer.post(self.db_manager)
                     time.sleep(random.randint(1, 5) / 10)
                     # ---------------------

@@ -7,7 +7,7 @@ from selenium_stealth import stealth
 import webdriver_manager
 from fake_useragent import UserAgent
 from requests.adapters import HTTPAdapter, Retry
-from connector import change_parser_status, Item, DbManager
+from connector import change_parser_status, Item, DbManager, get_home_id
 from ENGINE import Parser
 import requests
 from bs4 import BeautifulSoup
@@ -22,6 +22,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 class ParserCenter(Parser):
     def __init__(self, verify, end):
         super.__init__
+        self.home_id = get_home_id('b2b_center')
         self.url = "https://www.b2b-center.ru/market/?searching=1&company_type=2&price_currency=0&date=1&trade=sell&lot_type=0"
         self.procedure_id = None
         self.response_item = None
@@ -118,7 +119,7 @@ class ParserCenter(Parser):
                          "url": link, "from_id": from_id
                          }
             offer = Item(name, "b2b-center", link, None, start_date, end_date,
-                None, None, None, text, company, from_id, None, None)
+                None, None, None, text, company, from_id, None, None, home_id=self.home_id)
             answer.append(offer)
         return answer
 

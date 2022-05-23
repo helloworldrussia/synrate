@@ -2,13 +2,14 @@ import sys
 import time
 from datetime import datetime
 import requests
-from connector import change_parser_status, Item, DbManager
+from connector import change_parser_status, Item, DbManager, get_home_id
 from ENGINE import Parser
 
 
 class ParserSource(Parser):
     def __init__(self, end):
         super().__init__()
+        self.home_id = get_home_id('isource')
         self.api_get_info_url = "https://reserve.isource.ru/api/auction/get-info"
         self.api_get_categories_url = "https://reserve.isource.ru/api/category/list/full"
         self.api_get_auction_url = "https://reserve.isource.ru/api/auction/list"
@@ -73,7 +74,7 @@ class ParserSource(Parser):
                     self.response_item["author_full_name"], self.response_item["author_phone"],
                     round(float(self.response_item["current_price_with_nds"])),
                     None, self.response_item["supplier_name"], self.response_item['auction_transliteration_name'].split("-")[-1],
-                    None, None)
+                    None, None, home_id=self.home_id)
                 offer.post(self.db_manager)
             self.db_manager.task_manager()
         change_parser_status('isource', 'Выкл')
