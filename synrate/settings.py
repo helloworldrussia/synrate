@@ -5,7 +5,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-knlrtz6ws_wbw_%$uo0wrozvbzk!h5vy6c76k9l3dee(n#nx%2'
 
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['127.0.0.1', '81.177.6.103', 'synrate.ru', 'www.synrate.ru']
 
