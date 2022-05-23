@@ -114,9 +114,9 @@ class OffersCounter(models.Model):
 
     def recalculate_count(self):
         if self.home_lilter == "all":
-            offers = Offer.objects.filter().order_by('created_at')   
+            offers = Offer.objects.filter()  
         else: 
-            offers = Offer.objects.filter(home_name=self.home_lilter).order_by('created_at')
+            offers = Offer.objects.filter(home_name=self.home_lilter)
         today = datetime.today().date()
         self.all_count = offers.count()
         self.month_count = offers.filter(created_at__month=today.month).count()

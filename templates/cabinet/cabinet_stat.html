@@ -19,7 +19,7 @@
         <td>{{ offer_source.all_count }}</td>
         <td>{{ offer_source.month_count }}</td>
         <td>{{ offer_source.day_count }}</td>
-        <td>{{ offer_source.status }}</td>
+        <td>{% if offer_source.name != 'Все' %}{{ offer_source.status }}{% endif %}</td>
       </tr>
     {% endfor %}
   </tbody>
