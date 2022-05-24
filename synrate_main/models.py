@@ -125,7 +125,34 @@ class OffersCounter(models.Model):
         self.month_count = offers.filter(created_at__gte=current_month_start_date).count()
         self.today_count = offers.filter(created_at__gte=today_morning_date).count()
         self.save()
-    
+
+
+class SearchQuery(models.Model):
+    phrase = models.CharField(max_length=255, verbose_name="Фраза")
+    # slug = models.CharField(max_length=255, verbose_name="ЧПУ")
+    slug = models.SlugField(max_length=250, verbose_name='ЧПУ', unique=True)
+    is_active = models.BooleanField(default=False)
+    search_count = models.PositiveIntegerField(default=0, verbose_name='Количество запросов')
+
+    class Meta:
+        verbose_name = "Поисковый запрос"
+        verbose_name_plural = "Поисковые запросы"
+
+
+class Banner(models.Model):
+    TYPE_CHOICES = (
+        ("right", "Баннер справа"),
+        ("top", "Баннер сверху"),
+        ("bottom", "Баннер снизу"),
+    )
+    banner_type = models.CharField(choices=TYPE_CHOICES, default="right", max_length=50, verbose_name="тип баннера")
+    code = models.TextField(verbose_name="Код баннера")
+    is_active = models.BooleanField(default=0, verbose_name="Активен")
+
+    class Meta:
+        verbose_name = "Баннер"
+        verbose_name_plural = "Баннеры"
+
 
 class FAQ(CMSPlugin):
     title = models.CharField(max_length=1000, null=False, default=None, verbose_name="FAQ title")

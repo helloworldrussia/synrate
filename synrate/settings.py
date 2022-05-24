@@ -79,6 +79,7 @@ TEMPLATES = [
                 'django.template.context_processors.i18n',
                 'sekizai.context_processors.sekizai',
                 'cms.context_processors.cms_settings',
+                'synrate_main.context_processors.banners',
             ],
             'libraries': {
                 'staticfiles': 'django.templatetags.static',

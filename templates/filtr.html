@@ -198,6 +198,14 @@
                 {% endif %}
             </div>
 
+            {% if top_banners %}
+                <div class="top_banner">
+                    {% for banner in top_banners %}
+                        {{ banner.code|safe }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+
 
 
             <div class="row">
@@ -428,6 +436,15 @@
             </div>
             <br>
             <hr style="margin-top: 35px;">
+            
+            {% if bottom_banners %}
+                <div class="bottom_banner">
+                    {% for banner in bottom_banners %}
+                        {{ banner.code|safe }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+
         </div>
         <!--<div class="ad-unit ad-unit_top"></div>-->
     </section>

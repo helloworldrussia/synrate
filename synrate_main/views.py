@@ -2,15 +2,15 @@ import operator
 import time
 from functools import reduce
 
-from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank
+from django.contrib.postgres.search import SearchVector, SearchRank
 from django.db.models import Q
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.core.paginator import Paginator
 from django.http import HttpResponse
 from django.views.generic import ListView
 
-from .mixins import get_counts, get_filter_qs, get_filters
-from .models import Offer, OfferCategory, OfferSubcategory, OffersCounter
+from .mixins import get_counts, get_filter_qs, get_filters, get_random_search_queries
+from .models import Offer, OfferCategory, OfferSubcategory, OffersCounter, SearchQuery
 from parsers.models import Parser, ENGINE
 from .forms import ParserForm, EngineForm
 from rest_framework import generics
@@ -87,106 +87,54 @@ def detail(request, pk):
     return render(request, 'detail.html', {'offer': t, "data": tablestr})
 
 
-def search(request, args: str = ''):
-    page = 1
-    if request.META["QUERY_STRING"] != "" and request.META["QUERY_STRING"] is not None:
-        args += "?" + request.META["QUERY_STRING"]
+def search(request, query_slug):
+    search_query = get_object_or_404(SearchQuery, slug=query_slug)
+    
+    url, qs = request.build_absolute_uri(), 0
+    if '&page' in url or 'filter' in url:
+        qs = 1
+
+    and_dict, or_dict, word_list = get_filter_qs(request.GET)
+    filtering = 0
+    try:
+        from_filter, search_filter, time_filter, include_text, include_region, include_org = get_filters(request.GET)
+        filtering = 1
+    except:
+        pass
+    
+    search_queries = get_random_search_queries()
+    queryset = Offer.objects.filter().order_by('-offer_start_date')
+
+
+    year_ago_date = datetime.datetime.now() - datetime.timedelta(days=365)
+    queryset = queryset.filter(offer_start_date__gte=year_ago_date)
+    words = search_query.phrase.replace('.', '').replace(',', '').split(' ')
+
+    additional_data_queryset = queryset
+    words = [word  for word in words if word!='']
+    for word in words:
+        additional_data_queryset = additional_data_queryset.filter(additional_data__icontains=word)
+    name_queryset = queryset
+    for word in words:
+        name_queryset = name_queryset.filter(name__icontains=word)
+
+    queryset = name_queryset | additional_data_queryset
+
+    all_count, month_count, today_count = OffersCounter.get_counts('all')
+    
+    paginator = Paginator(queryset, 30)
+    if request.GET.get('page'):
+        page_number = request.GET.get('page')
     else:
-        args += "?key=DMT"
-    s = args.split("?")
-    t = Offer.objects.all().order_by('-created_at')
+        page_number = 1
 
-    # получаем количество заявок
-    all_count, month_count, today_count = get_counts(t)
+    page_obj = paginator.page(page_number)
 
-    page_found = False
-    per_page = 30
-
-    for a in s:
-        try:
-            frst = a.split("=")[0]
-            sec = a.split("=")[1]
-        except IndexError:
-            pass
-        if frst == "per_page":
-            if int(sec) <= 100:
-                per_page = int(sec)
-            else:
-                per_page = 20
-        if frst == "page":
-            if not page_found:
-                page = int(sec)
-                page_found = True
-            else:
-                return redirect("https://synrate.ru/ostatki/{}".format(("page={}".format(sec)) + "?" +
-                                str(request.META["QUERY_STRING"]).replace("page={}".format(page), "")
-                                                                       .replace("?page={}".format(sec), "")))
-        if frst == "time_mt":
-            k = []
-            if sec == "day":
-                timez = datetime.date.today() - datetime.timedelta(days=1)
-            elif sec == "week":
-                timez = datetime.date.today() - datetime.timedelta(days=7)
-            elif sec == "month":
-                timez = datetime.date.today() - datetime.timedelta(days=30)
-            else:
-                timez = datetime.date(int(sec.split(",")[0]), int(sec.split(",")[1]), int(sec.split(",")[2]))
-            for obj in t:
-                if obj.offer_start_date is not None:
-                    if obj.offer_start_date >= timez:
-                        k.append(obj)
-            t = k
-        if frst == "time_lt":
-            k = []
-            timez = datetime.date(int(sec.split(",")[0]), int(sec.split(",")[1]), int(sec.split(",")[2]))
-            for obj in t:
-                if obj.offer_start_date >= timez:
-                    k.append(obj)
-            t = k
-        if frst == "source":
-            k = []
-            for obj in t:
-                if obj.home_name == sec:
-                    k.append(obj)
-            t = k
-        if frst == "location":
-            k = []
-            for obj in t:
-                if obj.location == sec:
-                    k.append(obj)
-            t = k
-        if frst == "keywords":
-            sec = sec.replace(u" ", ",")
-            if len(sec.split(",")) > 20:
-                return HttpResponse("Нельхя вводить больше 20 ключевых слов")
-
-            for keyword in sec.split(","):
-                k = []
-                for obj in t:
-                    if obj.name.lower().find(keyword.lower()) != -1:
-                        k.append(obj)
-                t = k
-        if frst == "category":
-            if frst.find("/") != -1:
-                cat = frst.split("/")[0]
-                subcat = frst.split("/")[1]
-                k = []
-                for obj in t:
-                    if frst.category.name.replace(" ", "").replace("%20", "").strip() == subcat.strip():
-                        k.append(obj)
-                t = k
-
-    if len(t) == 0:
-        return HttpResponse("Ничего с параметрами {} найдено".format(args))
-
-    paginator = Paginator(t, per_page)
-    offers = paginator.page(page)
-    category_list_str = get_all_category_names()
-
-    return render(request, 'filtr.html', {"offers": offers, "category_list": category_list_str,
-                                          "query": request.META["QUERY_STRING"],
-                                          "all_count": all_count, "month_count": month_count,
-                                          "today_count": today_count})
+    return render(request, 'filtr.html', {'offers': page_obj, "all_count": all_count,
+                                        "month_count": month_count, "today_count": today_count,
+                                        "qs": qs, "filtering": filtering,
+                                        "from_filter": from_filter, "search_filter": search_query.phrase,
+                                        "search_target":'additional_data'})
 
 
 def search_all(request):
@@ -236,8 +184,6 @@ def listing(request):
     url, qs = request.build_absolute_uri(), 0
     if '&page' in url or 'filter' in url:
         qs = 1
-    
-
 
     and_dict, or_dict, word_list = get_filter_qs(request.GET)
     filtering = 0
@@ -246,9 +192,8 @@ def listing(request):
         filtering = 1
     except:
         pass
-    
+        
     queryset = Offer.objects.filter().order_by('-offer_start_date')
-
 
     search_filter = request.GET.get('search_filter', '')
     search_target = request.GET.get('search_target', 'additional_data')
@@ -258,6 +203,11 @@ def listing(request):
         queryset = queryset.filter(home_name=from_filter)
 
     if search_filter:
+        # Сохраняем поисковый запрос пользователя
+        search_query, created = SearchQuery.objects.get_or_create(phrase=search_filter)
+        search_query.search_count += 1
+        search_query.save()
+
         year_ago_date = datetime.datetime.now() - datetime.timedelta(days=365)
         queryset = queryset.filter(offer_start_date__gte=year_ago_date)
         words = search_filter.replace('.', '').replace(',', '').split(' ')
@@ -306,3 +256,6 @@ def listing(request):
 # class OffersView(ListView):
 #     paginate_by = 10
 #
+
+def page_not_found_view(request, exception):
+    return render(request, '404.html', status=404)

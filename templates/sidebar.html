@@ -1,9 +1,17 @@
 <div class="sidebar">
-    <div class="sb_banner">
-    <a href="https://vk.com/nelikvidi_com" rel="nofollow"><img class="img-responsive" src="https://nelikvidi.com/img/vk.jpg" alt="Наша группа в ВК"></a>
-    </div>
-    <div class="sb_banner">
-    <a href="https://nelikvidi.com/org-ak-alrosa-pao-15792.html"><img class="img-responsive" src="https://nelikvidi.com/img/alrosa1.jpg" alt="Неликвиды АК АЛРОСА"></a>
-    </div>
+    
+    
+    {% if search_queries %}
+        <div class="relinking_banner_block">
+            <ul>
+                {% for banner in right_banners %}
+                    {{ banner.code|safe }}
+                {% endfor %}
 
+                {% for search_query in search_queries %}
+                    <li><a class="banner_link" href="/offer/ostatki/{{ search_query.slug }}/">{{ search_query.phrase }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
 </div>
