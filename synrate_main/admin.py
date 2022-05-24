@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Offer, FAQ, OfferCategory, OfferSubcategory, TgUser, VkUser
+from .models import Offer, FAQ, OfferCategory, OfferSubcategory, TgUser, VkUser, SearchQuery, Banner
 
 
 class VkUserAdmin(admin.ModelAdmin):
@@ -61,6 +61,16 @@ class OfferCategoryAdmin(admin.ModelAdmin):
 class OfferSubcategoryAdmin(admin.ModelAdmin):
     pass
 
+class SearchQueryAdmin(admin.ModelAdmin):
+    list_display = ['phrase', 'slug', 'search_count', 'is_active']
+    list_filter = ['is_active']
+    list_editable = ['is_active']
+    prepopulated_fields = {'slug': ('phrase','id'), }
+    ordering = ['phrase']
+
+
+class BannerAdmin(admin.ModelAdmin):
+    list_display = ['banner_type', 'is_active']
 
 #
 #
@@ -75,3 +85,5 @@ admin.site.register(FAQ, FAQAdmin)
 admin.site.register(TgUser, TgUserAdmin)
 admin.site.register(VkUser, VkUserAdmin)
 admin.site.register(Offer, OfferAdmin)
+admin.site.register(SearchQuery, SearchQueryAdmin)
+admin.site.register(Banner, BannerAdmin)

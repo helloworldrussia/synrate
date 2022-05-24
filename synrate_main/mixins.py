@@ -1,6 +1,8 @@
+import random
 from datetime import datetime, timedelta
+from django.db.models import Max, Min
 
-from synrate_main.models import Offer
+from synrate_main.models import Offer, SearchQuery
 
 
 # принимаем кверисет, возвращает три переменные с количеством созданных объяв за все время, текущ. мес., день
@@ -92,3 +94,11 @@ def get_filters(data):
         return from_filter, search_filter, time_filter, include_text, include_region, include_org
     else:
         return 0
+
+
+def get_random_search_queries():
+    max_id = SearchQuery.objects.all().aggregate(max_id=Max("id"))['max_id']
+    min_id = SearchQuery.objects.all().aggregate(min_id=Min("id"))['min_id']
+    ids_sample = random.sample(range(min_id, max_id), 5)
+    search_queries = SearchQuery.objects.filter(id__in=ids_sample)
+    return search_queries
