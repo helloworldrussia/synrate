@@ -1,6 +1,6 @@
 from django.db import models
 from cms.models import CMSPlugin
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, time
 from django.contrib.postgres.indexes import GinIndex, OpClass, Index
 from django.db.models.functions import Upper
 
@@ -117,10 +117,13 @@ class OffersCounter(models.Model):
             offers = Offer.objects.filter()  
         else: 
             offers = Offer.objects.filter(home_name=self.home_lilter)
-        today = datetime.today().date()
+
+        current_month_start_date = datetime.combine(datetime.now().replace(day=1), time.min)
+        today_morning_date = datetime.combine(datetime.now(), time.min)
+
         self.all_count = offers.count()
-        self.month_count = offers.filter(created_at__month=today.month).count()
-        self.today_count = offers.filter(created_at__day=today.day).count()
+        self.month_count = offers.filter(created_at__gte=current_month_start_date).count()
+        self.today_count = offers.filter(created_at__gte=today_morning_date).count()
         self.save()
     
 

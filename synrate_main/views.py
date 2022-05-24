@@ -237,7 +237,6 @@ def listing(request):
     if '&page' in url or 'filter' in url:
         qs = 1
     
-    year_ago_date = datetime.datetime.now() - datetime.timedelta(days=365)
 
 
     and_dict, or_dict, word_list = get_filter_qs(request.GET)
@@ -248,7 +247,7 @@ def listing(request):
     except:
         pass
     
-    queryset = Offer.objects.filter(offer_start_date__gte=year_ago_date).order_by('-offer_start_date')
+    queryset = Offer.objects.filter().order_by('-offer_start_date')
 
 
     search_filter = request.GET.get('search_filter', '')
@@ -259,6 +258,8 @@ def listing(request):
         queryset = queryset.filter(home_name=from_filter)
 
     if search_filter:
+        year_ago_date = datetime.datetime.now() - datetime.timedelta(days=365)
+        queryset = queryset.filter(offer_start_date__gte=year_ago_date)
         words = search_filter.replace('.', '').replace(',', '').split(' ')
 
         if search_target == 'additional_data':
