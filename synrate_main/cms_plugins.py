@@ -15,6 +15,7 @@ class FAQPlugin(CMSPluginBase):
         context = super().render(context, instance, placeholder)
         return context
 
+
 @plugin_pool.register_plugin
 class IntroPlugin(CMSPluginBase):
     model = INTRO
@@ -25,6 +26,7 @@ class IntroPlugin(CMSPluginBase):
     def render(self, context, instance, placeholder):
         context = super().render(context, instance, placeholder)
         return context
+
 
 @plugin_pool.register_plugin
 class TitlePlugin(CMSPluginBase):
