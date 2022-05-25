@@ -162,7 +162,7 @@ def detail_info(request, id):
         pk__lte=offer.pk + 3
     ).exclude(pk=offer.pk)
 
-    return render(request, 'newcard.html', {"offer": offer, "offers": queryset})
+    return render(request, 'newcard.html', {"offer": offer, "offers": queryset, "search_target": "additional_data"})
 
 
 def category(request):
