@@ -2,5 +2,16 @@
 {% load static  %}
 
 {% block content %}
-<h1>404 Страница не найдена</h1>
+<style>
+.not_found_message {
+    height: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+</style>
+<div class="not_found_message">
+	<h1>404 Страница не найдена</h1>
+</div>
 {% endblock %}
