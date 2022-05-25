@@ -1,15 +1,18 @@
 <style>
-    .banner_link {
+    .relinking_banner_block__link {
         color: #059AE5;
     }
 
     .relinking_banner_block {
         padding-top: 10px;
     }
-    .relink_block {
+    .relinking_banner_block__links {
         border: 2px solid darkgrey;
         border-radius: 2px;
-        padding: 5px;
+        padding: 10px;
+    }
+    .relinking_banner_block__header {
+        padding-bottom: 10px;
     }
 </style>
 
@@ -20,11 +23,11 @@
                 {{ banner.code|safe }}
             {% endfor %}
             <br>
-            <div class="relink_block">
-                <h5>Продажа остатков:</h5>
+            <div class="relinking_banner_block__links">
+                <h5 class="relinking_banner_block__header">Продажа остатков:</h5>
                 <ul>                
                     {% for search_query in search_queries %}
-                        <li><a class="banner_link" href="/offer/ostatki/{{ search_query.slug }}/">{{ search_query.phrase }}</a></li>
+                        <li><a class="relinking_banner_block__link" href="/offer/ostatki/{{ search_query.slug }}/">{{ search_query.phrase }}</a></li>
                     {% endfor %}
                 </ul>
             </div>
