@@ -4,6 +4,7 @@ from datetime import datetime, timedelta, time
 from django.contrib.postgres.indexes import GinIndex, OpClass, Index
 from django.db.models.functions import Upper
 
+from pytils.translit import slugify
 
 class OfferCategory(models.Model):
     name = models.CharField(max_length=1000, null=False, unique=True, verbose_name="Название")
@@ -137,6 +138,13 @@ class SearchQuery(models.Model):
     class Meta:
         verbose_name = "Поисковый запрос"
         verbose_name_plural = "Поисковые запросы"
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.phrase)
+        super(SearchQuery, self).save(*args, **kwargs)
+
+
 
 
 class Banner(models.Model):
