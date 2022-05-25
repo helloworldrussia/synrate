@@ -100,7 +100,7 @@ def get_random_search_queries():
     try:
         max_id = SearchQuery.objects.all().aggregate(max_id=Max("id"))['max_id']
         min_id = SearchQuery.objects.all().aggregate(min_id=Min("id"))['min_id']
-        ids_sample = random.sample(range(min_id, max_id), 5)
+        ids_sample = random.sample(range(min_id, max_id), 10)
         search_queries = SearchQuery.objects.filter(id__in=ids_sample)
         return search_queries
     except:
