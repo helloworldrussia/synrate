@@ -12,54 +12,56 @@
             </div>
             <div class="product-card__wrapper">
                 <div class="product-card__img">
-                    <div rel="noindex" class="card-img">
+                <noindex>
+                    <div class="card-img">
                         {% if offer.home_name == "nelikvidi" %}
-                        <a href="{{ offer.url }}" target="_blank"><img rel="nofollow" src="{% static 'img/nelikvidi.png' %}" alt=""></a>
+                        <a href="{{ offer.url }}" target="_blank" rel="nofollow"><img src="{% static 'img/nelikvidi.png' %}" alt=""></a>
                         {% endif %}
                         {% if offer.home_name == "tektorg" %}
-                        <a href="{{ offer.url }}" target="_blank"><img rel="nofollow" src="{% static 'img/tectorg.png' %}" alt=""></a>
+                        <a href="{{ offer.url }}" target="_blank" rel="nofollow"><img rsrc="{% static 'img/tectorg.png' %}" alt=""></a>
                         {% endif %}
                         {% if offer.home_name == "tenderpro" %}
-                        <a href="{{ offer.url }}" target="_blank"><img rel="nofollow" src="{% static 'img/tender.png' %}" alt=""></a>
+                        <a href="{{ offer.url }}" target="_blank" rel="nofollow"><img src="{% static 'img/tender.png' %}" alt=""></a>
                         {% endif %}
                         {% if offer.home_name == "isource" %}
-                        <a href="{{ offer.url }}" target="_blank"><img rel="nofollow" src="{% static 'img/isource.png' %}" alt=""></a>
+                        <a href="{{ offer.url }}" target="_blank" rel="nofollow"><img src="{% static 'img/isource.png' %}" alt=""></a>
                         {% endif %}
                         {% if offer.home_name == "onlinecontract" %}
-                        <a href="{{ offer.url }}" target="_blank"><img rel="nofollow" src="{% static 'img/onlinecontract.png' %}" alt=""></a>
+                        <a href="{{ offer.url }}" target="_blank" rel="nofollow"><img src="{% static 'img/onlinecontract.png' %}" alt=""></a>
                         {% endif %}
                         {% if offer.home_name == "roseltorg" %}
-                        <a href="{{ offer.url }}" target="_blank"><img rel="nofollow" src="{% static 'img/roseltorg.png' %}" alt=""></a>
+                        <a href="{{ offer.url }}" target="_blank" rel="nofollow"><img src="{% static 'img/roseltorg.png' %}" alt=""></a>
                         {% endif %}
                         {% if offer.home_name == "etpgpb" %}
-                        <a href="{{ offer.url }}" target="_blank"><img rel="nofollow" src="{% static 'img/etpgpb_1.png' %}" alt=""></a>
+                        <a href="{{ offer.url }}" target="_blank" rel="nofollow"><img src="{% static 'img/etpgpb_1.png' %}" alt=""></a>
                         {% endif %}
                         {% if offer.home_name == "fabrikant" %}
-                        <a href="{{ offer.url }}" target="_blank"><img rel="nofollow" src="{% static 'img/fabrikant_1.png' %}" alt=""></a>
+                        <a href="{{ offer.url }}" target="_blank" rel="nofollow"><img src="{% static 'img/fabrikant_1.png' %}" alt=""></a>
                         {% endif %}
                         {% if offer.home_name == "etp-activ" %}
-                        <a href="{{ offer.url }}" target="_blank"><img rel="nofollow" src="{% static 'img/etp-activ.png' %}" class="offer-block__img" alt=""></a>
+                        <a href="{{ offer.url }}" target="_blank" rel="nofollow"><img src="{% static 'img/etp-activ.png' %}" class="offer-block__img" alt=""></a>
                         {% endif %}
                         {% if offer.home_name == "b2b-center" %}
-                        <a href="{{ offer.url }}" target="_blank"><img rel="nofollow" src="{% static 'img/b2b-center.png' %}" class="offer-block__img" alt=""></a>
+                        <a href="{{ offer.url }}" target="_blank" rel="nofollow"><img src="{% static 'img/b2b-center.png' %}" class="offer-block__img" alt=""></a>
                         {% endif %}
                         {% if offer.home_name == "vk.com" %}
-                        <a href="{{ offer.url }}" target="_blank"><img rel="nofollow" src="{% static 'img/vk.png' %}" class="offer-block__img" alt=""></a>
+                        <a href="{{ offer.url }}" target="_blank" rel="nofollow"><img src="{% static 'img/vk.png' %}" class="offer-block__img" alt=""></a>
                         {% endif %}
                         {% if offer.home_name == "telegram" %}
-                        <a href="{{ offer.url }}" target="_blank"><img rel="nofollow" src="{% static 'img/telegram.png' %}" class="offer-block__img" alt=""></a>
+                        <a href="{{ offer.url }}" target="_blank" rel="nofollow"><img src="{% static 'img/telegram.png' %}" class="offer-block__img" alt=""></a>
                         {% endif %}
                         {% if offer.home_name == "prostanki" %}
-                        <a href="{{ offer.url }}" target="_blank"><img rel="nofollow" src="{% static 'img/prostanki.png' %}" class="offer-block__img" alt=""></a>
+                        <a href="{{ offer.url }}" target="_blank" rel="nofollow"><img src="{% static 'img/prostanki.png' %}" class="offer-block__img" alt=""></a>
                         {% endif %}
                         {% if offer.home_name == "metaprom" %}
-                        <a href="{{ offer.url }}" target="_blank"><img rel="nofollow" src="{% static 'img/metaprom.png' %}" class="offer-block__img" alt=""></a>
+                        <a href="{{ offer.url }}" target="_blank" rel="nofollow"><img src="{% static 'img/metaprom.png' %}" class="offer-block__img" alt=""></a>
                         {% endif %}
                         {% if offer.home_name == "promportal" %}
-                        <a href="{{ offer.url }}" target="_blank"><img rel="nofollow" src="{% static 'img/promportal.png' %}" class="offer-block__img" alt=""></a>
+                        <a href="{{ offer.url }}" target="_blank" rel="nofollow"><img src="{% static 'img/promportal.png' %}" class="offer-block__img" alt=""></a>
                         {% endif %}
                     </div>
-                    <a rel="nofollow" href="{{ offer.url }}" target="_blank">Перейти на источник</a>
+                    <a href="{{ offer.url }}" target="_blank" rel="nofollow">Перейти на источник</a>
+                </noindex>
                 </div>
                 <div class="product-offer">
                     <table>
