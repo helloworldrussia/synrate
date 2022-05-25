@@ -188,7 +188,11 @@
             <div class="offers-count-block">
                 {% if search_filter %}
                     <h4 class="offers-count">
-                        Найдено {{ offers.paginator.count }} {{ offers.paginator.count|pluralize:"объявление,объявления,объявлений" }} по запросу: {{ search_filter }}
+                        {% if from_search %}
+                            Найдено {{ offers.paginator.count }} {{ offers.paginator.count|pluralize:"объявление,объявления,объявлений" }} по запросу: {{ search_filter }}
+                        {% else %}
+                            {{ search_filter }}
+                        {% endif %}
                     </h4>
                 {% else %}
                     <h4 class="offers-count">

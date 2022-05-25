@@ -134,7 +134,7 @@ def search(request, query_slug):
                                         "month_count": month_count, "today_count": today_count,
                                         "qs": qs, "filtering": filtering,
                                         "from_filter": from_filter, "search_filter": search_query.phrase,
-                                        "search_target":'additional_data'})
+                                        "search_target":'additional_data', "from_search":True})
 
 
 def search_all(request):

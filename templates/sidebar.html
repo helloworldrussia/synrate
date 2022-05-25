@@ -11,11 +11,12 @@
 <div class="sidebar">
     {% if search_queries %}
         <div class="relinking_banner_block">
-            <ul>
-                {% for banner in right_banners %}
-                    {{ banner.code|safe }}
-                {% endfor %}
-
+            {% for banner in right_banners %}
+                {{ banner.code|safe }}
+            {% endfor %}
+            <br>
+            <h5>Продажа остатков:</h5>
+            <ul>                
                 {% for search_query in search_queries %}
                     <li><a class="banner_link" href="/offer/ostatki/{{ search_query.slug }}/">{{ search_query.phrase }}</a></li>
                 {% endfor %}
