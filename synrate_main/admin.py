@@ -67,6 +67,7 @@ class SearchQueryAdmin(admin.ModelAdmin):
     list_editable = ['is_active']
     prepopulated_fields = {'slug': ('phrase',)}
     ordering = ['phrase']
+    fields = ['phrase', 'slug', 'is_active']
 
 
 class BannerAdmin(admin.ModelAdmin):
