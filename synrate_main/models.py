@@ -140,7 +140,7 @@ class SearchQuery(models.Model):
         verbose_name_plural = "Поисковые запросы"
 
     def save(self, *args, **kwargs):
-        if not self.slug:
+        if not self.slug:         
             self.slug = slugify(self.phrase)
         super(SearchQuery, self).save(*args, **kwargs)
 

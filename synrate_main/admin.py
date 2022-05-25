@@ -65,7 +65,7 @@ class SearchQueryAdmin(admin.ModelAdmin):
     list_display = ['phrase', 'slug', 'search_count', 'is_active']
     list_filter = ['is_active']
     list_editable = ['is_active']
-    prepopulated_fields = {'slug': ('phrase','id'), }
+    prepopulated_fields = {'slug': ('phrase',)}
     ordering = ['phrase']
 
 
