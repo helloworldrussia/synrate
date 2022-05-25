@@ -6,6 +6,11 @@
     .relinking_banner_block {
         padding-top: 10px;
     }
+    .relink_block {
+        border: 2px solid darkgrey;
+        border-radius: 2px;
+        padding: 5px;
+    }
 </style>
 
 <div class="sidebar">
@@ -15,12 +20,14 @@
                 {{ banner.code|safe }}
             {% endfor %}
             <br>
-            <h5>Продажа остатков:</h5>
-            <ul>                
-                {% for search_query in search_queries %}
-                    <li><a class="banner_link" href="/offer/ostatki/{{ search_query.slug }}/">{{ search_query.phrase }}</a></li>
-                {% endfor %}
-            </ul>
+            <div class="relink_block">
+                <h5>Продажа остатков:</h5>
+                <ul>                
+                    {% for search_query in search_queries %}
+                        <li><a class="banner_link" href="/offer/ostatki/{{ search_query.slug }}/">{{ search_query.phrase }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
         </div>
     {% endif %}
 </div>
