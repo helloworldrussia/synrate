@@ -40,6 +40,14 @@
             </h4>
         </div>
 
+        {% if top_banners %}
+            <div class="top_banner">
+                {% for banner in top_banners %}
+                    {{ banner.code|safe }}
+                {% endfor %}
+            </div>
+        {% endif %}
+        
         <div class="row">
             <div class="col-12 col-lg-9">
 
@@ -139,6 +147,14 @@
                     {% endfor %}
                 </div>
 
+                {% if bottom_banners %}
+                    <div class="bottom_banner">
+                        {% for banner in bottom_banners %}
+                            {{ banner.code|safe }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                
             </div>
             <div class="col-12 col-lg-3">
                 {% include 'sidebar.html' %}

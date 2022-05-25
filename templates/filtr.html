@@ -189,9 +189,9 @@
                 {% if search_filter %}
                     <h4 class="offers-count">
                         {% if from_search %}
-                            Найдено {{ offers.paginator.count }} {{ offers.paginator.count|pluralize:"объявление,объявления,объявлений" }} по запросу: {{ search_filter }}
-                        {% else %}
                             {{ search_filter }}
+                        {% else %}
+                            Найдено {{ offers.paginator.count }} {{ offers.paginator.count|pluralize:"объявление,объявления,объявлений" }} по запросу: {{ search_filter }}
                         {% endif %}
                     </h4>
                 {% else %}
