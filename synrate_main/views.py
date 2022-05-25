@@ -149,9 +149,9 @@ def detail_info(request, id):
         print(ex)
         slug = 1
     if slug:
-        offer = Offer.objects.get_object_or_404(slug=id)
+        offer = get_object_or_404(Offer, slug=id)
     else:
-        offer = Offer.objects.get_object_or_404(id=id)
+        offer = get_object_or_404(Offer, id=id)
     offer.views += 1
     offer.save()
 
