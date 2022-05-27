@@ -38,8 +38,6 @@ def get_home_id(home_name):
     home_id = cursor.fetchone()[0]
     return home_id
 
-print(get_home_id('metaprom'))
-
 
 class DbManager:
 
@@ -199,21 +197,21 @@ class Item:
                  owner, ownercontact, offer_price, additional_data, organisation, from_id,
                  short_cat, owner_id, home_id):
         self.home_id = home_id
-        self.name = name
+        self.name = name.replace("'", "").replace('"', '')
         self.home_name = home_name
-        self.location = location
+        self.location = location.replace("'", "").replace('"', '')
         self.url = url
         self.offer_start_date = offer_start_date
         self.offer_end_date = offer_end_date
-        self.owner = owner
-        self.ownercontact = ownercontact
+        self.owner = owner.replace("'", "").replace('"', '')
+        self.ownercontact = ownercontact.replace("'", "").replace('"', '')
         self.offer_price = offer_price
-        self.additional_data = additional_data
-        self.organisation = organisation
+        self.additional_data = additional_data.replace("'", "").replace('"', '')
+        self.organisation = organisation.replace("'", "").replace('"', '')
         self.created_at = datetime.datetime.now()
         self.from_id = from_id
         # для заявок с вк и тг
-        self.short_cat = short_cat
+        self.short_cat = short_cat.replace("'", "").replace('"', '')
         self.owner_id = owner_id
         self.arg_list = {"owner_id": self.owner_id, "short_cat": self.short_cat, "from_id": self.from_id,
                          "created_at": self.created_at, "organisation": self.organisation,
