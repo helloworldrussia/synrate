@@ -197,30 +197,42 @@ class Item:
                  owner, ownercontact, offer_price, additional_data, organisation, from_id,
                  short_cat, owner_id, home_id):
         self.home_id = home_id
-        self.name = name.replace("'", "").replace('"', '')
+        self.name = name
         self.home_name = home_name
-        self.location = location.replace("'", "").replace('"', '')
+        self.location = location
         self.url = url
         self.offer_start_date = offer_start_date
         self.offer_end_date = offer_end_date
-        self.owner = owner.replace("'", "").replace('"', '')
-        self.ownercontact = ownercontact.replace("'", "").replace('"', '')
+        self.owner = owner
+        self.ownercontact = ownercontact
         self.offer_price = offer_price
-        self.additional_data = additional_data.replace("'", "").replace('"', '')
-        self.organisation = organisation.replace("'", "").replace('"', '')
+        self.additional_data = additional_data
+        self.organisation = organisation
         self.created_at = datetime.datetime.now()
         self.from_id = from_id
         # для заявок с вк и тг
-        self.short_cat = short_cat.replace("'", "").replace('"', '')
+        self.short_cat = short_cat
         self.owner_id = owner_id
-        self.arg_list = {"owner_id": self.owner_id, "short_cat": self.short_cat, "from_id": self.from_id,
-                         "created_at": self.created_at, "organisation": self.organisation,
-                         "additional_data": self.additional_data,
-                         "offer_price": self.offer_price, "ownercontact": self.ownercontact,
-                         "owner": self.owner, "offer_end_date": self.offer_end_date,
-                         "offer_start_date": self.offer_start_date,
-                         "url": self.url, "location": self.location,
-                         "home_name": self.home_name, "name": self.name, "views": 1, "home_id": self.home_id}
+        data = {"owner_id": self.owner_id, "short_cat": self.short_cat, "from_id": self.from_id,
+                "created_at": self.created_at, "organisation": self.organisation,
+                "additional_data": self.additional_data,
+                "offer_price": self.offer_price, "ownercontact": self.ownercontact,
+                "owner": self.owner, "offer_end_date": self.offer_end_date,
+                "offer_start_date": self.offer_start_date,
+                "url": self.url, "location": self.location,
+                "home_name": self.home_name, "name": self.name, "views": 1, "home_id": self.home_id}
+        self.arg_list = self.refactor_items_data(data)
+
+    @staticmethod
+    def refactor_items_data(data):
+        attrs = ['name', 'location', 'owner', 'ownercontact',
+                 'additional_data', 'organisation', 'short_cat']
+        for key in attrs:
+            try:
+                data[key] = data[key].replace("'", "").replace('"', '')
+            except:
+                pass
+        return data
 
     def post(self, db_manager):
         db_manager.tasks.append(self)
