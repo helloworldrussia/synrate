@@ -38,6 +38,12 @@ def update_proxy_info(proxy_list: list):
 
 def start():
     print('... Запуск программы ...')
+    print("Убиваем старые процессы...")
+    try:
+        os.system("pkill -9 -f /var/www/synrate_dir/synrate/PARSER_SCRIPT/")
+        print('- Процессы завершены.')
+    except Exception as ex:
+        print(f'Ошибка: {ex}')
     change_status_for_all()
     print('- Статусы парсеров обновлены')
     proxy_list = get_all_proxies()
