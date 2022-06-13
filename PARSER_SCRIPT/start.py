@@ -38,6 +38,7 @@ def update_proxy_info(proxy_list: list):
 
 def start():
     print('... Запуск программы ...')
+    print("Убиваем старые процессы...")
     change_status_for_all()
     print('- Статусы парсеров обновлены')
     proxy_list = get_all_proxies()
