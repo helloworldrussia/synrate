@@ -11,10 +11,13 @@ class Command(BaseCommand):
         # "/Users/stirlits/Downloads/phrases.xls"
         worksheet = workbook.sheet_by_index(0)
 
-        # for i in range(0, worksheet.nrows + 1):
-        for i in range(0, 10):
-            phrase = worksheet.cell_value(i, 0)
-            slug = worksheet.cell_value(i, 1)
+        for i in range(0, worksheet.nrows):
+        # for i in range(0, 10):
+            try:
+                phrase = worksheet.cell_value(i, 0)
+                slug = worksheet.cell_value(i, 1)
+            except:
+                continue
             if phrase and slug:
                 search_query, created = SearchQuery.objects.get_or_create(slug=slug)
                 if created:

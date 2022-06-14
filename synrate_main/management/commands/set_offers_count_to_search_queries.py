@@ -1,4 +1,5 @@
 import datetime
+from tqdm import tqdm
 from django.core.management.base import BaseCommand
 
 from synrate_main.models import SearchQuery, Offer
@@ -7,7 +8,7 @@ from synrate_main.models import SearchQuery, Offer
 class Command(BaseCommand):
 
     def handle(self, *args, **options):
-        for search_query in SearchQuery.objects.all():
+        for search_query in tqdm(SearchQuery.objects.all()):
             phrase = search_query.phrase
             year_ago_date = datetime.datetime.now() - datetime.timedelta(days=365)
             queryset = Offer.objects.filter(offer_start_date__gte=year_ago_date).order_by('-offer_start_date')
