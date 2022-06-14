@@ -62,12 +62,13 @@ class OfferSubcategoryAdmin(admin.ModelAdmin):
     pass
 
 class SearchQueryAdmin(admin.ModelAdmin):
-    list_display = ['phrase', 'slug', 'search_count', 'is_active']
+    list_display = ['phrase', 'slug', 'search_count', 'offers_count', 'is_active', ]
     list_filter = ['is_active']
     list_editable = ['is_active']
     prepopulated_fields = {'slug': ('phrase',)}
     ordering = ['phrase']
     fields = ['phrase', 'slug', 'is_active']
+    search_fields = ['phrase']
 
 
 class BannerAdmin(admin.ModelAdmin):

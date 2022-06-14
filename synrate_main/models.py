@@ -134,7 +134,7 @@ class SearchQuery(models.Model):
     slug = models.SlugField(max_length=250, verbose_name='ЧПУ', unique=True)
     is_active = models.BooleanField(default=False)
     search_count = models.PositiveIntegerField(default=0, verbose_name='Количество запросов')
-    offers_count = models.PositiveIntegerField(default=0, verbose_name='Количество объявлений для запроса')
+    offers_count = models.PositiveIntegerField(default=0, verbose_name='Количество объявлений')
 
     class Meta:
         verbose_name = "Поисковый запрос"
