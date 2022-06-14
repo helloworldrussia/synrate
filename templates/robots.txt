@@ -1,4 +1,6 @@
 User-Agent: *
 
-
 Host: https://synrate.ru
+
+Disallow: /offer/id/*
+Disallow: /offers/*?page=*
