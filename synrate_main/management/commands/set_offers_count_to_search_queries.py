@@ -24,5 +24,7 @@ class Command(BaseCommand):
 
             queryset = name_queryset | additional_data_queryset
             search_query.offers_count = queryset.count()
+            if search_query.offers_count > 0:
+                search_query.is_active = True
             search_query.save()
 
