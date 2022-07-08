@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static main_tags %}
 
-{% block title %} {{ search_filter }} - Найдено {{ offers.paginator.count }} {{ offers.paginator.count|pluralize:"объявление,объявления,объявлений" }} - купить складские остатки товаров, продажа запасов. {% endblock title %}
+{% block title %} Продажа {{ search_filter }} - {{ offers.paginator.count }} {{ offers.paginator.count|pluralize:"объявление,объявления,объявлений" }} - купить складские остатки товаров. {% endblock title %}
 
 {% block content %}
 <style>
@@ -191,7 +191,7 @@
                 {% endif %}   
             </div>
             <div class="offers-count-block">
-                <h4 class="offers-count"> Найдено {{ offers.paginator.count }} {{ offers.paginator.count|pluralize:"объявление,объявления,объявлений" }} по запросу: {{ search_filter }}</h4>
+                <h4 class="offers-count"> Продажа ({{ offers.paginator.count }} {{ offers.paginator.count|pluralize:"объявление,объявления,объявлений" }}): {{ search_filter }}</h4>
             </div>
 
             {% if top_banners %}
